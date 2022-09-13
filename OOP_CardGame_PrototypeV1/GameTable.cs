@@ -25,7 +25,8 @@ namespace OOP_CardGame_PrototypeV1
         public static readonly int Rival = 1;
         public static readonly int Player = 0;
 
-        public GameTable(Bitmap image, Vector2 size, int tilesetSize)        {
+        public GameTable(Bitmap image, Vector2 size, int tilesetSize)
+        {
             _size = size;
             _image = image;
             _cardTiles = new GameTile[2, tilesetSize];

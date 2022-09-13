@@ -10,8 +10,7 @@ namespace OOP_CardGame_PrototypeV1
         private const string MonsterImageFilename = "CardMonster000.png";
         private const string CardTileImageFilename = "CardPlacement007.png";
 
-        private const double HoverEnlarge = 1.25;
-        private const double HoverShrink = 0.8; 
+        private const double HoverEnlarge = 1.2;
         
         private GameTable gameTable;
         private Hand hand;
@@ -106,7 +105,7 @@ namespace OOP_CardGame_PrototypeV1
                 Interactable cardCollision = Physics.IsColliding(objectHover, mousePosition);
                 if (cardCollision == null)
                 {
-                    objectHover.SetSize(HoverShrink * objectHover.WorldSpaceSize);
+                    objectHover.SetSize(objectHover.WorldSpaceSize / HoverEnlarge);
                     objectHover = null;
                 }
             }
