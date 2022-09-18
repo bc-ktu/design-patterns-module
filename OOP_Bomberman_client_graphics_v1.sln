@@ -1,0 +1,25 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.3.32825.248
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OOP_Bomberman_client_graphics_v1", "OOP_Bomberman_client_graphics_v1\OOP_Bomberman_client_graphics_v1.csproj", "{054E83EA-DC9E-4870-AD22-314D1A1F5BB7}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{054E83EA-DC9E-4870-AD22-314D1A1F5BB7}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{054E83EA-DC9E-4870-AD22-314D1A1F5BB7}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{054E83EA-DC9E-4870-AD22-314D1A1F5BB7}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{054E83EA-DC9E-4870-AD22-314D1A1F5BB7}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {62F719C5-1C05-45F9-A665-E768424E8FF2}
+	EndGlobalSection
+EndGlobal
