@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace OOP_CardGame_PrototypeV1
+namespace OOP_Bomberman_client_graphics_v1
 {
     internal class Vector4
     {

@@ -16,6 +16,7 @@ namespace OOP_Bomberman_client_graphics_v1
 
         public Vector2 Size { get { return _size; } }
         public MapTile[,] Tiles { get { return _tiles; } }
+        public Vector2 TileSize { get { return _tileSize; } }
 
         public Map(Vector2 mapSize, Vector2 viewSize)
         {
@@ -30,7 +31,7 @@ namespace OOP_Bomberman_client_graphics_v1
             _size = new Vector2(mapWidth, mapHeight);
             _viewSize = new Vector2(viewWidth, viewHeight);
             _tiles = new MapTile[mapWidth, mapHeight];
-            _tileSize = new Vector2(viewWidth / mapHeight, viewHeight / mapHeight);
+            _tileSize = new Vector2(viewWidth / mapWidth, viewHeight / mapHeight);
         }
 
         public void SetTile(int x, int y, Bitmap image)
@@ -38,6 +39,16 @@ namespace OOP_Bomberman_client_graphics_v1
             int xWorld = _tileSize.X * x;
             int yWorld = _tileSize.Y * y;
             _tiles[x, y] = new MapTile(xWorld, yWorld, _tileSize.X, _tileSize.Y, image);
+        }
+
+        
+        public GameObject CreateScaledGameObject(int x, int y, Bitmap image)
+        {
+            double heightToWidthRatio = image.Height / (double)image.Width;
+            Vector2 position = new Vector2(Tiles[x, y].LocalPosition.X, Tiles[x, y].LocalPosition.Y - ((int)(heightToWidthRatio * TileSize.Y) - TileSize.Y));
+            Vector2 size = new Vector2(TileSize.X, (int)(heightToWidthRatio * TileSize.Y));
+            Vector4 collider = new Vector4(position.X, Tiles[x, y].LocalPosition.Y, position.X + TileSize.X, Tiles[x, y].LocalPosition.Y + TileSize.Y);
+            return new GameObject(position, size, collider, image);
         }
     }
 }

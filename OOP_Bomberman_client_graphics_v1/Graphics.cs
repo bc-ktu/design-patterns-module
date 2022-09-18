@@ -28,6 +28,27 @@ namespace OOP_Bomberman_client_graphics_v1
             }
         }
 
+        public static void DrawColliders(Map gameMap, Color color, float width, PaintEventArgs e)
+        {
+            Pen pen = new Pen(color, width);
+
+            for (int y = 0; y < gameMap.Size.Y; y++)
+            {
+                for (int x = 0; x < gameMap.Size.X; x++)
+                {
+                    if (!(gameMap.Tiles[x, y].GameObject is EmptyGameObject))
+                    {
+                        int xGO = gameMap.Tiles[x, y].GameObject.Collider.X;
+                        int yGO = gameMap.Tiles[x, y].GameObject.Collider.Y;
+                        int widthGO = gameMap.Tiles[x, y].GameObject.Collider.Z - xGO;
+                        int heightGO = gameMap.Tiles[x, y].GameObject.Collider.W - yGO;
+                        Rectangle rect = new Rectangle(xGO, yGO, widthGO, heightGO);
+                        e.Graphics.DrawRectangle(pen, rect);
+                    }
+                }
+            }
+        }
+
         //public static void DrawCard(GameCard card, PaintEventArgs e)
         //{
         //    e.Graphics.DrawImage(card.BackImage, card.ToRectangle());

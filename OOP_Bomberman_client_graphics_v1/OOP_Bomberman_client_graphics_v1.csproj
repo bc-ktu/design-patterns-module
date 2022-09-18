@@ -14,7 +14,6 @@
 
   <ItemGroup>
     <Folder Include="Assets\Icons\" />
-    <Folder Include="Assets\Textures\Sprites\" />
   </ItemGroup>
 
   <ItemGroup>
@@ -43,6 +42,15 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
     <None Update="Assets\Textures\Spritesheets\TX_Tileset_Grass.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Assets\Textures\Sprites\Explodables\Explodable000.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Assets\Textures\Sprites\Walls\Wall000.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Assets\Textures\Sprites\Walls\Wall001.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
   </ItemGroup>
