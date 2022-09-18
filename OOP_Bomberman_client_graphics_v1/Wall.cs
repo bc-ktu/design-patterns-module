@@ -6,14 +6,14 @@ using System.Threading.Tasks;
 
 namespace OOP_Bomberman_client_graphics_v1
 {
-    internal class Character : GameObject
+    internal class Wall : GameObject
     {
-        public Character(Vector2 position, Vector2 size, Vector4 collider, Bitmap image) : base(position, size, collider, image)
+        public Wall(Vector2 position, Vector2 size, Vector4 collider, Bitmap image) : base(position, size, collider, image)
         {
 
         }
 
-        public Character(int x, int y, int width, int height, int cx, int cy, int cWidth, int cHeight, Bitmap image) 
+        public Wall(int x, int y, int width, int height, int cx, int cy, int cWidth, int cHeight, Bitmap image) 
             : base(x, y, width, height, cx, cy, cWidth, cHeight, image)
         {
 

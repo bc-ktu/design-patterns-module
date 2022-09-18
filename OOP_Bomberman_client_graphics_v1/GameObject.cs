@@ -1,5 +1,4 @@
-﻿using OOP_CardGame_PrototypeV1;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Data.SqlTypes;
 using System.Linq;
@@ -18,7 +17,7 @@ namespace OOP_Bomberman_client_graphics_v1
 
         public Vector2 LocalPosition { get { return _position; } }
         public Vector2 WorldPosition { get { return _position + _size / 2; } }
-        public Vector4 Colider { get { return _collider; } }
+        public Vector4 Collider { get { return _collider; } }
 
         public Bitmap Image { get { return _image; } }
 
@@ -50,6 +49,13 @@ namespace OOP_Bomberman_client_graphics_v1
         public Rectangle ToRectangle()
         {
             return new Rectangle(_position.X, _position.Y, _size.X, _size.Y);
+        }
+
+        public override string ToString()
+        {
+            return "position: " + _position.ToString() + "\n" +
+                   "size: " + _size.ToString() + "\n" +
+                   "collider: " + _collider.ToString();
         }
 
     }
