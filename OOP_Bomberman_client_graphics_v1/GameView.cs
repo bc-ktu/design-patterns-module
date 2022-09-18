@@ -11,6 +11,7 @@ namespace OOP_Bomberman_client_graphics_v1
         private const string GREEN_CHARACTER_SPRITESHEET = "3 idle.png";
         private const string WHITE_CHARACTER_SPRITESHEET = "7 idle.png";
         private const string PURPLE_CHARACTER_SPRITESHEET = "9 idle.png";
+        private const string FNAF_CHARACTERS_SPRITESHEET = "fnaf_characters.png";
         private Vector2 GTI = new Vector2(2, 2); // Ground Tile Index = const how?
         private Vector2 MAP_SIZE = new Vector2(16, 16); // const how?
 
@@ -40,16 +41,9 @@ namespace OOP_Bomberman_client_graphics_v1
             Bitmap mapSpritesheet = new Bitmap(filepath);
             mapTileImages = Spritesheet.ExtractAll(mapSpritesheet, new Vector2(32, 32));
 
-            Bitmap characterSpriteSheetImage;
-            Bitmap[] characterImages = new Bitmap[4];
-            characterSpriteSheetImage = new Bitmap(Path.Create(Path.FolderAssets, Path.FolderTextures, Path.FolderSpritesheets, PINK_CHARACTER_SPRITESHEET));
-            characterImages[0] = Spritesheet.ExtractSprite(characterSpriteSheetImage, new Vector2(16, 16), new Vector2(0, 0));
-            characterSpriteSheetImage = new Bitmap(Path.Create(Path.FolderAssets, Path.FolderTextures, Path.FolderSpritesheets, GREEN_CHARACTER_SPRITESHEET));
-            characterImages[1] = Spritesheet.ExtractSprite(characterSpriteSheetImage, new Vector2(16, 16), new Vector2(0, 0));
-            characterSpriteSheetImage = new Bitmap(Path.Create(Path.FolderAssets, Path.FolderTextures, Path.FolderSpritesheets, WHITE_CHARACTER_SPRITESHEET));
-            characterImages[2] = Spritesheet.ExtractSprite(characterSpriteSheetImage, new Vector2(16, 16), new Vector2(0, 0));
-            characterSpriteSheetImage = new Bitmap(Path.Create(Path.FolderAssets, Path.FolderTextures, Path.FolderSpritesheets, PURPLE_CHARACTER_SPRITESHEET));
-            characterImages[3] = Spritesheet.ExtractSprite(characterSpriteSheetImage, new Vector2(16, 16), new Vector2(0, 0));
+            filepath = Path.Create(Path.FolderAssets, Path.FolderTextures, Path.FolderSpritesheets, FNAF_CHARACTERS_SPRITESHEET);
+            Bitmap charactersSpritesheet = new Bitmap(filepath);
+            Bitmap[,] characterImages = Spritesheet.ExtractAll(charactersSpritesheet, new Vector2(32, 32));
 
             Random rnd = new Random();
             Vector2 tileWorldSize = new Vector2(this.ClientSize.Width / MAP_SIZE.X, this.ClientSize.Height / MAP_SIZE.Y);
@@ -65,10 +59,10 @@ namespace OOP_Bomberman_client_graphics_v1
                     if (isEmpty == 1)
                     {
                         Vector2 position = new Vector2(gameMap.Tiles[x, y].LocalPosition.X, gameMap.Tiles[x, y].LocalPosition.Y - tileWorldSize.Y);
-                        Vector2 size = new Vector2(gameMap.Tiles[x, y].Size.X, 2 * gameMap.Tiles[x, y].Size.Y);
+                        Vector2 size = new Vector2(gameMap.Tiles[x, y].Size.X, gameMap.Tiles[x, y].Size.Y);
                         Vector4 collider = new Vector4(position.X + 16, position.Y + 16, position.X + tileWorldSize.X - 16, position.Y + tileWorldSize.Y - 16); // make it proportional to ClientSize!
                         int rndIndex = rnd.Next(0, 4);
-                        go = new Character(position, size, collider, characterImages[rndIndex]);
+                        go = new Character(position, size, collider, characterImages[rndIndex * 3, 0]);
                     }
 
                     gameMap.Tiles[x, y].GameObject = go;
