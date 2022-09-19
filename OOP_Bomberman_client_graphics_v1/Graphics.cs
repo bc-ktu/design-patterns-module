@@ -49,6 +49,22 @@ namespace OOP_Bomberman_client_graphics_v1
             }
         }
 
+        public static void DrawGameObject(GameObject go, PaintEventArgs e)
+        {
+            e.Graphics.DrawImage(go.Image, go.ToRectangle());
+        }
+
+        public static void DrawCollider(GameObject go, Color color, float width, PaintEventArgs e)
+        {
+            Pen pen = new Pen(color, width);
+            int xGO = go.Collider.X;
+            int yGO = go.Collider.Y;
+            int widthGO = go.Collider.Z - xGO;
+            int heightGO = go.Collider.W - yGO;
+            Rectangle rect = new Rectangle(xGO, yGO, widthGO, heightGO);
+            e.Graphics.DrawRectangle(pen, rect);
+        }
+
         //public static void DrawCard(GameCard card, PaintEventArgs e)
         //{
         //    e.Graphics.DrawImage(card.BackImage, card.ToRectangle());

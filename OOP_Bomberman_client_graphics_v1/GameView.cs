@@ -22,12 +22,16 @@ namespace OOP_Bomberman_client_graphics_v1
         private Bitmap[,] mapTileImages;
         private Map gameMap;
 
+        private Keys keyPressed;
+
+        private Character player;
+
         public GameView()
         {
             InitializeComponent();
 
             Debug.Set(ConsoleTextBox);
-            Debug.Enabled(false);
+            Debug.Enabled(true);
             Debug.LogLine("Hello World!");
             Debug.LogLine(this.ClientSize.ToString());
 
@@ -117,20 +121,48 @@ namespace OOP_Bomberman_client_graphics_v1
                 gameMap.Tiles[MAP_SIZE.X - 1, i].GameObject = gameMap.CreateScaledGameObject(MAP_SIZE.X - 1, i, outerWallImage);
             }
 
+            Vector2 position = new Vector2(this.ClientSize.Width / 2, this.ClientSize.Height / 2);
+            double colliderSize = 0.75;
+            int tlx = (int)(position.X + (1 - colliderSize) * gameMap.TileSize.X);
+            int tly = (int)(position.Y + (1 - colliderSize) * gameMap.TileSize.Y);
+            int brx = (int)(position.X + colliderSize * gameMap.TileSize.X);
+            int bry = (int)(position.Y + colliderSize * gameMap.TileSize.Y);
+            Vector4 collider = new Vector4(tlx, tly, brx, bry);
+            player = new Character(position, gameMap.TileSize, collider, characterImages[10, 4]);
+
         }
 
         private void OnPaint(object sender, PaintEventArgs e)
         {
             Graphics.DrawMap(gameMap, e);
+            Graphics.DrawGameObject(player, e);
 
             if (DRAW_COLLIDERS)
+            {
                 Graphics.DrawColliders(gameMap, COLLIDERS_COLOR, COLLIDERS_WIDTH, e);
+                Graphics.DrawCollider(player, COLLIDERS_COLOR, COLLIDERS_WIDTH, e);
+            }
         }
 
         private void OnTick(object sender, EventArgs e)
         {
+            InputHandler.HandleKey(keyPressed, player);
+            // Debug.LogLine(player.ToString(), "\n");
+
             this.Refresh();
         }
 
+        private void OnKeyDown(object sender, KeyEventArgs e) // RichTextBox bust be disabled
+        {
+            keyPressed = e.KeyCode;
+            // Debug.LogLine("F " + e.KeyCode.ToString());
+        }
+
+        private void OnKeyUp(object sender, KeyEventArgs e)
+        {
+            if (e.KeyCode == keyPressed)
+                keyPressed = Keys.None;
+            // Debug.LogLine("F " + Keys.None.ToString());
+        }
     }
 }
