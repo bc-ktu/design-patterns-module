@@ -36,16 +36,19 @@
             // 
             // GameTimer
             // 
+            this.GameTimer.Enabled = true;
             this.GameTimer.Interval = 10;
             this.GameTimer.Tick += new System.EventHandler(this.OnTick);
             // 
             // ConsoleTextBox
             // 
             this.ConsoleTextBox.BackColor = System.Drawing.SystemColors.Desktop;
+            this.ConsoleTextBox.Enabled = false;
             this.ConsoleTextBox.Font = new System.Drawing.Font("Consolas", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point);
             this.ConsoleTextBox.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(0)))), ((int)(((byte)(192)))), ((int)(((byte)(0)))));
             this.ConsoleTextBox.Location = new System.Drawing.Point(12, 721);
             this.ConsoleTextBox.Name = "ConsoleTextBox";
+            this.ConsoleTextBox.ReadOnly = true;
             this.ConsoleTextBox.Size = new System.Drawing.Size(860, 128);
             this.ConsoleTextBox.TabIndex = 0;
             this.ConsoleTextBox.Text = "";
@@ -60,6 +63,8 @@
             this.Name = "GameView";
             this.Text = "Bomberman";
             this.Load += new System.EventHandler(this.GameView_Load);
+            this.KeyDown += new System.Windows.Forms.KeyEventHandler(this.OnKeyDown);
+            this.KeyUp += new System.Windows.Forms.KeyEventHandler(this.OnKeyUp);
             this.ResumeLayout(false);
 
         }

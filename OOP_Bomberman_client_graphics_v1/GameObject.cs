@@ -9,11 +9,11 @@ namespace OOP_Bomberman_client_graphics_v1
 {
     internal class GameObject : INullable
     {
-        private Vector2 _position;
-        private Vector2 _size;
-        private Vector4 _collider;
-        
-        private Bitmap _image;
+        protected Vector2 _position;
+        protected Vector2 _size;
+        protected Vector4 _collider;
+
+        protected Bitmap _image;
 
         public Vector2 LocalPosition { get { return _position; } }
         public Vector2 WorldPosition { get { return _position + _size / 2; } }
