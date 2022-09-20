@@ -41,7 +41,8 @@ namespace OOP_Bomberman_client_graphics_v1
             _tiles[x, y] = new MapTile(xWorld, yWorld, _tileSize.X, _tileSize.Y, image);
         }
 
-        
+        /// <param name="x">Index on x axis of the tile to place the new GameObject </param>
+        /// <param name="y">Index on y axis of the tile to place the new GameObject </param>
         public GameObject CreateScaledGameObject(int x, int y, Bitmap image)
         {
             double heightToWidthRatio = image.Height / (double)image.Width;

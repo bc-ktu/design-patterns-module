@@ -21,6 +21,8 @@ namespace OOP_Bomberman_client_graphics_v1
         public static int DefaultPlayerHealth { get { return 3; } }
         public static int DefaultPlayerRange { get { return 1; } }
 
+        public static int DefaultTimeTillExplosion { get { return 3; } } // s -> tick
+
         // Private fields
         private static Keys _keyUp = DefaultKeyUp;
         private static Keys _keyDown = DefaultKeyDown;
@@ -34,6 +36,8 @@ namespace OOP_Bomberman_client_graphics_v1
         private static int _range = DefaultPlayerRange;
         private static int _health = DefaultPlayerHealth;
 
+        private static int _tileTillExposion = DefaultTimeTillExplosion;
+
         // Properties
         public static Keys KeyUp { get { return _keyUp; } set { _keyUp = value; } }
         public static Keys KeyDown { get { return _keyDown; } set { _keyDown = value; } }
@@ -46,6 +50,8 @@ namespace OOP_Bomberman_client_graphics_v1
         public static int InitialPlayerCapacity { get { return _capacity; } set { _capacity = value; } }
         public static int InitialPlayerRange { get { return _range; } set { _range = value; } }
         public static int InitialPlayerHealth { get { return _health; } set { _health = value; } }
+
+        public static int InitialTimeTillExplosion { get { return _tileTillExposion; } set { _tileTillExposion = value; } }
 
         //public static Dictionary<Keys, Vector2> KeyAction = new Dictionary<Keys, Vector2>
         //{

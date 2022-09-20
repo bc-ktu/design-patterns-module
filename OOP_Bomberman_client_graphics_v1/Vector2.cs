@@ -61,6 +61,11 @@ namespace OOP_Bomberman_client_graphics_v1
             return new Vector2((int)(v._x / k), (int)(v._y / k));
         }
 
+        public static Vector2 operator /(Vector2 left, Vector2 right)
+        {
+            return new Vector2(left._x / right._x, left._y / right._y);
+        }
+
         public override string ToString()
         {
             return "(" + _x.ToString() + ", " + _y.ToString() + ")";

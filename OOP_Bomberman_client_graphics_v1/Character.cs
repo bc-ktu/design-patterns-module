@@ -15,13 +15,15 @@ namespace OOP_Bomberman_client_graphics_v1
         private int _explosiveRange;
         private int _health;
 
+        private Bitmap _explosiveImage;
+
         public Vector2 Facing { get { return _facing; } }
         public int MovementSpeed { get { return _movementSpeed; } }
         public int ExplosivesCapacity { get { return _explosivesCapacity; } }
         public int ExplosivesRange { get { return _explosiveRange; } }
         public int Health { get { return _health; } }
 
-        public Character(Vector2 position, Vector2 size, Vector4 collider, Bitmap image) : base(position, size, collider, image)
+        public Character(Vector2 position, Vector2 size, Vector4 collider, Bitmap image, Bitmap explosiveImage) : base(position, size, collider, image)
         {
             _facing = Settings.InitialPlayerDirection;
             _movementSpeed = Settings.InitialPlayerSpeed;
@@ -29,9 +31,10 @@ namespace OOP_Bomberman_client_graphics_v1
             _explosivesPlaced = 0;
             _explosiveRange = Settings.InitialPlayerRange;
             _health = Settings.InitialPlayerHealth;
+            _explosiveImage = explosiveImage;
         }
 
-        public Character(int x, int y, int width, int height, int cx, int cy, int cWidth, int cHeight, Bitmap image) 
+        public Character(int x, int y, int width, int height, int cx, int cy, int cWidth, int cHeight, Bitmap image, Bitmap explosiveImage) 
             : base(x, y, width, height, cx, cy, cWidth, cHeight, image)
         {
             _facing = Settings.InitialPlayerDirection;
@@ -40,6 +43,7 @@ namespace OOP_Bomberman_client_graphics_v1
             _explosivesPlaced = 0;
             _explosiveRange = Settings.InitialPlayerRange;
             _health = Settings.InitialPlayerHealth;
+            _explosiveImage = explosiveImage;
         }
 
         public void ChangeSpeed(int amount)
@@ -67,10 +71,14 @@ namespace OOP_Bomberman_client_graphics_v1
             return _explosivesPlaced <= _explosivesCapacity;
         }
 
-        public void PlaceBomb()
+        public void PlaceBomb(Map gameMap)
         {
-            throw new NotImplementedException();
-            // create Explosive class object on the standing tile
+            Vector2 index = _position / gameMap.TileSize;
+            if (gameMap.Tiles[index.X, index.Y].GameObject is EmptyGameObject)
+            {
+                GameObject explosive = gameMap.CreateScaledGameObject(index.X, index.Y, _explosiveImage);
+                gameMap.Tiles[index.X, index.Y].GameObject = explosive;
+            }
         }
 
         public void Move(Vector2 direction)
