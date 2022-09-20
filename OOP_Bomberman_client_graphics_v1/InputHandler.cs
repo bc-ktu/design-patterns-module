@@ -8,7 +8,7 @@ namespace OOP_Bomberman_client_graphics_v1
 {
     internal static class InputHandler // state machine better?
     {
-        public static void HandleKey(Keys key, Character character)
+        public static void HandleKey(Keys key, Character character, Map gameMap)
         {
             if (key == Settings.KeyUp)
                 character.Move(Direction.Up);
@@ -19,7 +19,7 @@ namespace OOP_Bomberman_client_graphics_v1
             else if (key == Settings.KeyLeft)
                 character.Move(Direction.Left);
             else if (key == Settings.KeyBomb)
-                character.PlaceBomb();
+                character.PlaceBomb(gameMap);
         }
     }
 }

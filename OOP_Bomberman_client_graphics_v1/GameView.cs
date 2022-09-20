@@ -5,7 +5,7 @@ namespace OOP_Bomberman_client_graphics_v1
 {
     public partial class GameView : Form
     {
-        private const bool DRAW_COLLIDERS = true;
+        private const bool DRAW_COLLIDERS = false;
         private Color COLLIDERS_COLOR = Color.LimeGreen;
         private const float COLLIDERS_WIDTH = 2;
 
@@ -15,6 +15,7 @@ namespace OOP_Bomberman_client_graphics_v1
         private const string EXPLODABLE_IMAGE = "Explodable000.png";
         private const string WALL_IMAGE = "Wall000.png";
         private const string OUTER_WALL_IMAGE = "Wall001.png";
+        private const string EXPLOSIVE_IMAGE = "da_bomb.png";
 
         private Vector2 GTI = new Vector2(2, 2); // Ground Tile Index = const how?
         private Vector2 MAP_SIZE = new Vector2(16, 16); // const how?
@@ -75,10 +76,8 @@ namespace OOP_Bomberman_client_graphics_v1
 
             filepath = Path.Create(Path.FolderAssets, Path.FolderTextures, Path.FolderSprites, Path.FolderExplodables, EXPLODABLE_IMAGE);
             Bitmap explodableImage = new Bitmap(filepath);
-            double explodableProp = explodableImage.Height / (double)explodableImage.Width;
             filepath = Path.Create(Path.FolderAssets, Path.FolderTextures, Path.FolderSprites, Path.FolderWalls, WALL_IMAGE);
             Bitmap wallImage = new Bitmap(filepath);
-            double wallProp = wallImage.Height / wallImage.Width;
 
             for (int y = 1; y < MAP_SIZE.Y - 1; y++)
             {
@@ -101,7 +100,6 @@ namespace OOP_Bomberman_client_graphics_v1
 
             filepath = Path.Create(Path.FolderAssets, Path.FolderTextures, Path.FolderSprites, Path.FolderWalls, OUTER_WALL_IMAGE);
             Bitmap outerWallImage = new Bitmap(filepath);
-            double outerWallProp = outerWallImage.Height / (double)outerWallImage.Width;
 
             for (int i = 0; i < MAP_SIZE.X; i++)
             {
@@ -121,6 +119,9 @@ namespace OOP_Bomberman_client_graphics_v1
                 gameMap.Tiles[MAP_SIZE.X - 1, i].GameObject = gameMap.CreateScaledGameObject(MAP_SIZE.X - 1, i, outerWallImage);
             }
 
+            filepath = Path.Create(Path.FolderAssets, Path.FolderTextures, Path.FolderSprites, Path.FolderExplosives, EXPLOSIVE_IMAGE);
+            Bitmap explosiveImage = new Bitmap(filepath);
+
             Vector2 position = new Vector2(this.ClientSize.Width / 2, this.ClientSize.Height / 2);
             double colliderSize = 0.75;
             int tlx = (int)(position.X + (1 - colliderSize) * gameMap.TileSize.X);
@@ -128,7 +129,7 @@ namespace OOP_Bomberman_client_graphics_v1
             int brx = (int)(position.X + colliderSize * gameMap.TileSize.X);
             int bry = (int)(position.Y + colliderSize * gameMap.TileSize.Y);
             Vector4 collider = new Vector4(tlx, tly, brx, bry);
-            player = new Character(position, gameMap.TileSize, collider, characterImages[10, 4]);
+            player = new Character(position, gameMap.TileSize, collider, characterImages[10, 4], explosiveImage); // maybe later add not the image, but Explosive object
 
         }
 
@@ -146,7 +147,7 @@ namespace OOP_Bomberman_client_graphics_v1
 
         private void OnTick(object sender, EventArgs e)
         {
-            InputHandler.HandleKey(keyPressed, player);
+            InputHandler.HandleKey(keyPressed, player, gameMap);
             // Debug.LogLine(player.ToString(), "\n");
 
             this.Refresh();

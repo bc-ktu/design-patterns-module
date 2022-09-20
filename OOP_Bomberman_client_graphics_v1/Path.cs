@@ -8,12 +8,13 @@ namespace OOP_Bomberman_client_graphics_v1
 {
     internal static class Path
     {
-        public static string FolderAssets = "Assets/";
-        public static string FolderTextures = "Textures/";
-        public static string FolderSpritesheets = "Spritesheets/";
-        public static string FolderSprites = "Sprites/";
-        public static string FolderExplodables = "Explodables/";
-        public static string FolderWalls = "Walls/";
+        public static readonly string FolderAssets = "Assets/";
+        public static readonly string FolderTextures = "Textures/";
+        public static readonly string FolderSpritesheets = "Spritesheets/";
+        public static readonly string FolderSprites = "Sprites/";
+        public static readonly string FolderExplodables = "Explodables/";
+        public static readonly string FolderWalls = "Walls/";
+        public static readonly string FolderExplosives = "Explosives/";
 
         public static string Create(params string[] args)
         {
