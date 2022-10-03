@@ -3,7 +3,22 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.3.32825.248
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OOP_Bomberman_client_graphics_v1", "OOP_Bomberman_client_graphics_v1\OOP_Bomberman_client_graphics_v1.csproj", "{054E83EA-DC9E-4870-AD22-314D1A1F5BB7}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "OOP_Bomberman_client_graphics_v1", "OOP_Bomberman_client_graphics_v1\OOP_Bomberman_client_graphics_v1.csproj", "{054E83EA-DC9E-4870-AD22-314D1A1F5BB7}"
+	ProjectSection(ProjectDependencies) = postProject
+		{5BFE1E43-6990-4C63-BFD7-AE63DB3C0706} = {5BFE1E43-6990-4C63-BFD7-AE63DB3C0706}
+	EndProjectSection
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Utils", "Utils\Utils.csproj", "{5BFE1E43-6990-4C63-BFD7-AE63DB3C0706}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Server", "Server\Server.csproj", "{BD3BCB8C-2453-4303-B896-E1C94B75460F}"
+	ProjectSection(ProjectDependencies) = postProject
+		{5BFE1E43-6990-4C63-BFD7-AE63DB3C0706} = {5BFE1E43-6990-4C63-BFD7-AE63DB3C0706}
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{FADDC979-FA9B-4D52-BCF8-E8A39976C969}"
+	ProjectSection(SolutionItems) = preProject
+		.editorconfig = .editorconfig
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -15,6 +30,14 @@ Global
 		{054E83EA-DC9E-4870-AD22-314D1A1F5BB7}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{054E83EA-DC9E-4870-AD22-314D1A1F5BB7}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{054E83EA-DC9E-4870-AD22-314D1A1F5BB7}.Release|Any CPU.Build.0 = Release|Any CPU
+		{5BFE1E43-6990-4C63-BFD7-AE63DB3C0706}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5BFE1E43-6990-4C63-BFD7-AE63DB3C0706}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5BFE1E43-6990-4C63-BFD7-AE63DB3C0706}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5BFE1E43-6990-4C63-BFD7-AE63DB3C0706}.Release|Any CPU.Build.0 = Release|Any CPU
+		{BD3BCB8C-2453-4303-B896-E1C94B75460F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{BD3BCB8C-2453-4303-B896-E1C94B75460F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{BD3BCB8C-2453-4303-B896-E1C94B75460F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{BD3BCB8C-2453-4303-B896-E1C94B75460F}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
