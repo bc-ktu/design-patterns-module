@@ -17,6 +17,19 @@
   </ItemGroup>
 
   <ItemGroup>
+    <None Include="..\.editorconfig" Link=".editorconfig" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="IKVM" Version="8.2.1" />
+    <PackageReference Include="Microsoft.AspNetCore.SignalR.Client" Version="6.0.9" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Utils\Utils.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
     <None Update="Assets\Icons\vecteezy_pixel-art-bomb-dynamite-grenade-vector-illustration_8081698.ico">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>

@@ -1,4 +1,10 @@
+using javax.print.attribute.standard;
+using Microsoft.AspNetCore.SignalR.Client;
+using OOP_Bomberman_client_graphics_v1.SignalR;
+using sun.swing;
+using System.Numerics;
 using System.Security.AccessControl;
+using System.Threading.Channels;
 using System.Windows.Forms.Design;
 
 namespace OOP_Bomberman_client_graphics_v1
@@ -18,16 +24,27 @@ namespace OOP_Bomberman_client_graphics_v1
         private const string EXPLOSIVE_IMAGE = "da_bomb.png";
 
         private Vector2 GTI = new Vector2(2, 2); // Ground Tile Index = const how?
-        private Vector2 MAP_SIZE = new Vector2(16, 16); // const how?
+        private Vector2 MAP_SIZE = new Vector2(10, 10); // const how?
 
         private Bitmap[,] mapTileImages;
         private Map gameMap;
 
+        private Bitmap[,] characterImages;
+        private Vector4 collider;
+
         private Keys keyPressed;
 
         private Character player;
+        private Dictionary<string, Character> players = new Dictionary<string, Character>();
+        //private SignalRConnection Con;
+        public List<int> Maps { get; set; }
+        public SignalRConnection Con { get; set; }
 
         public GameView()
+        {
+
+        }
+        public void GameStartUp(List<int> GameSeed)
         {
             InitializeComponent();
 
@@ -35,8 +52,22 @@ namespace OOP_Bomberman_client_graphics_v1
             Debug.Enabled(true);
             Debug.LogLine("Hello World!");
             Debug.LogLine(this.ClientSize.ToString());
-
-            Startup();
+            Startup(GameSeed);
+        }
+        public void AddPlayer (string uuid, int X, int Y)
+        {
+            players.Add(uuid, new Character(new Vector2(X,Y), gameMap.TileSize,
+                                            collider, characterImages[10, 4],
+                                            new Bitmap(Path.Create(Path.FolderAssets, Path.FolderTextures, Path.FolderSprites, Path.FolderExplosives, EXPLOSIVE_IMAGE))));
+        }
+        public void UpdatePostion(string uuid, int X, int Y)
+        {
+            Character p;
+            if (!players.TryGetValue(uuid, out p))
+            {
+                return;
+            }
+            p.Move(new Vector2(X,Y));
         }
         private void GameView_Load(object sender, EventArgs e)
         {
@@ -44,17 +75,17 @@ namespace OOP_Bomberman_client_graphics_v1
             this.Paint += new PaintEventHandler(OnPaint);
         }
 
-        private void Startup()
+        private void Startup(List<int> GameSeed)
         {
+            int index = 0;
             string filepath = Path.Create(Path.FolderAssets, Path.FolderTextures, Path.FolderSpritesheets, MAP_SPRITESHEET);
             Bitmap mapSpritesheet = new Bitmap(filepath);
             mapTileImages = Spritesheet.ExtractAll(mapSpritesheet, new Vector2(32, 32));
 
             filepath = Path.Create(Path.FolderAssets, Path.FolderTextures, Path.FolderSpritesheets, FNAF_CHARACTERS_SPRITESHEET);
             Bitmap charactersSpritesheet = new Bitmap(filepath);
-            Bitmap[,] characterImages = Spritesheet.ExtractAll(charactersSpritesheet, new Vector2(32, 32));
+            characterImages = Spritesheet.ExtractAll(charactersSpritesheet, new Vector2(32, 32));
 
-            Random rnd = new Random();
             gameMap = new Map(MAP_SIZE.X, MAP_SIZE.Y, this.ClientSize.Width, this.ClientSize.Height);
             for (int y = 1; y < MAP_SIZE.Y - 1; y++)
             {
@@ -63,10 +94,12 @@ namespace OOP_Bomberman_client_graphics_v1
                     gameMap.SetTile(x, y, mapTileImages[GTI.X, GTI.Y]);
 
                     GameObject go = new EmptyGameObject();
-                    int isEmpty = rnd.Next(0, 6);
+                    int isEmpty = GameSeed[index];
+                    index++;
                     if (isEmpty == 0)
                     {
-                        int rndIndex = rnd.Next(0, 4);
+                        int rndIndex = GameSeed[index];
+                        index++;
                         go = gameMap.CreateScaledGameObject(x, y, characterImages[rndIndex * 3, 0]);
                     }
 
@@ -88,7 +121,8 @@ namespace OOP_Bomberman_client_graphics_v1
 
                     GameObject go = new EmptyGameObject();
                     
-                    int isEmpty = rnd.Next(0, 10);
+                    int isEmpty = GameSeed[index];
+                    index++;
                     if (isEmpty >= 7 && isEmpty <= 8)
                         go = gameMap.CreateScaledGameObject(x, y, explodableImage);
                     else if (isEmpty >= 9)
@@ -128,26 +162,32 @@ namespace OOP_Bomberman_client_graphics_v1
             int tly = (int)(position.Y + (1 - colliderSize) * gameMap.TileSize.Y);
             int brx = (int)(position.X + colliderSize * gameMap.TileSize.X);
             int bry = (int)(position.Y + colliderSize * gameMap.TileSize.Y);
-            Vector4 collider = new Vector4(tlx, tly, brx, bry);
+            collider = new Vector4(tlx, tly, brx, bry);           
             player = new Character(position, gameMap.TileSize, collider, characterImages[10, 4], explosiveImage); // maybe later add not the image, but Explosive object
-
+            Con.Connection.InvokeAsync("JoinGame", position.X, position.Y);
         }
 
         private void OnPaint(object sender, PaintEventArgs e)
         {
             Graphics.DrawMap(gameMap, e);
             Graphics.DrawGameObject(player, e);
-
+            foreach (KeyValuePair<string, Character> p in players)
+            {
+                Graphics.DrawGameObject(p.Value, e);
+            }
             if (DRAW_COLLIDERS)
             {
                 Graphics.DrawColliders(gameMap, COLLIDERS_COLOR, COLLIDERS_WIDTH, e);
                 Graphics.DrawCollider(player, COLLIDERS_COLOR, COLLIDERS_WIDTH, e);
+                foreach (KeyValuePair<string, Character> p in players)
+                {
+                    Graphics.DrawCollider(p.Value, COLLIDERS_COLOR, COLLIDERS_WIDTH, e);
+                }
             }
         }
-
         private void OnTick(object sender, EventArgs e)
         {
-            InputHandler.HandleKey(keyPressed, player, gameMap);
+            InputHandler.HandleKey(keyPressed, player, gameMap, Con);
             // Debug.LogLine(player.ToString(), "\n");
 
             this.Refresh();

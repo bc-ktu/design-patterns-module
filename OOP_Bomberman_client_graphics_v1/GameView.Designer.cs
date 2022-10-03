@@ -46,20 +46,22 @@
             this.ConsoleTextBox.Enabled = false;
             this.ConsoleTextBox.Font = new System.Drawing.Font("Consolas", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point);
             this.ConsoleTextBox.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(0)))), ((int)(((byte)(192)))), ((int)(((byte)(0)))));
-            this.ConsoleTextBox.Location = new System.Drawing.Point(12, 721);
+            this.ConsoleTextBox.Location = new System.Drawing.Point(14, 961);
+            this.ConsoleTextBox.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.ConsoleTextBox.Name = "ConsoleTextBox";
             this.ConsoleTextBox.ReadOnly = true;
-            this.ConsoleTextBox.Size = new System.Drawing.Size(860, 128);
+            this.ConsoleTextBox.Size = new System.Drawing.Size(982, 169);
             this.ConsoleTextBox.TabIndex = 0;
             this.ConsoleTextBox.Text = "";
             // 
             // GameView
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
+            this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 20F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(884, 861);
+            this.ClientSize = new System.Drawing.Size(1010, 1055);
             this.Controls.Add(this.ConsoleTextBox);
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
+            this.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.Name = "GameView";
             this.Text = "Bomberman";
             this.Load += new System.EventHandler(this.GameView_Load);
