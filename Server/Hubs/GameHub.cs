@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.SignalR;
-using Utils.GameObjects;
+
+using Utils.Math;
 
 namespace Server.Hubs
 {

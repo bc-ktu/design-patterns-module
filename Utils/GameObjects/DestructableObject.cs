@@ -1,12 +1,15 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Drawing;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace OOP_Bomberman_client_graphics_v1
+using Utils.Math;
+
+namespace Utils.GameObjects
 {
-    internal class DestructableObject : GameObject
+    public class DestructableObject : GameObject
     {
         public DestructableObject(Vector2 position, Vector2 size, Vector4 collider, Bitmap image) : base(position, size, collider, image)
         {

@@ -4,7 +4,10 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace OOP_Bomberman_client_graphics_v1
+using Utils.GameObjects;
+using Utils.Math;
+
+namespace client_graphics
 {
     internal static class Graphics
     {

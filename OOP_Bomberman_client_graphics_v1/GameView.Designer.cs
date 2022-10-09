@@ -1,4 +1,4 @@
-﻿namespace OOP_Bomberman_client_graphics_v1
+﻿namespace client_graphics
 {
     partial class GameView
     {

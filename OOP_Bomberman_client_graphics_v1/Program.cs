@@ -1,7 +1,8 @@
 using Microsoft.AspNetCore.SignalR.Client;
-using OOP_Bomberman_client_graphics_v1.SignalR;
 
-namespace OOP_Bomberman_client_graphics_v1
+using client_graphics.SignalR;
+
+namespace client_graphics
 {
     internal static class Program
     {

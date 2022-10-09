@@ -1,12 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Drawing;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace OOP_Bomberman_client_graphics_v1
+namespace Utils.Math
 {
-    internal class Vector2
+    public class Vector2
     {
         private int _x;
         private int _y;
@@ -31,6 +32,14 @@ namespace OOP_Bomberman_client_graphics_v1
             return new Point(_x, _y);
         }
 
+        public void SetX(int X)
+        {
+            _x = X;
+        }
+        public void SetY(int Y)
+        {
+            _y = Y;
+        }
         public static Vector2 operator +(Vector2 left, Vector2 right)
         {
             return new Vector2(left._x + right._x, left._y + right._y);

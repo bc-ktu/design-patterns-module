@@ -1,13 +1,16 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Drawing;
 using System.Linq;
 using System.Security.Cryptography.X509Certificates;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace OOP_Bomberman_client_graphics_v1
+using Utils.Math;
+
+namespace Utils.Helpers
 {
-    internal static class Spritesheet
+    public static class Spritesheet
     {
         public static Bitmap ExtractSprite(Bitmap spritesheet, Vector2 tileSize, Vector2 tileToExtract)
         {

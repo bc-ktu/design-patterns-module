@@ -1,13 +1,16 @@
 using javax.print.attribute.standard;
-using Microsoft.AspNetCore.SignalR.Client;
-using OOP_Bomberman_client_graphics_v1.SignalR;
 using sun.swing;
-using System.Numerics;
 using System.Security.AccessControl;
 using System.Threading.Channels;
 using System.Windows.Forms.Design;
+using Microsoft.AspNetCore.SignalR.Client;
 
-namespace OOP_Bomberman_client_graphics_v1
+using client_graphics.SignalR;
+using Utils.GameObjects;
+using Utils.Math;
+using Utils.Helpers;
+
+namespace client_graphics
 {
     public partial class GameView : Form
     {
@@ -44,6 +47,7 @@ namespace OOP_Bomberman_client_graphics_v1
         {
 
         }
+
         public void GameStartUp(List<int> GameSeed)
         {
             InitializeComponent();
@@ -54,12 +58,14 @@ namespace OOP_Bomberman_client_graphics_v1
             Debug.LogLine(this.ClientSize.ToString());
             Startup(GameSeed);
         }
-        public void AddPlayer (string uuid, int X, int Y)
+
+        public void AddPlayer (string uuid, int x, int y)
         {
-            players.Add(uuid, new Character(new Vector2(X,Y), gameMap.TileSize,
-                                            collider, characterImages[10, 4],
-                                            new Bitmap(Path.Create(Path.FolderAssets, Path.FolderTextures, Path.FolderSprites, Path.FolderExplosives, EXPLOSIVE_IMAGE))));
+            string path = Filepath.Create(Filepath.FolderAssets, Filepath.FolderTextures, Filepath.FolderSprites, Filepath.FolderExplosives, EXPLOSIVE_IMAGE);
+            Bitmap image = new Bitmap(path);
+            players.Add(uuid, new Character(new Vector2(x, y), gameMap.TileSize, collider, characterImages[10, 4], image));
         }
+
         public void UpdatePostion(string uuid, int X, int Y)
         {
             Character p;
@@ -69,6 +75,7 @@ namespace OOP_Bomberman_client_graphics_v1
             }
             p.Move(new Vector2(X,Y));
         }
+
         private void GameView_Load(object sender, EventArgs e)
         {
             this.DoubleBuffered = true;
@@ -78,11 +85,11 @@ namespace OOP_Bomberman_client_graphics_v1
         private void Startup(List<int> GameSeed)
         {
             int index = 0;
-            string filepath = Path.Create(Path.FolderAssets, Path.FolderTextures, Path.FolderSpritesheets, MAP_SPRITESHEET);
+            string filepath = Filepath.Create(Filepath.FolderAssets, Filepath.FolderTextures, Filepath.FolderSpritesheets, MAP_SPRITESHEET);
             Bitmap mapSpritesheet = new Bitmap(filepath);
             mapTileImages = Spritesheet.ExtractAll(mapSpritesheet, new Vector2(32, 32));
 
-            filepath = Path.Create(Path.FolderAssets, Path.FolderTextures, Path.FolderSpritesheets, FNAF_CHARACTERS_SPRITESHEET);
+            filepath = Filepath.Create(Filepath.FolderAssets, Filepath.FolderTextures, Filepath.FolderSpritesheets, FNAF_CHARACTERS_SPRITESHEET);
             Bitmap charactersSpritesheet = new Bitmap(filepath);
             characterImages = Spritesheet.ExtractAll(charactersSpritesheet, new Vector2(32, 32));
 
@@ -100,23 +107,24 @@ namespace OOP_Bomberman_client_graphics_v1
                     {
                         int rndIndex = GameSeed[index];
                         index++;
-                        go = gameMap.CreateScaledGameObject(x, y, characterImages[rndIndex * 3, 0]);
+                        var prm = gameMap.CreateScaledGameObjectParameters(x, y, characterImages[rndIndex * 3, 0]);
+                        go = new Character(prm.Item1, prm.Item2, prm.Item3, prm.Item4, prm.Item4);
                     }
 
                     gameMap.Tiles[x, y].GameObject = go;
                 }
             }
 
-            filepath = Path.Create(Path.FolderAssets, Path.FolderTextures, Path.FolderSprites, Path.FolderExplodables, EXPLODABLE_IMAGE);
+            filepath = Filepath.Create(Filepath.FolderAssets, Filepath.FolderTextures, Filepath.FolderSprites, Filepath.FolderExplodables, EXPLODABLE_IMAGE);
             Bitmap explodableImage = new Bitmap(filepath);
-            filepath = Path.Create(Path.FolderAssets, Path.FolderTextures, Path.FolderSprites, Path.FolderWalls, WALL_IMAGE);
+            filepath = Filepath.Create(Filepath.FolderAssets, Filepath.FolderTextures, Filepath.FolderSprites, Filepath.FolderWalls, WALL_IMAGE);
             Bitmap wallImage = new Bitmap(filepath);
 
             for (int y = 1; y < MAP_SIZE.Y - 1; y++)
             {
                 for (int x = 1; x < MAP_SIZE.X - 1; x++)
                 {
-                    if (!(gameMap.Tiles[x, y].GameObject is EmptyGameObject))
+                    if (gameMap.Tiles[x, y].GameObject is not EmptyGameObject)
                         continue;
 
                     GameObject go = new EmptyGameObject();
@@ -124,36 +132,46 @@ namespace OOP_Bomberman_client_graphics_v1
                     int isEmpty = GameSeed[index];
                     index++;
                     if (isEmpty >= 7 && isEmpty <= 8)
-                        go = gameMap.CreateScaledGameObject(x, y, explodableImage);
+                    {
+                        var prm = gameMap.CreateScaledGameObjectParameters(x, y, explodableImage);
+                        go = new DestructableObject(prm.Item1, prm.Item2, prm.Item3, prm.Item4);
+                    }
                     else if (isEmpty >= 9)
-                        go = gameMap.CreateScaledGameObject(x, y, wallImage);
+                    {
+                        var prm = gameMap.CreateScaledGameObjectParameters(x, y, explodableImage);
+                        go = new IndestructableWall(prm.Item1, prm.Item2, prm.Item3, prm.Item4);
+                    }
 
                     gameMap.Tiles[x, y].GameObject = go;
                 }
             }
 
-            filepath = Path.Create(Path.FolderAssets, Path.FolderTextures, Path.FolderSprites, Path.FolderWalls, OUTER_WALL_IMAGE);
+            filepath = Filepath.Create(Filepath.FolderAssets, Filepath.FolderTextures, Filepath.FolderSprites, Filepath.FolderWalls, OUTER_WALL_IMAGE);
             Bitmap outerWallImage = new Bitmap(filepath);
 
             for (int i = 0; i < MAP_SIZE.X; i++)
             {
                 gameMap.SetTile(i, 0, mapTileImages[GTI.X, GTI.Y]);
-                gameMap.Tiles[i, 0].GameObject = gameMap.CreateScaledGameObject(i, 0, outerWallImage);
+                var prm = gameMap.CreateScaledGameObjectParameters(i, 0, outerWallImage);
+                gameMap.Tiles[i, 0].GameObject = new IndestructableWall(prm.Item1, prm.Item2, prm.Item3, prm.Item4);
 
                 gameMap.SetTile(i, MAP_SIZE.Y - 1, mapTileImages[GTI.X, GTI.Y]);
-                gameMap.Tiles[i, MAP_SIZE.Y - 1].GameObject = gameMap.CreateScaledGameObject(i, MAP_SIZE.Y - 1, outerWallImage);
+                prm = gameMap.CreateScaledGameObjectParameters(i, MAP_SIZE.Y - 1, outerWallImage);
+                gameMap.Tiles[i, MAP_SIZE.Y - 1].GameObject = new IndestructableWall(prm.Item1, prm.Item2, prm.Item3, prm.Item4);
             }
 
             for (int i = 1; i < MAP_SIZE.Y - 1; i++)
             {
                 gameMap.SetTile(0, i, mapTileImages[GTI.X, GTI.Y]);
-                gameMap.Tiles[0, i].GameObject = gameMap.CreateScaledGameObject(0, i, outerWallImage);
+                var prm = gameMap.CreateScaledGameObjectParameters(0, i, outerWallImage);
+                gameMap.Tiles[0, i].GameObject = new IndestructableWall(prm.Item1, prm.Item2, prm.Item3, prm.Item4);
 
                 gameMap.SetTile(MAP_SIZE.X - 1, i, mapTileImages[GTI.X, GTI.Y]);
-                gameMap.Tiles[MAP_SIZE.X - 1, i].GameObject = gameMap.CreateScaledGameObject(MAP_SIZE.X - 1, i, outerWallImage);
+                prm = gameMap.CreateScaledGameObjectParameters(MAP_SIZE.X - 1, i, outerWallImage);
+                gameMap.Tiles[MAP_SIZE.X - 1, i].GameObject = new IndestructableWall(prm.Item1, prm.Item2, prm.Item3, prm.Item4);
             }
 
-            filepath = Path.Create(Path.FolderAssets, Path.FolderTextures, Path.FolderSprites, Path.FolderExplosives, EXPLOSIVE_IMAGE);
+            filepath = Filepath.Create(Filepath.FolderAssets, Filepath.FolderTextures, Filepath.FolderSprites, Filepath.FolderExplosives, EXPLOSIVE_IMAGE);
             Bitmap explosiveImage = new Bitmap(filepath);
 
             Vector2 position = new Vector2(this.ClientSize.Width / 2, this.ClientSize.Height / 2);
