@@ -1,5 +1,4 @@
-﻿using Utils.GameObjects;
-
+﻿using Utils.Math;
 
 namespace Server
 {

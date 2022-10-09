@@ -4,9 +4,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace OOP_Bomberman_client_graphics_v1
+namespace Utils.Helpers
 {
-    internal static class Path
+    public static class Filepath
     {
         public static readonly string FolderAssets = "Assets/";
         public static readonly string FolderTextures = "Textures/";

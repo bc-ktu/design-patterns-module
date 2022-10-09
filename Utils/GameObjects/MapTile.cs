@@ -5,12 +5,10 @@ using System.Linq;
 using System.Security.Policy;
 using System.Text;
 using System.Threading.Tasks;
+using Utils.Math;
 
 namespace Utils.GameObjects
 {
-    /// <summary>
-    /// World position != local position
-    /// </summary>
     public class MapTile
     {
         private Vector2 _position;
@@ -29,6 +27,7 @@ namespace Utils.GameObjects
             _position = position;
             _size = size;
             _image = image;
+            GameObject = new EmptyGameObject();
         }
 
         public MapTile(int x, int y, int width, int height, Bitmap image)
@@ -36,6 +35,7 @@ namespace Utils.GameObjects
             _position = new Vector2(x, y);
             _size = new Vector2(width, height);
             _image = image;
+            GameObject = new EmptyGameObject();
         }
 
         public Rectangle ToRectangle()

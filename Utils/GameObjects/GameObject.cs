@@ -5,10 +5,11 @@ using System.Drawing;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Utils.Math;
 
 namespace Utils.GameObjects
 {
-    public class GameObject : INullable
+    public abstract class GameObject : INullable
     {
         protected Vector2 _position;
         protected Vector2 _size;
@@ -24,6 +25,11 @@ namespace Utils.GameObjects
 
         // How to implement? Is it neccesary
         public bool IsNull => throw new NotImplementedException();
+
+        public GameObject()
+        {
+
+        }
 
         public GameObject(Vector2 position, Vector2 size, Vector4 collider, Bitmap image)
         {

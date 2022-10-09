@@ -1,12 +1,15 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Drawing;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace OOP_Bomberman_client_graphics_v1
+using Utils.Math;
+
+namespace Utils.GameObjects
 {
-    internal class Map
+    public class Map
     {
         private Vector2 _size;
         private Vector2 _viewSize;
@@ -43,13 +46,13 @@ namespace OOP_Bomberman_client_graphics_v1
 
         /// <param name="x">Index on x axis of the tile to place the new GameObject </param>
         /// <param name="y">Index on y axis of the tile to place the new GameObject </param>
-        public GameObject CreateScaledGameObject(int x, int y, Bitmap image)
+        public Tuple<Vector2, Vector2, Vector4, Bitmap> CreateScaledGameObjectParameters(int x, int y, Bitmap image)
         {
             double heightToWidthRatio = image.Height / (double)image.Width;
             Vector2 position = new Vector2(Tiles[x, y].LocalPosition.X, Tiles[x, y].LocalPosition.Y - ((int)(heightToWidthRatio * TileSize.Y) - TileSize.Y));
             Vector2 size = new Vector2(TileSize.X, (int)(heightToWidthRatio * TileSize.Y));
             Vector4 collider = new Vector4(position.X, Tiles[x, y].LocalPosition.Y, position.X + TileSize.X, Tiles[x, y].LocalPosition.Y + TileSize.Y);
-            return new GameObject(position, size, collider, image);
+            return new Tuple<Vector2, Vector2, Vector4, Bitmap>(position, size, collider, image);
         }
     }
 }

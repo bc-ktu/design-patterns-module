@@ -1,12 +1,16 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Drawing;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace OOP_Bomberman_client_graphics_v1
+using Utils.Math;
+using Utils.GameLogic;
+
+namespace Utils.GameObjects
 {
-    internal class Character : GameObject
+    public class Character : GameObject
     {
         private Vector2 _facing;
         private int _movementSpeed;
@@ -76,7 +80,8 @@ namespace OOP_Bomberman_client_graphics_v1
             Vector2 index = _position / gameMap.TileSize;
             if (gameMap.Tiles[index.X, index.Y].GameObject is EmptyGameObject)
             {
-                GameObject explosive = gameMap.CreateScaledGameObject(index.X, index.Y, _explosiveImage);
+                var prm = gameMap.CreateScaledGameObjectParameters(index.X, index.Y, _explosiveImage);
+                GameObject explosive = new ExplosiveHV(); // Give parameters!
                 gameMap.Tiles[index.X, index.Y].GameObject = explosive;
             }
         }
