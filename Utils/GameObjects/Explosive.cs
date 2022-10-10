@@ -20,6 +20,11 @@ namespace Utils.GameObjects
         public int TimeTillExplosion { get { return _timeTillExplosion; } }
         public Vector2[] ExplosionDirections { get { return _explosionDirections; } }
 
+        public Explosive()
+        {
+
+        }
+
         public Explosive(Vector2 position, Vector2 size, Vector4 collider, Bitmap image) : base(position, size, collider, image)
         {
             _timeTillExplosion = Settings.InitialTimeTillExplosion;
@@ -36,9 +41,34 @@ namespace Utils.GameObjects
             _explosionDirections = explosionDirections;
         }
 
-        protected void SetRange(int range)
+        public void SetRange(int range)
         {
             _range = range;
+        }
+
+        public void Explode(Map gameMap, int indexInLookupTable)
+        {
+            Vector2 thisIndex = WorldPosition / gameMap.TileSize;
+
+            for (int i = 0; i < ExplosionDirections.Length; i++)
+            {
+                Vector2 index = thisIndex + ExplosionDirections[i];
+                GameObject gameObject = gameMap.Tiles[index.X, index.Y].GameObject;
+                int range = 1;
+                while ((gameObject is EmptyGameObject || gameObject is Fire) && range < _range)
+                {
+                    if (gameObject is EmptyGameObject)
+                    {
+                        var prm = gameMap.CreateScaledGameObjectParameters(index.X, index.Y, _image);
+                        gameMap.Tiles[index.X, index.Y].GameObject = new Fire(prm.Item1, prm.Item2, prm.Item3, prm.Item4);
+                    }
+                    index += ExplosionDirections[i];
+                    gameObject = gameMap.Tiles[index.X, index.Y].GameObject;
+                    range++;
+                }
+            }
+
+            gameMap.ExplosivesLookupTable.Remove(indexInLookupTable);
         }
 
     }

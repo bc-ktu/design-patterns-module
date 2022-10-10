@@ -26,7 +26,7 @@ namespace client_graphics
         private const string EXPLODABLE_IMAGE = "Explodable000.png";
         private const string WALL_IMAGE = "Wall000.png";
         private const string OUTER_WALL_IMAGE = "Wall001.png";
-        private const string EXPLOSIVE_IMAGE = "bomb64ign.png";
+        private const string EXPLOSIVE_IMAGE = "bomb32ign.png";
 
         private const string GUI_FRAME_IMAGE = "panel001.png";
         private const string GUI_HEALTH_ICON = "6-pixel-heart-4.png";
@@ -71,7 +71,7 @@ namespace client_graphics
             InitializeComponent();
 
             Debug.Set(ConsoleTextBox);
-            Debug.Enabled(false);
+            Debug.Enabled(true);
             Debug.LogLine("Hello World!");
             Debug.LogLine(this.ClientSize.ToString());
             Startup(GameSeed);
@@ -113,26 +113,26 @@ namespace client_graphics
             characterImages = Spritesheet.ExtractAll(charactersSpritesheet, new Vector2(32, 32));
 
             gameMap = new Map(MAP_SIZE.X, MAP_SIZE.Y, this.ClientSize.Width, this.ClientSize.Height);
-            for (int y = 1; y < MAP_SIZE.Y - 1; y++)
-            {
-                for (int x = 1; x < MAP_SIZE.X - 1; x++)
-                {
-                    gameMap.SetTile(x, y, mapTileImages[GTI.X, GTI.Y]);
+            //for (int y = 1; y < MAP_SIZE.Y - 1; y++)
+            //{
+            //    for (int x = 1; x < MAP_SIZE.X - 1; x++)
+            //    {
+            //        gameMap.SetTile(x, y, mapTileImages[GTI.X, GTI.Y]);
 
-                    GameObject go = new EmptyGameObject();
-                    int isEmpty = GameSeed[index];
-                    index++;
-                    if (isEmpty == 0)
-                    {
-                        int rndIndex = GameSeed[index];
-                        index++;
-                        var prm = gameMap.CreateScaledGameObjectParameters(x, y, characterImages[rndIndex * 3, 0]);
-                        go = new Character(prm.Item1, prm.Item2, prm.Item3, prm.Item4, prm.Item4);
-                    }
+            //        GameObject go = new EmptyGameObject();
+            //        int isEmpty = GameSeed[index];
+            //        index++;
+            //        if (isEmpty == 0)
+            //        {
+            //            int rndIndex = GameSeed[index];
+            //            index++;
+            //            var prm = gameMap.CreateScaledGameObjectParameters(x, y, characterImages[rndIndex * 3, 0]);
+            //            go = new Character(prm.Item1, prm.Item2, prm.Item3, prm.Item4, prm.Item4);
+            //        }
 
-                    gameMap.Tiles[x, y].GameObject = go;
-                }
-            }
+            //        gameMap.Tiles[x, y].GameObject = go;
+            //    }
+            //}
 
             filepath = Filepath.Create(Filepath.FolderAssets, Filepath.FolderTextures, Filepath.FolderSprites, Filepath.FolderExplodables, EXPLODABLE_IMAGE);
             Bitmap explodableImage = new Bitmap(filepath);
@@ -143,14 +143,16 @@ namespace client_graphics
             {
                 for (int x = 1; x < MAP_SIZE.X - 1; x++)
                 {
-                    if (gameMap.Tiles[x, y].GameObject is not EmptyGameObject)
-                        continue;
+                    gameMap.SetTile(x, y, mapTileImages[GTI.X, GTI.Y]);
+  
+                    //if (gameMap.Tiles[x, y].GameObject is not EmptyGameObject)
+                    //    continue;
 
                     GameObject go = new EmptyGameObject();
                     
                     int isEmpty = GameSeed[index];
                     index++;
-                    if (isEmpty >= 7 && isEmpty <= 8)
+                    if (isEmpty >= 7 && isEmpty <= 8) // 0.75
                     {
                         var prm = gameMap.CreateScaledGameObjectParameters(x, y, explodableImage);
                         go = new DestructableObject(prm.Item1, prm.Item2, prm.Item3, prm.Item4);
@@ -255,6 +257,12 @@ namespace client_graphics
         }
         private void OnTick(object sender, EventArgs e)
         {
+            for (int i = 0; i < gameMap.ExplosivesLookupTable.Count; i++)
+            {
+                Explosive explosive = gameMap.ExplosivesLookupTable.GameObjects[i] as Explosive;
+                explosive.Explode(gameMap, i);
+            }
+
             InputHandler.HandleKey(keyPressed, player, gameMap, Con);
 
             this.Refresh();

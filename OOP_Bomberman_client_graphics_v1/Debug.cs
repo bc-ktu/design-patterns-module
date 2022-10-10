@@ -8,7 +8,7 @@ namespace Utils.Helpers
 {
     internal static class Debug
     {
-        private static readonly int _maxLines = 7;
+        private static readonly int _maxLines = 100;
 
         private static RichTextBox _debugTextBox = new RichTextBox();
 

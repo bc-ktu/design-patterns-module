@@ -37,8 +37,8 @@ namespace Utils.GameObjects
             _health = Settings.InitialPlayerHealth;
             _movementSpeed = Settings.InitialPlayerSpeed;
             _explosivesCapacity = Settings.InitialPlayerCapacity;
-            _explosiveRange = Settings.InitialExplosiveRange;
-            _explosiveDamage = Settings.InitialExplosiveDamage;
+            _explosiveRange = Settings.InitialExplosionRange;
+            _explosiveDamage = Settings.InitialExplosionDamage;
 
             _facing = Settings.InitialPlayerDirection;
             _explosivesPlaced = 0;
@@ -52,8 +52,8 @@ namespace Utils.GameObjects
             _health = Settings.InitialPlayerHealth;
             _movementSpeed = Settings.InitialPlayerSpeed;
             _explosivesCapacity = Settings.InitialPlayerCapacity;
-            _explosiveRange = Settings.InitialExplosiveRange;
-            _explosiveDamage = Settings.InitialExplosiveDamage;
+            _explosiveRange = Settings.InitialExplosionRange;
+            _explosiveDamage = Settings.InitialExplosionDamage;
 
             _facing = Settings.InitialPlayerDirection;
             _explosivesPlaced = 0;
@@ -88,16 +88,26 @@ namespace Utils.GameObjects
             return _explosivesPlaced < _explosivesCapacity;
         }
 
-        public void PlaceBomb(Map gameMap)
+        public void PlaceExplosive(Map gameMap)
         {
             Vector2 index = WorldPosition / gameMap.TileSize;
             if (gameMap.Tiles[index.X, index.Y].GameObject is EmptyGameObject && CanPlaceExplosive())
             {
                 var prm = gameMap.CreateScaledGameObjectParameters(index.X, index.Y, _explosiveImage);
-                GameObject explosive = new ExplosiveHV(prm.Item1, prm.Item2, prm.Item3, prm.Item4);
+                Explosive explosive = new ExplosiveHV(prm.Item1, prm.Item2, prm.Item3, prm.Item4);
+                explosive.SetRange(_explosiveRange);
                 gameMap.Tiles[index.X, index.Y].GameObject = explosive;
+                gameMap.ExplosivesLookupTable.Add(this, explosive);
                 _explosivesPlaced++;
             }
+        }
+
+        public void GiveExplosive()
+        {
+            if (_explosivesPlaced <= 0)
+                return;
+
+            _explosivesPlaced--;
         }
 
         public void Move(Vector2 direction)

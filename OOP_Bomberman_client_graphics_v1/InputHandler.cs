@@ -37,7 +37,7 @@ namespace client_graphics
             }
             else if (key == Input.KeyBomb)
             {
-                character.PlaceBomb(gameMap);
+                character.PlaceExplosive(gameMap);
                 //Con.Connection.InvokeAsync("MapSeed"); place bomb change later
             }
         }

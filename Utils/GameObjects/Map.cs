@@ -4,7 +4,7 @@ using System.Drawing;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-
+using Utils.GameLogic;
 using Utils.Math;
 
 namespace Utils.GameObjects
@@ -17,9 +17,13 @@ namespace Utils.GameObjects
         private MapTile[,] _tiles;
         private Vector2 _tileSize;
 
+        private LookupTable _explosivesLookupTable;
+
         public Vector2 Size { get { return _size; } }
         public MapTile[,] Tiles { get { return _tiles; } }
         public Vector2 TileSize { get { return _tileSize; } }
+        
+        public LookupTable ExplosivesLookupTable { get { return _explosivesLookupTable; } }
 
         public Map(Vector2 mapSize, Vector2 viewSize)
         {
@@ -27,6 +31,7 @@ namespace Utils.GameObjects
             _viewSize = viewSize;
             _tiles = new MapTile[mapSize.X, mapSize.Y];
             _tileSize = new Vector2(viewSize.X / mapSize.X, viewSize.Y / mapSize.Y);
+            _explosivesLookupTable = new LookupTable();
         }
 
         public Map(int mapWidth, int mapHeight, int viewWidth, int viewHeight)
@@ -35,6 +40,7 @@ namespace Utils.GameObjects
             _viewSize = new Vector2(viewWidth, viewHeight);
             _tiles = new MapTile[mapWidth, mapHeight];
             _tileSize = new Vector2(viewWidth / mapWidth, viewHeight / mapHeight);
+            _explosivesLookupTable = new LookupTable();
         }
 
         public void SetTile(int x, int y, Bitmap image)
