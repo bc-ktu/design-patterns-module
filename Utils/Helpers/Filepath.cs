@@ -15,6 +15,8 @@ namespace Utils.Helpers
         public static readonly string FolderExplodables = "Explodables/";
         public static readonly string FolderWalls = "Walls/";
         public static readonly string FolderExplosives = "Explosives/";
+        public static readonly string FolderGUI = "GUI/";
+        public static readonly string FolderFonts = "Fonts/";
 
         public static string Create(params string[] args)
         {

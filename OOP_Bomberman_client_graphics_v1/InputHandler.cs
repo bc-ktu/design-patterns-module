@@ -11,7 +11,7 @@ using Utils.Helpers;
 
 namespace client_graphics
 {
-    internal static class InputHandler // state machine better?
+    internal static class InputHandler
     {
         public static void HandleKey(Keys key, Character character, Map gameMap, SignalRConnection Con)
         {

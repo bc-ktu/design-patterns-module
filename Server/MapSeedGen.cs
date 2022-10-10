@@ -23,7 +23,7 @@ namespace Server
                 Values.Add(randomNumber);
                 if (randomNumber == 0)
                 {
-                    Values.Add(random.Next(0,4));
+                    Values.Add(random.Next(0, 4));
                 }
             }
             for (int j = 0; j < (MapSize.X - 2) * (MapSize.Y - 2); j++)
@@ -31,7 +31,8 @@ namespace Server
                 Values.Add(random.Next(0, 10));
             }
         }
-        public List<int> getValues()
+
+        public List<int> getValues() // why non-capital method?
         {
             return Values;
         }

@@ -20,21 +20,14 @@ namespace Utils.GameObjects
         public int TimeTillExplosion { get { return _timeTillExplosion; } }
         public Vector2[] ExplosionDirections { get { return _explosionDirections; } }
 
-        public Explosive()
+        public Explosive(Vector2 position, Vector2 size, Vector4 collider, Bitmap image) : base(position, size, collider, image)
         {
-
-        }
-
-        public Explosive(Vector2 position, Vector2 size, Vector4 collider, Bitmap image, int range) : base(position, size, collider, image)
-        {
-            _range = range;
             _timeTillExplosion = Settings.InitialTimeTillExplosion;
         }
 
-        public Explosive(int x, int y, int width, int height, int cx, int cy, int cWidth, int cHeight, Bitmap image, int range)
+        public Explosive(int x, int y, int width, int height, int cx, int cy, int cWidth, int cHeight, Bitmap image)
             : base(x, y, width, height, cx, cy, cWidth, cHeight, image)
         {
-            _range = range;
             _timeTillExplosion = Settings.InitialTimeTillExplosion;
         }
 
@@ -42,5 +35,11 @@ namespace Utils.GameObjects
         {
             _explosionDirections = explosionDirections;
         }
+
+        protected void SetRange(int range)
+        {
+            _range = range;
+        }
+
     }
 }

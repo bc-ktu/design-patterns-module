@@ -15,11 +15,6 @@ namespace Utils.GameObjects
 
         public int Durability { get { return _durability; } }
 
-        public DestructableWall()
-        {
-
-        }
-
         public DestructableWall(Vector2 position, Vector2 size, Vector4 collider, Bitmap image) : base(position, size, collider, image)
         {
 

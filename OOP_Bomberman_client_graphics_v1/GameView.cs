@@ -9,6 +9,8 @@ using client_graphics.SignalR;
 using Utils.GameObjects;
 using Utils.Math;
 using Utils.Helpers;
+using Utils.GUIElements;
+using System.Drawing.Text;
 
 namespace client_graphics
 {
@@ -24,10 +26,22 @@ namespace client_graphics
         private const string EXPLODABLE_IMAGE = "Explodable000.png";
         private const string WALL_IMAGE = "Wall000.png";
         private const string OUTER_WALL_IMAGE = "Wall001.png";
-        private const string EXPLOSIVE_IMAGE = "da_bomb.png";
+        private const string EXPLOSIVE_IMAGE = "bomb64ign.png";
+
+        private const string GUI_FRAME_IMAGE = "panel001.png";
+        private const string GUI_HEALTH_ICON = "6-pixel-heart-4.png";
+        private const string GUI_SPEED_ICON = "boots_01b.png";
+        private const string GUI_CAPACITY_ICON = "bag.png";
+        private const string GUI_RANGE_ICON = "arrow_01f.png";
+        private const string GUI_DAMAGE_ICON = "fire_skull.png";
+        private const string GUI_FONT = "Minecraft.ttf";
 
         private Vector2 GTI = new Vector2(2, 2); // Ground Tile Index = const how?
         private Vector2 MAP_SIZE = new Vector2(10, 10); // const how?
+
+        private Vector2 GUI_SIZE = new Vector2(5 * 50, 80);
+        private Brush GUI_BRUSH = Brushes.White;
+        private const int GUI_FONT_SIZE = 32;
 
         private Bitmap[,] mapTileImages;
         private Map gameMap;
@@ -43,6 +57,10 @@ namespace client_graphics
         public List<int> Maps { get; set; }
         public SignalRConnection Con { get; set; }
 
+        private GUI gui;
+        private Font guiFont;
+        private PrivateFontCollection fontCollection = new PrivateFontCollection();
+
         public GameView()
         {
 
@@ -53,7 +71,7 @@ namespace client_graphics
             InitializeComponent();
 
             Debug.Set(ConsoleTextBox);
-            Debug.Enabled(true);
+            Debug.Enabled(false);
             Debug.LogLine("Hello World!");
             Debug.LogLine(this.ClientSize.ToString());
             Startup(GameSeed);
@@ -70,9 +88,8 @@ namespace client_graphics
         {
             Character p;
             if (!players.TryGetValue(uuid, out p))
-            {
                 return;
-            }
+
             p.Move(new Vector2(X,Y));
         }
 
@@ -80,6 +97,8 @@ namespace client_graphics
         {
             this.DoubleBuffered = true;
             this.Paint += new PaintEventHandler(OnPaint);
+
+            this.KeyPreview = true;
         }
 
         private void Startup(List<int> GameSeed)
@@ -138,7 +157,7 @@ namespace client_graphics
                     }
                     else if (isEmpty >= 9)
                     {
-                        var prm = gameMap.CreateScaledGameObjectParameters(x, y, explodableImage);
+                        var prm = gameMap.CreateScaledGameObjectParameters(x, y, wallImage);
                         go = new IndestructableWall(prm.Item1, prm.Item2, prm.Item3, prm.Item4);
                     }
 
@@ -183,45 +202,88 @@ namespace client_graphics
             collider = new Vector4(tlx, tly, brx, bry);           
             player = new Character(position, gameMap.TileSize, collider, characterImages[10, 4], explosiveImage); // maybe later add not the image, but Explosive object
             Con.Connection.InvokeAsync("JoinGame", position.X, position.Y);
+
+            filepath = Filepath.Create(Filepath.FolderAssets, Filepath.FolderTextures, Filepath.FolderGUI, GUI_FRAME_IMAGE);
+            Bitmap frameImage = new Bitmap(filepath);
+            filepath = Filepath.Create(Filepath.FolderAssets, Filepath.FolderTextures, Filepath.FolderGUI, GUI_HEALTH_ICON);
+            Bitmap healthIcon = new Bitmap(filepath);
+            filepath = Filepath.Create(Filepath.FolderAssets, Filepath.FolderTextures, Filepath.FolderGUI, GUI_SPEED_ICON);
+            Bitmap speedIcon = new Bitmap(filepath);
+            filepath = Filepath.Create(Filepath.FolderAssets, Filepath.FolderTextures, Filepath.FolderGUI, GUI_CAPACITY_ICON);
+            Bitmap capacityIcon = new Bitmap(filepath);
+            filepath = Filepath.Create(Filepath.FolderAssets, Filepath.FolderTextures, Filepath.FolderGUI, GUI_RANGE_ICON);
+            Bitmap rangeIcon = new Bitmap(filepath);
+            filepath = Filepath.Create(Filepath.FolderAssets, Filepath.FolderTextures, Filepath.FolderGUI, GUI_DAMAGE_ICON);
+            Bitmap damageIcon = new Bitmap(filepath);
+
+            Vector2 guiPosition = new Vector2(0, 0);
+            gui = new GUI(guiPosition, GUI_SIZE, frameImage);
+            gui.SetHealthImage(healthIcon);
+            gui.SetSpeedImage(speedIcon);
+            gui.SetCapacityImage(capacityIcon);
+            gui.SetRangeImage(rangeIcon);
+            gui.SetDamageImage(damageIcon);
+
+            filepath = Filepath.Create(Filepath.FolderAssets, Filepath.FolderFonts, GUI_FONT);
+            fontCollection.AddFontFile(filepath);
+            guiFont = new Font(fontCollection.Families[0].Name, GUI_FONT_SIZE);
+
+            gui.SetHealthValue(player.Health.ToString());
+            gui.SetSpeedValue(player.MovementSpeed.ToString());
+            gui.SetCapacityValue(player.ExplosivesCapacity.ToString());
+            gui.SetRangeValue(player.ExplosivesRange.ToString());
+            gui.SetDamageValue(player.ExplosiveDamage.ToString());
         }
 
         private void OnPaint(object sender, PaintEventArgs e)
         {
             Graphics.DrawMap(gameMap, e);
             Graphics.DrawGameObject(player, e);
+
             foreach (KeyValuePair<string, Character> p in players)
-            {
                 Graphics.DrawGameObject(p.Value, e);
-            }
+
             if (DRAW_COLLIDERS)
             {
                 Graphics.DrawColliders(gameMap, COLLIDERS_COLOR, COLLIDERS_WIDTH, e);
                 Graphics.DrawCollider(player, COLLIDERS_COLOR, COLLIDERS_WIDTH, e);
                 foreach (KeyValuePair<string, Character> p in players)
-                {
                     Graphics.DrawCollider(p.Value, COLLIDERS_COLOR, COLLIDERS_WIDTH, e);
-                }
             }
+
+            Graphics.DrawGUI(gui, guiFont, GUI_BRUSH, e);
         }
         private void OnTick(object sender, EventArgs e)
         {
             InputHandler.HandleKey(keyPressed, player, gameMap, Con);
-            // Debug.LogLine(player.ToString(), "\n");
 
             this.Refresh();
         }
 
-        private void OnKeyDown(object sender, KeyEventArgs e) // RichTextBox bust be disabled
+        private void OnKeyDown(object sender, KeyEventArgs e)
         {
             keyPressed = e.KeyCode;
-            // Debug.LogLine("F " + e.KeyCode.ToString());
         }
 
         private void OnKeyUp(object sender, KeyEventArgs e)
         {
             if (e.KeyCode == keyPressed)
                 keyPressed = Keys.None;
-            // Debug.LogLine("F " + Keys.None.ToString());
+        }
+
+        private void Level1Button_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void Level2Button_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void Level3Button_Click(object sender, EventArgs e)
+        {
+
         }
     }
 }

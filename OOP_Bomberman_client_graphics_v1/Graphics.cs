@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 
 using Utils.GameObjects;
+using Utils.GUIElements;
 using Utils.Math;
 
 namespace client_graphics
@@ -68,34 +69,28 @@ namespace client_graphics
             e.Graphics.DrawRectangle(pen, rect);
         }
 
-        //public static void DrawCard(GameCard card, PaintEventArgs e)
-        //{
-        //    e.Graphics.DrawImage(card.BackImage, card.ToRectangle());
-        //    e.Graphics.DrawImage(card.MonsterImage, card.ToRectangle());
-        //    e.Graphics.DrawImage(card.FrontImage, card.ToRectangle());
-        //}
+        public static void DrawGUI(GUI gui, Font font, Brush brush, PaintEventArgs e)
+        {
+            e.Graphics.DrawImage(gui.FrameImage, gui.ToRectangle());
 
-        //public static void DrawHand(Hand hand, PaintEventArgs e)
-        //{
-        //    for (int i = 0; i < hand.Size; i++)
-        //        DrawCard(hand.Cards[i], e);
-        //}
+            e.Graphics.DrawImage(gui.HealthIcon.Image, gui.HealthIcon.ToRectangle());
+            e.Graphics.DrawImage(gui.SpeedIcon.Image, gui.SpeedIcon.ToRectangle());
+            e.Graphics.DrawImage(gui.CapacityIcon.Image, gui.CapacityIcon.ToRectangle());
+            e.Graphics.DrawImage(gui.RangeIcon.Image, gui.RangeIcon.ToRectangle());
+            e.Graphics.DrawImage(gui.DamageIcon.Image, gui.DamageIcon.ToRectangle());
 
-        //public static void DrawTable(GameTable table, PaintEventArgs e)
-        //{
-        //    e.Graphics.DrawImage(table.Image, table.ToRectangle());
+            // Pen pen = new Pen(gui.FrameColor, gui.FrameThickness);
+            // e.Graphics.DrawRectangles(pen, gui.Rectangles);
 
-        //    for (int i = 0; i < table.RivalTilesetSize; i++)
-        //    {
-        //        GameTile tile = table.CardTiles[GameTable.Rival, i];
-        //        e.Graphics.DrawImage(tile.Image, tile.ToRectangle());
-        //    }
+            StringFormat stringFormat = new StringFormat();
+            stringFormat.Alignment = StringAlignment.Center;
+            stringFormat.LineAlignment = StringAlignment.Center;
+            e.Graphics.DrawString(gui.HealthText.Text, font, brush, gui.HealthText.ToRectangle(), stringFormat);
+            e.Graphics.DrawString(gui.SpeedText.Text, font, brush, gui.SpeedText.ToRectangle(), stringFormat);
+            e.Graphics.DrawString(gui.CapacityText.Text, font, brush, gui.CapacityText.ToRectangle(), stringFormat);
+            e.Graphics.DrawString(gui.RangeText.Text, font, brush, gui.RangeText.ToRectangle(), stringFormat);
+            e.Graphics.DrawString(gui.DamageText.Text, font, brush, gui.DamageText.ToRectangle(), stringFormat);
+        }
 
-        //    for (int i = 0; i < table.PlayerTilesetSize; i++)
-        //    {
-        //        GameTile tile = table.CardTiles[GameTable.Player, i];
-        //        e.Graphics.DrawImage(tile.Image, tile.ToRectangle());
-        //    }
-        //}
     }
 }

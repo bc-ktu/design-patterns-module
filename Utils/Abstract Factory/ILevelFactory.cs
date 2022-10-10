@@ -5,13 +5,19 @@ using System.Text;
 using System.Threading.Tasks;
 
 using Utils.GameObjects;
+using Utils.Math;
 
 namespace Utils.AbstractFactory
 {
     internal interface ILevelFactory
     {
-        public GameObject CreateExplosive();
-        public GameObject CreateWall();
-        public GameObject CreatePowerup();
+        public GameObject CreateExplosive(Vector2 position, Vector2 size, Vector4 collider, Bitmap image);
+        public GameObject CreateExplosive(int x, int y, int width, int height, int cx, int cy, int cWidth, int cHeight, Bitmap image);
+
+        public GameObject CreateWall(Vector2 position, Vector2 size, Vector4 collider, Bitmap image);
+        public GameObject CreateWall(int x, int y, int width, int height, int cx, int cy, int cWidth, int cHeight, Bitmap image);
+
+        public GameObject CreatePowerup(Vector2 position, Vector2 size, Vector4 collider, Bitmap image);
+        public GameObject CreatePowerup(int x, int y, int width, int height, int cx, int cy, int cWidth, int cHeight, Bitmap image);
     }
 }
