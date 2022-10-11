@@ -16,10 +16,11 @@ namespace Utils.GameLogic
         public static int DefaultPlayerHealth { get { return 3; } }
         public static int DefaultPlayerSpeed { get { return 7; } }
         public static int DefaultPlayerCapacity { get { return 3; } }
-        public static int DefaultExplosionRange { get { return 3; } }
+        public static int DefaultExplosionRange { get { return 7; } }
         public static int DefaultExplosionDamage { get { return 1; } }
 
-        public static int DefaultTimeTillExplosion { get { return 3; } } // s -> tick
+        public static int DefaultTimeTillExplosion { get { return 4000; } } // ms
+        public static int DefaultFireBurnTime { get { return 2000; } } // ms
 
         // Private fields
         private static Vector2 _facing = DefaultPlayerDirection;
@@ -29,7 +30,8 @@ namespace Utils.GameLogic
         private static int _range = DefaultExplosionRange;
         private static int _damage = DefaultExplosionDamage;
 
-        private static int _tileTillExposion = DefaultTimeTillExplosion;
+        private static int _timeTillExposion = DefaultTimeTillExplosion;
+        private static int _fireBurnTime = DefaultFireBurnTime;
 
         // Properties
         public static Vector2 InitialPlayerDirection { get { return _facing; } set { _facing = value; } }
@@ -39,6 +41,7 @@ namespace Utils.GameLogic
         public static int InitialExplosionRange { get { return _range; } set { _range = value; } }
         public static int InitialExplosionDamage { get { return _damage; } set { _damage = value; } }
 
-        public static int InitialTimeTillExplosion { get { return _tileTillExposion; } set { _tileTillExposion = value; } }
+        public static int InitialTimeTillExplosion { get { return _timeTillExposion; } set { _timeTillExposion = value; } }
+        public static int InitialFireBurnTime { get { return _fireBurnTime; } set { _fireBurnTime = value; } }
     }
 }

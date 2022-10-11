@@ -30,7 +30,9 @@ namespace Utils.GameObjects
         public int ExplosivesRange { get { return _explosiveRange; } }
         public int ExplosiveDamage { get { return _explosiveDamage; } }
 
-        public Character(Vector2 position, Vector2 size, Vector4 collider, Bitmap image, Bitmap explosiveImage) : base(position, size, collider, image)
+        public Bitmap FireImage { get; private set; }
+
+        public Character(Vector2 position, Vector2 size, Vector4 collider, Bitmap image, Bitmap explosiveImage, Bitmap fireImage) : base(position, size, collider, image)
         {
             _explosiveImage = explosiveImage;
 
@@ -42,9 +44,11 @@ namespace Utils.GameObjects
 
             _facing = Settings.InitialPlayerDirection;
             _explosivesPlaced = 0;
+
+            FireImage = fireImage;
         }
 
-        public Character(int x, int y, int width, int height, int cx, int cy, int cWidth, int cHeight, Bitmap image, Bitmap explosiveImage) 
+        public Character(int x, int y, int width, int height, int cx, int cy, int cWidth, int cHeight, Bitmap image, Bitmap explosiveImage, Bitmap fireImage) 
             : base(x, y, width, height, cx, cy, cWidth, cHeight, image)
         {
             _explosiveImage = explosiveImage;
@@ -57,6 +61,8 @@ namespace Utils.GameObjects
 
             _facing = Settings.InitialPlayerDirection;
             _explosivesPlaced = 0;
+
+            FireImage = fireImage;
         }
 
         public void ChangeHealth(int amount)
@@ -94,8 +100,9 @@ namespace Utils.GameObjects
             if (gameMap.Tiles[index.X, index.Y].GameObject is EmptyGameObject && CanPlaceExplosive())
             {
                 var prm = gameMap.CreateScaledGameObjectParameters(index.X, index.Y, _explosiveImage);
-                Explosive explosive = new ExplosiveHV(prm.Item1, prm.Item2, prm.Item3, prm.Item4);
+                Explosive explosive = new ExplosiveHV(prm.Item1, prm.Item2, prm.Item3, prm.Item4, FireImage);
                 explosive.SetRange(_explosiveRange);
+                explosive.StartCountdown();
                 gameMap.Tiles[index.X, index.Y].GameObject = explosive;
                 gameMap.ExplosivesLookupTable.Add(this, explosive);
                 _explosivesPlaced++;

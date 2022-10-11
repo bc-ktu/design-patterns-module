@@ -30,18 +30,18 @@ namespace Utils.GameLogic
         public void Remove(GameObject explosive)
         {
             int index = GameObjects.IndexOf(explosive);
-            Character player = Players[index];
-            player.GiveExplosive();
+            //Character player = Players[index];
+            //player.GiveExplosive();
 
             Players.RemoveAt(index);
             GameObjects.RemoveAt(index);
             Count--;
         }
 
-        public void Remove(int index)
+        public void Remove(int index) // add Remove(Vector2 position) to solve missing fire issue
         {
-            Character player = Players[index];
-            player.GiveExplosive();
+            // Character player = Players[index];
+            // player.GiveExplosive();
 
             Players.RemoveAt(index);
             GameObjects.RemoveAt(index);

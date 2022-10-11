@@ -79,9 +79,11 @@ namespace client_graphics
 
         public void AddPlayer (string uuid, int x, int y)
         {
-            string path = Filepath.Create(Filepath.FolderAssets, Filepath.FolderTextures, Filepath.FolderSprites, Filepath.FolderExplosives, EXPLOSIVE_IMAGE);
-            Bitmap image = new Bitmap(path);
-            players.Add(uuid, new Character(new Vector2(x, y), gameMap.TileSize, collider, characterImages[10, 4], image));
+            string filepath = Filepath.Create(Filepath.FolderAssets, Filepath.FolderTextures, Filepath.FolderSprites, Filepath.FolderExplosives, EXPLOSIVE_IMAGE);
+            Bitmap explosiveImage = new Bitmap(filepath);
+            filepath = Filepath.Create(Filepath.FolderAssets, Filepath.FolderTextures, Filepath.FolderGUI, GUI_DAMAGE_ICON);
+            Bitmap fireImage = new Bitmap(filepath);
+            players.Add(uuid, new Character(new Vector2(x, y), gameMap.TileSize, collider, characterImages[10, 4], explosiveImage, fireImage));
         }
 
         public void UpdatePostion(string uuid, int X, int Y)
@@ -194,6 +196,8 @@ namespace client_graphics
 
             filepath = Filepath.Create(Filepath.FolderAssets, Filepath.FolderTextures, Filepath.FolderSprites, Filepath.FolderExplosives, EXPLOSIVE_IMAGE);
             Bitmap explosiveImage = new Bitmap(filepath);
+            filepath = Filepath.Create(Filepath.FolderAssets, Filepath.FolderTextures, Filepath.FolderGUI, GUI_DAMAGE_ICON);
+            Bitmap fireImage = new Bitmap(filepath);
 
             Vector2 position = new Vector2(this.ClientSize.Width / 2, this.ClientSize.Height / 2);
             double colliderSize = 0.75;
@@ -202,7 +206,7 @@ namespace client_graphics
             int brx = (int)(position.X + colliderSize * gameMap.TileSize.X);
             int bry = (int)(position.Y + colliderSize * gameMap.TileSize.Y);
             collider = new Vector4(tlx, tly, brx, bry);           
-            player = new Character(position, gameMap.TileSize, collider, characterImages[10, 4], explosiveImage); // maybe later add not the image, but Explosive object
+            player = new Character(position, gameMap.TileSize, collider, characterImages[10, 4], explosiveImage, fireImage); // maybe later add not the image, but Explosive object
             Con.Connection.InvokeAsync("JoinGame", position.X, position.Y);
 
             filepath = Filepath.Create(Filepath.FolderAssets, Filepath.FolderTextures, Filepath.FolderGUI, GUI_FRAME_IMAGE);
@@ -260,7 +264,13 @@ namespace client_graphics
             for (int i = 0; i < gameMap.ExplosivesLookupTable.Count; i++)
             {
                 Explosive explosive = gameMap.ExplosivesLookupTable.GameObjects[i] as Explosive;
-                explosive.Explode(gameMap, i);
+                explosive.UpdateState(gameMap, i, player);
+            }
+
+            for (int i = 0; i < gameMap.FireLookupTable.Count; i++)
+            {
+                Fire fire = gameMap.FireLookupTable.GameObjects[i] as Fire;
+                fire.UpdateState(gameMap, i);
             }
 
             InputHandler.HandleKey(keyPressed, player, gameMap, Con);

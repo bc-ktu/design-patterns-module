@@ -16,14 +16,14 @@ namespace Utils.AbstractFactory
             
         }
 
-        public GameObject CreateExplosive(Vector2 position, Vector2 size, Vector4 collider, Bitmap image)
+        public GameObject CreateExplosive(Vector2 position, Vector2 size, Vector4 collider, Bitmap image, Bitmap fireImage)
         {
-            return new ExplosiveHV(position, size, collider, image);
+            return new ExplosiveHV(position, size, collider, image, fireImage);
         }
 
-        public GameObject CreateExplosive(int x, int y, int width, int height, int cx, int cy, int cWidth, int cHeight, Bitmap image)
+        public GameObject CreateExplosive(int x, int y, int width, int height, int cx, int cy, int cWidth, int cHeight, Bitmap image, Bitmap fireImage)
         {
-            return new ExplosiveHV(x, y, width, height, cx, cy, cWidth, cHeight, image);
+            return new ExplosiveHV(x, y, width, height, cx, cy, cWidth, cHeight, image, fireImage);
         }
 
         public GameObject CreatePowerup(Vector2 position, Vector2 size, Vector4 collider, Bitmap image)

@@ -24,6 +24,7 @@ namespace Utils.GameObjects
         public Vector2 TileSize { get { return _tileSize; } }
         
         public LookupTable ExplosivesLookupTable { get { return _explosivesLookupTable; } }
+        public LookupTable FireLookupTable { get; private set; }
 
         public Map(Vector2 mapSize, Vector2 viewSize)
         {
@@ -32,6 +33,7 @@ namespace Utils.GameObjects
             _tiles = new MapTile[mapSize.X, mapSize.Y];
             _tileSize = new Vector2(viewSize.X / mapSize.X, viewSize.Y / mapSize.Y);
             _explosivesLookupTable = new LookupTable();
+            FireLookupTable = new LookupTable();
         }
 
         public Map(int mapWidth, int mapHeight, int viewWidth, int viewHeight)
@@ -41,6 +43,7 @@ namespace Utils.GameObjects
             _tiles = new MapTile[mapWidth, mapHeight];
             _tileSize = new Vector2(viewWidth / mapWidth, viewHeight / mapHeight);
             _explosivesLookupTable = new LookupTable();
+            FireLookupTable = new LookupTable();
         }
 
         public void SetTile(int x, int y, Bitmap image)
