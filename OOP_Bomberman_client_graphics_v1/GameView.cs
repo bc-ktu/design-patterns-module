@@ -50,6 +50,7 @@ namespace client_graphics
         private Vector4 collider;
 
         private Keys keyPressed;
+        private InputStack inputStack;
 
         private Character player;
         private Dictionary<string, Character> players = new Dictionary<string, Character>();
@@ -59,7 +60,7 @@ namespace client_graphics
 
         private GUI gui;
         private Font guiFont;
-        private PrivateFontCollection fontCollection = new PrivateFontCollection();
+        private PrivateFontCollection fontCollection;
 
         public GameView()
         {
@@ -105,6 +106,9 @@ namespace client_graphics
 
         private void Startup(List<int> GameSeed)
         {
+            fontCollection = new PrivateFontCollection();
+            inputStack = new InputStack();
+
             int index = 0;
             string filepath = Filepath.Create(Filepath.FolderAssets, Filepath.FolderTextures, Filepath.FolderSpritesheets, MAP_SPRITESHEET);
             Bitmap mapSpritesheet = new Bitmap(filepath);
@@ -273,20 +277,26 @@ namespace client_graphics
                 fire.UpdateState(gameMap, i);
             }
 
-            InputHandler.HandleKey(keyPressed, player, gameMap, Con);
+            InputHandler.HandleKey(inputStack.Peek(), player, gameMap, Con);
 
             this.Refresh();
         }
 
         private void OnKeyDown(object sender, KeyEventArgs e)
         {
-            keyPressed = e.KeyCode;
+            inputStack.Push(e.KeyCode);
+            Debug.LogLine(e.KeyCode + " down");
+
+            // keyPressed = e.KeyCode;
         }
 
         private void OnKeyUp(object sender, KeyEventArgs e)
         {
-            if (e.KeyCode == keyPressed)
-                keyPressed = Keys.None;
+            inputStack.Remove(e.KeyCode);
+            Debug.LogLine(e.KeyCode + " up");
+
+            //if (e.KeyCode == keyPressed)
+            //    keyPressed = Keys.None;
         }
 
         private void Level1Button_Click(object sender, EventArgs e)

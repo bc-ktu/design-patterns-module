@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Utils.Helpers
+namespace client_graphics
 {
     internal static class Debug
     {
