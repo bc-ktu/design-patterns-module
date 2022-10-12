@@ -6,51 +6,65 @@ using System.Threading.Tasks;
 
 namespace Utils.Math
 {
-    public class Vector4
+    public class Vector4 : IEquatable<Vector4>
     {
-        private int _x;
-        private int _y;
-        private int _z;
-        private int _w;
-
-        public int X { get { return _x; } }
-        public int Y { get { return _y; } }
-        public int Z { get { return _z; } }
-        public int W { get { return _w; } }
+        public int X { get; set; }
+        public int Y { get; set; }
+        public int Z { get; set; }
+        public int W { get; set; }
 
         public Vector4(int x, int y, int z, int w)
         {
-            _x = x;
-            _y = y;
-            _z = z;
-            _w = w;
+            X = x;
+            Y = y;
+            Z = z;
+            W = w;
         }
 
         public static Vector4 operator +(Vector4 left, Vector4 right)
         {
-            return new Vector4(left._x + right._x, left._y + right._y, left._z + right._z, left._w + right._w);
+            return new Vector4(left.X + right.X, left.Y + right.Y, left.Z + right.Z, left.W + right.W);
         }
 
         public static Vector4 operator -(Vector4 left, Vector4 right)
         {
-            return new Vector4(left._x - right._x, left._y - right._y, left._z - right._z, left._w - right._w);
+            return new Vector4(left.X - right.X, left.Y - right.Y, left.Z - right.Z, left.W - right.W);
         }
 
         public static Vector4 operator *(int k, Vector4 v)
         {
-            return new Vector4(k * v._x, k * v._y, k * v._z, k * v._w);
+            return new Vector4(k * v.X, k * v.Y, k * v.Z, k * v.W);
         }
 
         public static Vector4 operator /(Vector4 v, int k)
         {
-            return new Vector4(v._x / k, v._y / k, v._z / k, v._w / k);
+            return new Vector4(v.X / k, v.Y / k, v.Z / k, v.W / k);
+        }
+
+        public static bool operator ==(Vector4 left, Vector4 right)
+        {
+            return left.X == right.X && left.Y == right.Y && left.Z == right.Z && left.W == right.W;
+        }
+
+        public static bool operator !=(Vector4 left, Vector4 right)
+        {
+            return left.X != right.X && left.Y != right.Y && left.Z != right.Z && left.W != right.W;
         }
 
         public override string ToString()
         {
-            return "(" + _x.ToString() + ", " + _y.ToString() + ", " + _z.ToString() + ", " + _w.ToString() + ")";
+            return "(" + X.ToString() + ", " + Y.ToString() + ", " + Z.ToString() + ", " + W.ToString() + ")";
         }
 
+        public bool Equals(Vector4 other)
+        {
+            return X == other.X && Y == other.Y && Z == other.Z && W == other.W;
+        }
+
+        public int GetHashCode()
+        {
+            return X + Y + Z + W;
+        }
 
     }
 }

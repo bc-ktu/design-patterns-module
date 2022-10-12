@@ -25,6 +25,7 @@ namespace Utils.GameObjects
         public Vector2[] ExplosionDirections { get { return _explosionDirections; } }
 
         public Bitmap FireImage { get; private set; }
+        public int Damage { get; set; }
 
         public Explosive()
         {
@@ -33,6 +34,7 @@ namespace Utils.GameObjects
             _explosionTimer.Elapsed += new ElapsedEventHandler(OnCountdownEnd);
             _explosionTimer.Interval = Settings.InitialTimeTillExplosion;
             _coundownEnded = false;
+            Damage = Settings.InitialExplosionDamage;
         }
 
         public Explosive(Vector2 position, Vector2 size, Vector4 collider, Bitmap image, Bitmap fireImage) : base(position, size, collider, image)
@@ -43,6 +45,7 @@ namespace Utils.GameObjects
             _explosionTimer.Interval = Settings.InitialTimeTillExplosion;
             _coundownEnded = false;
             FireImage = fireImage;
+            Damage = Settings.InitialExplosionDamage;
         }
 
         public Explosive(int x, int y, int width, int height, int cx, int cy, int cWidth, int cHeight, Bitmap image, Bitmap fireImage)
@@ -54,6 +57,7 @@ namespace Utils.GameObjects
             _explosionTimer.Interval = Settings.InitialTimeTillExplosion;
             _coundownEnded = false;
             FireImage = fireImage;
+            Damage = Settings.InitialExplosionDamage;
         }
 
         protected void SetExplosionDirections(Vector2[] explosionDirections)
@@ -76,16 +80,16 @@ namespace Utils.GameObjects
             _coundownEnded = true;
         }
 
-        public void UpdateState(Map gameMap, int indexInLookupTable, Character player)
+        public void UpdateState(Map gameMap, Character player)
         {
             if (_coundownEnded)
             {
-                Explode(gameMap, indexInLookupTable);
+                Explode(gameMap);
                 player.GiveExplosive();
             }
         }
 
-        private void Explode(Map gameMap, int indexInLookupTable)
+        private void Explode(Map gameMap)
         {
             Vector2 thisIndex = WorldPosition / gameMap.TileSize;
 
@@ -98,8 +102,9 @@ namespace Utils.GameObjects
                 {
                     var prm = gameMap.CreateScaledGameObjectParameters(index.X, index.Y, FireImage);
                     Fire fireGO = new Fire(prm.Item1, prm.Item2, prm.Item3, prm.Item4);
+                    fireGO.Damage = Damage;
                     gameMap.Tiles[index.X, index.Y].GameObject = fireGO;
-                    gameMap.FireLookupTable.Add(null, fireGO);
+                    gameMap.FireLookupTable.Set(index, fireGO);
                     fireGO.StartBurning();
 
                     index += ExplosionDirections[i];
@@ -108,11 +113,11 @@ namespace Utils.GameObjects
                 }
             }
 
-            gameMap.ExplosivesLookupTable.Remove(indexInLookupTable);
+            gameMap.ExplosivesLookupTable.Remove(thisIndex);
             var prms = gameMap.CreateScaledGameObjectParameters(thisIndex.X, thisIndex.Y, FireImage);
             Fire fire = new Fire(prms.Item1, prms.Item2, prms.Item3, prms.Item4);
             gameMap.Tiles[thisIndex.X, thisIndex.Y].GameObject = fire;
-            gameMap.FireLookupTable.Add(null, fire);
+            gameMap.FireLookupTable.Set(thisIndex, fire);
             fire.StartBurning();
         }
 

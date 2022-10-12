@@ -11,13 +11,15 @@ using Utils.Math;
 using Utils.Helpers;
 using Utils.GUIElements;
 using System.Drawing.Text;
+using Utils.GameLogic;
 
 namespace client_graphics
 {
     public partial class GameView : Form
     {
-        private const bool DRAW_COLLIDERS = false;
-        private Color COLLIDERS_COLOR = Color.LimeGreen;
+        private const bool DRAW_COLLIDERS = true;
+        private Color DEFAULT_COLLIDERS_COLOR = Color.LimeGreen;
+        private Color COLLIDING_COLLIDERS_COLOR = Color.Red;
         private const float COLLIDERS_WIDTH = 2;
 
         private const string MAP_SPRITESHEET = "TX_Tileset_Grass.png";
@@ -49,7 +51,6 @@ namespace client_graphics
         private Bitmap[,] characterImages;
         private Vector4 collider;
 
-        private Keys keyPressed;
         private InputStack inputStack;
 
         private Character player;
@@ -62,6 +63,8 @@ namespace client_graphics
         private Font guiFont;
         private PrivateFontCollection fontCollection;
 
+        List<Vector2> collisions;
+
         public GameView()
         {
 
@@ -72,7 +75,7 @@ namespace client_graphics
             InitializeComponent();
 
             Debug.Set(ConsoleTextBox);
-            Debug.Enabled(true);
+            Debug.Enabled(false);
             Debug.LogLine("Hello World!");
             Debug.LogLine(this.ClientSize.ToString());
             Startup(GameSeed);
@@ -108,6 +111,7 @@ namespace client_graphics
         {
             fontCollection = new PrivateFontCollection();
             inputStack = new InputStack();
+            collisions = new List<Vector2>();
 
             int index = 0;
             string filepath = Filepath.Create(Filepath.FolderAssets, Filepath.FolderTextures, Filepath.FolderSpritesheets, MAP_SPRITESHEET);
@@ -150,14 +154,16 @@ namespace client_graphics
                 for (int x = 1; x < MAP_SIZE.X - 1; x++)
                 {
                     gameMap.SetTile(x, y, mapTileImages[GTI.X, GTI.Y]);
-  
-                    //if (gameMap.Tiles[x, y].GameObject is not EmptyGameObject)
-                    //    continue;
-
                     GameObject go = new EmptyGameObject();
-                    
+          
                     int isEmpty = GameSeed[index];
                     index++;
+                    if (isEmpty == 0)
+                    {
+                        var prm = gameMap.CreateScaledGameObjectParameters(x, y, explodableImage);
+                        go = new DestructableObject(prm.Item1, prm.Item2, prm.Item3, prm.Item4);
+                    }
+
                     if (isEmpty >= 7 && isEmpty <= 8) // 0.75
                     {
                         var prm = gameMap.CreateScaledGameObjectParameters(x, y, explodableImage);
@@ -255,27 +261,21 @@ namespace client_graphics
 
             if (DRAW_COLLIDERS)
             {
-                Graphics.DrawColliders(gameMap, COLLIDERS_COLOR, COLLIDERS_WIDTH, e);
-                Graphics.DrawCollider(player, COLLIDERS_COLOR, COLLIDERS_WIDTH, e);
+                Graphics.DrawColliders(gameMap, collisions, DEFAULT_COLLIDERS_COLOR, COLLIDING_COLLIDERS_COLOR, COLLIDERS_WIDTH, e);
+                Graphics.DrawCollider(player, DEFAULT_COLLIDERS_COLOR, COLLIDERS_WIDTH, e);
                 foreach (KeyValuePair<string, Character> p in players)
-                    Graphics.DrawCollider(p.Value, COLLIDERS_COLOR, COLLIDERS_WIDTH, e);
+                    Graphics.DrawCollider(p.Value, DEFAULT_COLLIDERS_COLOR, COLLIDERS_WIDTH, e);
             }
 
             Graphics.DrawGUI(gui, guiFont, GUI_BRUSH, e);
         }
         private void OnTick(object sender, EventArgs e)
         {
-            for (int i = 0; i < gameMap.ExplosivesLookupTable.Count; i++)
-            {
-                Explosive explosive = gameMap.ExplosivesLookupTable.GameObjects[i] as Explosive;
-                explosive.UpdateState(gameMap, i, player);
-            }
+            GameLogic.UpdateLookupTables(player, gameMap);
+            GameLogic.ApplyEffects(player, gameMap, collisions);
+            GameLogic.UpdateGUI(player, gui);
 
-            for (int i = 0; i < gameMap.FireLookupTable.Count; i++)
-            {
-                Fire fire = gameMap.FireLookupTable.GameObjects[i] as Fire;
-                fire.UpdateState(gameMap, i);
-            }
+            collisions = Physics.GetCollisions(player, gameMap);
 
             InputHandler.HandleKey(inputStack.Peek(), player, gameMap, Con);
 
@@ -285,18 +285,11 @@ namespace client_graphics
         private void OnKeyDown(object sender, KeyEventArgs e)
         {
             inputStack.Push(e.KeyCode);
-            Debug.LogLine(e.KeyCode + " down");
-
-            // keyPressed = e.KeyCode;
         }
 
         private void OnKeyUp(object sender, KeyEventArgs e)
         {
             inputStack.Remove(e.KeyCode);
-            Debug.LogLine(e.KeyCode + " up");
-
-            //if (e.KeyCode == keyPressed)
-            //    keyPressed = Keys.None;
         }
 
         private void Level1Button_Click(object sender, EventArgs e)

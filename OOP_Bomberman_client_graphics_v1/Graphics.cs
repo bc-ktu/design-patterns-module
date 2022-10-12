@@ -32,24 +32,38 @@ namespace client_graphics
             }
         }
 
-        public static void DrawColliders(Map gameMap, Color color, float width, PaintEventArgs e)
+        public static void DrawColliders(Map gameMap, List<Vector2> collisions, Color color, Color collisionColor, float width, PaintEventArgs e)
         {
             Pen pen = new Pen(color, width);
+            Pen collisionsPen = new Pen(collisionColor, width);
+            Pen currentPen;
 
             for (int y = 0; y < gameMap.Size.Y; y++)
             {
                 for (int x = 0; x < gameMap.Size.X; x++)
                 {
-                    if (!(gameMap.Tiles[x, y].GameObject is EmptyGameObject))
+                    GameObject go = gameMap.Tiles[x, y].GameObject;
+                    if (go is not EmptyGameObject)
                     {
-                        int xGO = gameMap.Tiles[x, y].GameObject.Collider.X;
-                        int yGO = gameMap.Tiles[x, y].GameObject.Collider.Y;
-                        int widthGO = gameMap.Tiles[x, y].GameObject.Collider.Z - xGO;
-                        int heightGO = gameMap.Tiles[x, y].GameObject.Collider.W - yGO;
+                        int xGO = go.Collider.X;
+                        int yGO = go.Collider.Y;
+                        int widthGO = go.Collider.Z - xGO;
+                        int heightGO = go.Collider.W - yGO;
                         Rectangle rect = new Rectangle(xGO, yGO, widthGO, heightGO);
                         e.Graphics.DrawRectangle(pen, rect);
                     }
                 }
+            }
+
+            for (int i = 0; i < collisions.Count; i++)
+            {
+                GameObject go = gameMap.Tiles[collisions[i].X, collisions[i].Y].GameObject;
+                int xGO = go.Collider.X;
+                int yGO = go.Collider.Y;
+                int widthGO = go.Collider.Z - xGO;
+                int heightGO = go.Collider.W - yGO;
+                Rectangle rect = new Rectangle(xGO, yGO, widthGO, heightGO);
+                e.Graphics.DrawRectangle(collisionsPen, rect);
             }
         }
 

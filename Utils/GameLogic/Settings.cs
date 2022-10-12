@@ -21,6 +21,7 @@ namespace Utils.GameLogic
 
         public static int DefaultTimeTillExplosion { get { return 4000; } } // ms
         public static int DefaultFireBurnTime { get { return 2000; } } // ms
+        public static int DefaultIFramesTime { get { return 500; } } // ms
 
         // Private fields
         private static Vector2 _facing = DefaultPlayerDirection;
@@ -32,6 +33,7 @@ namespace Utils.GameLogic
 
         private static int _timeTillExposion = DefaultTimeTillExplosion;
         private static int _fireBurnTime = DefaultFireBurnTime;
+        private static int _iFramesTime = DefaultIFramesTime;
 
         // Properties
         public static Vector2 InitialPlayerDirection { get { return _facing; } set { _facing = value; } }
@@ -43,5 +45,7 @@ namespace Utils.GameLogic
 
         public static int InitialTimeTillExplosion { get { return _timeTillExposion; } set { _timeTillExposion = value; } }
         public static int InitialFireBurnTime { get { return _fireBurnTime; } set { _fireBurnTime = value; } }
+        public static int InitialIFramesTime { get { return _iFramesTime; } set { _iFramesTime = value; } }
+        
     }
 }

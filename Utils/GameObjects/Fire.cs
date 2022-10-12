@@ -15,7 +15,7 @@ namespace Utils.GameObjects
         private System.Timers.Timer _burnTimer;
         private bool _isBurning;
 
-        public int Damage { get; private set; }
+        public int Damage { get; set; }
 
         public Fire(Vector2 position, Vector2 size, Vector4 collider, Bitmap image) : base(position, size, collider, image)
         {
@@ -34,11 +34,6 @@ namespace Utils.GameObjects
             _isBurning = true;
         }
 
-        public void SetDamage(int damage)
-        {
-            Damage = damage;
-        }
-
         public void StartBurning()
         {
             _burnTimer.Enabled = true;
@@ -49,17 +44,17 @@ namespace Utils.GameObjects
             _isBurning = false;
         }
 
-        public void UpdateState(Map gameMap, int indexInLookupTable)
+        public void UpdateState(Map gameMap)
         {
             if (!_isBurning)
-                Dissapear(gameMap, indexInLookupTable);
+                Dissapear(gameMap);
         }
 
-        public void Dissapear(Map gameMap, int indexInLookupTable)
+        public void Dissapear(Map gameMap)
         {
             Vector2 thisIndex = WorldPosition / gameMap.TileSize;
             gameMap.Tiles[thisIndex.X, thisIndex.Y].GameObject = new EmptyGameObject();
-            gameMap.FireLookupTable.Remove(indexInLookupTable);
+            gameMap.FireLookupTable.Remove(thisIndex);
         }
 
     }

@@ -7,78 +7,86 @@ using System.Threading.Tasks;
 
 namespace Utils.Math
 {
-    public class Vector2
+    public class Vector2 : IEquatable<Vector2>
     {
-        private int _x;
-        private int _y;
-
-        public int X { get { return _x; } }
-        public int Y { get { return _y; } }
+        public int X { get; set; }
+        public int Y { get; set; }
 
         public Vector2(int x, int y)
         {
-            _x = x;
-            _y = y;
+            X = x;
+            Y = y;
         }
 
         public Vector2(Point point)
         {
-            _x = point.X;
-            _y = point.Y;
+            X = point.X;
+            Y = point.Y;
         }
 
         public Point ToPoint()
         {
-            return new Point(_x, _y);
+            return new Point(X, Y);
         }
 
-        public void SetX(int X)
-        {
-            _x = X;
-        }
-        public void SetY(int Y)
-        {
-            _y = Y;
-        }
         public static Vector2 operator +(Vector2 left, Vector2 right)
         {
-            return new Vector2(left._x + right._x, left._y + right._y);
+            return new Vector2(left.X + right.X, left.Y + right.Y);
         }
 
         public static Vector2 operator -(Vector2 left, Vector2 right)
         {
-            return new Vector2(left._x - right._x, left._y - right._y);
+            return new Vector2(left.X - right.X, left.Y - right.Y);
         }
 
         public static Vector2 operator *(int k, Vector2 v)
         {
-            return new Vector2(k * v._x, k * v._y);
+            return new Vector2(k * v.X, k * v.Y);
         }
 
         public static Vector2 operator *(double k, Vector2 v)
         {
-            return new Vector2((int)(k * v._x), (int)(k * v._y));
+            return new Vector2((int)(k * v.X), (int)(k * v.Y));
         }
 
         public static Vector2 operator /(Vector2 v, int k)
         {
-            return new Vector2(v._x / k, v._y / k);
+            return new Vector2(v.X / k, v.Y / k);
         }
 
         public static Vector2 operator /(Vector2 v, double k)
         {
-            return new Vector2((int)(v._x / k), (int)(v._y / k));
+            return new Vector2((int)(v.X / k), (int)(v.Y / k));
         }
 
         public static Vector2 operator /(Vector2 left, Vector2 right)
         {
-            return new Vector2(left._x / right._x, left._y / right._y);
+            return new Vector2(left.X / right.X, left.Y / right.Y);
+        }
+
+        public static bool operator ==(Vector2 left, Vector2 right)
+        {
+            return left.X == right.X && left.Y == right.Y;
+        }
+
+        public static bool operator !=(Vector2 left, Vector2 right)
+        {
+            return left.X != right.X && left.Y != right.Y;
+        }
+
+        public bool Equals(Vector2 other)
+        {
+            return X == other.X && Y == other.Y;
+        }
+
+        public int GetHashCode()
+        {
+            return X + Y;
         }
 
         public override string ToString()
         {
-            return "(" + _x.ToString() + ", " + _y.ToString() + ")";
+            return "(" + X.ToString() + ", " + Y.ToString() + ")";
         }
-
     }
 }

@@ -102,29 +102,29 @@ namespace Utils.GUIElements
             _icons[DamageIndex].SetImage(image);
         }
 
-        public void SetHealthValue(string value)
+        public void SetHealthValue(object value)
         {
-            _texts[HealthIndex].SetText(value);
+            _texts[HealthIndex].SetText(value.ToString());
         }
 
-        public void SetSpeedValue(string value)
+        public void SetSpeedValue(object value)
         {
-            _texts[SpeedIndex].SetText(value);
+            _texts[SpeedIndex].SetText(value.ToString());
         }
 
-        public void SetCapacityValue(string value)
+        public void SetCapacityValue(object value)
         {
-            _texts[CapacityIndex].SetText(value);
+            _texts[CapacityIndex].SetText(value.ToString());
         }
 
-        public void SetRangeValue(string value)
+        public void SetRangeValue(object value)
         {
-            _texts[RangeIndex].SetText(value);
+            _texts[RangeIndex].SetText(value.ToString());
         }
 
-        public void SetDamageValue(string value)
+        public void SetDamageValue(object value)
         {
-            _texts[DamageIndex].SetText(value);
+            _texts[DamageIndex].SetText(value.ToString());
         }
 
         public Rectangle ToRectangle()

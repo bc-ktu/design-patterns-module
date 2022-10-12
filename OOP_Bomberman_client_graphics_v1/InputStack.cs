@@ -23,17 +23,6 @@ namespace client_graphics
             Keys key = _pressedKeysList[_pressedKeysList.Count - 1];
             return key;
         }
-
-        //public Keys Pop()
-        //{
-        //    if (_pressedKeysList.Count == 0)
-        //        return Keys.None;
-
-        //    Keys key = _pressedKeysList[_pressedKeysList.Count - 1];
-        //    _pressedKeysList.Remove(key);
-        //    return key;
-        //}
-
         public void Push(Keys key)
         {
             if (_pressedKeysList.Contains(key))

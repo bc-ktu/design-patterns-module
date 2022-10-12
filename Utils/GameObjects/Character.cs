@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 
 using Utils.Math;
 using Utils.GameLogic;
+using System.Timers;
 
 namespace Utils.GameObjects
 {
@@ -22,6 +23,9 @@ namespace Utils.GameObjects
 
         private Vector2 _facing;
         private int _explosivesPlaced;
+
+        private System.Timers.Timer _iFramesTimer;
+        private bool _isInIFrames;
 
         public Vector2 Facing { get { return _facing; } }
         public int Health { get { return _health; } }
@@ -46,6 +50,11 @@ namespace Utils.GameObjects
             _explosivesPlaced = 0;
 
             FireImage = fireImage;
+
+            _iFramesTimer = new System.Timers.Timer();
+            _iFramesTimer.Elapsed += new ElapsedEventHandler(OnIFramesEnd);
+            _iFramesTimer.Interval = Settings.InitialTimeTillExplosion;
+            _isInIFrames = false;
         }
 
         public Character(int x, int y, int width, int height, int cx, int cy, int cWidth, int cHeight, Bitmap image, Bitmap explosiveImage, Bitmap fireImage) 
@@ -63,12 +72,39 @@ namespace Utils.GameObjects
             _explosivesPlaced = 0;
 
             FireImage = fireImage;
+
+            _iFramesTimer = new System.Timers.Timer();
+            _iFramesTimer.Elapsed += new ElapsedEventHandler(OnIFramesEnd);
+            _iFramesTimer.Interval = Settings.InitialTimeTillExplosion;
+            _isInIFrames = false;
+        }
+
+        private void StartIFramesTimer()
+        {
+            _iFramesTimer.Enabled = true;
+            _isInIFrames = true;
+        }
+
+        private void OnIFramesEnd(object sender, ElapsedEventArgs e)
+        {
+            _iFramesTimer.Enabled = false;
+            _isInIFrames = false;
+        }
+
+        public void TakeDamage(int amount)
+        {
+            if (_isInIFrames)
+                return;
+
+            _health -= amount;
+            StartIFramesTimer();
         }
 
         public void ChangeHealth(int amount)
         {
             _health += amount;
         }
+
         public void ChangeSpeed(int amount)
         {
             _movementSpeed += amount;
@@ -104,7 +140,7 @@ namespace Utils.GameObjects
                 explosive.SetRange(_explosiveRange);
                 explosive.StartCountdown();
                 gameMap.Tiles[index.X, index.Y].GameObject = explosive;
-                gameMap.ExplosivesLookupTable.Add(this, explosive);
+                gameMap.ExplosivesLookupTable.Set(index, explosive);
                 _explosivesPlaced++;
             }
         }
