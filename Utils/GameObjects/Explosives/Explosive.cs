@@ -8,66 +8,48 @@ using System.Threading.Tasks;
 using Utils.Math;
 using Utils.GameLogic;
 using System.Timers;
-using System.Reflection;
+using Utils.GameObjects.Animates;
 
-namespace Utils.GameObjects
+namespace Utils.GameObjects.Explosives
 {
     public abstract class Explosive : GameObject
     {
-        private int _range;
-        private int _timeTillExplosion;
-        private Vector2[] _explosionDirections = new Vector2[0];
         private System.Timers.Timer _explosionTimer;
         private bool _coundownEnded;
 
-        public int Range { get { return _range; } }
-        public int TimeTillExplosion { get { return _timeTillExplosion; } }
-        public Vector2[] ExplosionDirections { get { return _explosionDirections; } }
+        public int Damage { get; set; }
+        public int Range { get; set; }
+        public Vector2[] ExplosionDirections { get; protected set; }
 
         public Bitmap FireImage { get; private set; }
-        public int Damage { get; set; }
 
         public Explosive()
         {
-            _timeTillExplosion = Settings.InitialTimeTillExplosion;
-            _explosionTimer = new System.Timers.Timer();
-            _explosionTimer.Elapsed += new ElapsedEventHandler(OnCountdownEnd);
-            _explosionTimer.Interval = Settings.InitialTimeTillExplosion;
-            _coundownEnded = false;
-            Damage = Settings.InitialExplosionDamage;
+            Initialize(null);
         }
 
         public Explosive(Vector2 position, Vector2 size, Vector4 collider, Bitmap image, Bitmap fireImage) : base(position, size, collider, image)
         {
-            _timeTillExplosion = Settings.InitialTimeTillExplosion;
-            _explosionTimer = new System.Timers.Timer();
-            _explosionTimer.Elapsed += new ElapsedEventHandler(OnCountdownEnd);
-            _explosionTimer.Interval = Settings.InitialTimeTillExplosion;
-            _coundownEnded = false;
-            FireImage = fireImage;
-            Damage = Settings.InitialExplosionDamage;
+            Initialize(fireImage);
         }
 
         public Explosive(int x, int y, int width, int height, int cx, int cy, int cWidth, int cHeight, Bitmap image, Bitmap fireImage)
             : base(x, y, width, height, cx, cy, cWidth, cHeight, image)
         {
-            _timeTillExplosion = Settings.InitialTimeTillExplosion;
+            Initialize(fireImage);
+        }
+
+        private void Initialize(Bitmap fireImage)
+        {
+            Damage = GameSettings.InitialExplosionDamage;
+            Range = GameSettings.InitialExplosionRange;
+
             _explosionTimer = new System.Timers.Timer();
             _explosionTimer.Elapsed += new ElapsedEventHandler(OnCountdownEnd);
-            _explosionTimer.Interval = Settings.InitialTimeTillExplosion;
+            _explosionTimer.Interval = GameSettings.InitialTimeTillExplosion;
             _coundownEnded = false;
+
             FireImage = fireImage;
-            Damage = Settings.InitialExplosionDamage;
-        }
-
-        protected void SetExplosionDirections(Vector2[] explosionDirections)
-        {
-            _explosionDirections = explosionDirections;
-        }
-
-        public void SetRange(int range)
-        {
-            _range = range;
         }
 
         public void StartCountdown()
@@ -80,7 +62,7 @@ namespace Utils.GameObjects
             _coundownEnded = true;
         }
 
-        public void UpdateState(Map gameMap, Character player)
+        public void UpdateState(GameMap gameMap, Character player)
         {
             if (_coundownEnded)
             {
@@ -89,7 +71,7 @@ namespace Utils.GameObjects
             }
         }
 
-        private void Explode(Map gameMap)
+        private void Explode(GameMap gameMap) // add index out of bounds handling (fake object)
         {
             Vector2 thisIndex = WorldPosition / gameMap.TileSize;
 
@@ -98,7 +80,7 @@ namespace Utils.GameObjects
                 Vector2 index = thisIndex + ExplosionDirections[i];
                 GameObject gameObject = gameMap.Tiles[index.X, index.Y].GameObject;
                 int range = 1;
-                while ((gameObject is EmptyGameObject || gameObject is Fire) && range < _range)
+                while ((gameObject is EmptyGameObject || gameObject is Fire) && range < Range)
                 {
                     var prm = gameMap.CreateScaledGameObjectParameters(index.X, index.Y, FireImage);
                     Fire fireGO = new Fire(prm.Item1, prm.Item2, prm.Item3, prm.Item4);

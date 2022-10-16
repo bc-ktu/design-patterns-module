@@ -17,7 +17,7 @@ namespace client_graphics
             e.Graphics.DrawImage(image, position.ToPoint());
         }
 
-        public static void DrawMap(Map gameMap, PaintEventArgs e)
+        public static void DrawMap(GameMap gameMap, PaintEventArgs e)
         {
             for (int y = 0; y < gameMap.Size.Y; y++)
             {
@@ -32,7 +32,7 @@ namespace client_graphics
             }
         }
 
-        public static void DrawColliders(Map gameMap, List<Vector2> collisions, Color color, Color collisionColor, float width, PaintEventArgs e)
+        public static void DrawColliders(GameMap gameMap, List<Vector2> collisions, Color color, Color collisionColor, float width, PaintEventArgs e)
         {
             Pen pen = new Pen(color, width);
             Pen collisionsPen = new Pen(collisionColor, width);

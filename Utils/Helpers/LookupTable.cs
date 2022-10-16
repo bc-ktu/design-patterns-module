@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 using Utils.GameObjects;
 using Utils.Math;
 
-namespace Utils.GameLogic
+namespace Utils.Helpers
 {
     public class LookupTable
     {

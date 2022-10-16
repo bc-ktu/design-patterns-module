@@ -8,12 +8,13 @@ using Microsoft.AspNetCore.SignalR.Client;
 using client_graphics.SignalR;
 using Utils.GameObjects;
 using Utils.Helpers;
+using Utils.GameObjects.Animates;
 
 namespace client_graphics
 {
     internal static class InputHandler
     {
-        public static void HandleKey(Keys key, Character character, Map gameMap, SignalRConnection Con)
+        public static void HandleKey(Keys key, Character character, GameMap gameMap, SignalRConnection Con)
         {
             if (key == Input.KeyUp)
             {

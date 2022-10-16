@@ -5,16 +5,17 @@ using System.Text;
 using System.Threading.Tasks;
 
 using Utils.GameObjects;
+using Utils.GameObjects.Animates;
 using Utils.Math;
 
 namespace Utils.GameLogic
 {
-    public static class Physics
+    public static class GamePhysics
     {
         /// <summary>
         /// Returns a list of indexes on map where collisions are detected
         /// </summary>
-        public static List<Vector2> GetCollisions(Character character, Map gameMap)
+        public static List<Vector2> GetCollisions(Character character, GameMap gameMap) // fix case where character is on the edge of map
         {
             List<Vector2> collisions = new List<Vector2>();
 

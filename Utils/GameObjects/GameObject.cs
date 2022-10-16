@@ -11,17 +11,12 @@ namespace Utils.GameObjects
 {
     public abstract class GameObject : INullable
     {
-        protected Vector2 _position;
-        protected Vector2 _size;
-        protected Vector4 _collider;
+        public Vector2 LocalPosition { get; protected set; }
+        public Vector2 WorldPosition { get { return LocalPosition + Size / 2; } }
+        public Vector2 Size { get; protected set; }
+        public Vector4 Collider { get; protected set; }
 
-        protected Bitmap _image;
-
-        public Vector2 LocalPosition { get { return _position; } }
-        public Vector2 WorldPosition { get { return _position + _size / 2; } }
-        public Vector4 Collider { get { return _collider; } }
-
-        public Bitmap Image { get { return _image; } }
+        public Bitmap Image { get; protected set; }
 
         // How to implement? Is it neccesary
         public bool IsNull => throw new NotImplementedException();
@@ -31,12 +26,14 @@ namespace Utils.GameObjects
 
         }
 
-        public GameObject(Vector2 position, Vector2 size, Vector4 collider, Bitmap image)
+        /// <param name="localPosition">Top left corner coordinates of the sprite</param>
+        /// <param name="collider">Top left corner (X, Y), bottom right corner (Z, W)</param>
+        public GameObject(Vector2 localPosition, Vector2 size, Vector4 collider, Bitmap image)
         {
-            _position = position;
-            _size = size;
-            _collider = collider;
-            _image = image;
+            LocalPosition = localPosition;
+            Size = size;
+            Collider = collider;
+            Image = image;
         }
 
         /// <param name="x">Top left x coordinate corner of the sprite</param>
@@ -47,22 +44,22 @@ namespace Utils.GameObjects
         /// <param name="cHeight">Height of the collider</param>
         public GameObject(int x, int y, int width, int height, int cx, int cy, int cWidth, int cHeight, Bitmap image)
         {
-            _position = new Vector2(x, y);
-            _size = new Vector2(width, height);
-            _collider = new Vector4(cx, cy, cx + cWidth, cy + cHeight);
-            _image = image;
+            LocalPosition = new Vector2(x, y);
+            Size = new Vector2(width, height);
+            Collider = new Vector4(cx, cy, cx + cWidth, cy + cHeight);
+            Image = image;
         }
 
         public Rectangle ToRectangle()
         {
-            return new Rectangle(_position.X, _position.Y, _size.X, _size.Y);
+            return new Rectangle(LocalPosition.X, LocalPosition.Y, Size.X, Size.Y);
         }
 
         public override string ToString()
         {
-            return "position: " + _position.ToString() + "\n" +
-                   "size: " + _size.ToString() + "\n" +
-                   "collider: " + _collider.ToString();
+            return "position: " + LocalPosition.ToString() + "\n" +
+                   "size: " + Size.ToString() + "\n" +
+                   "collider: " + Collider.ToString();
         }
 
     }

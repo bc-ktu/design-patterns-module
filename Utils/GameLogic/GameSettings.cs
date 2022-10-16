@@ -9,7 +9,7 @@ using Utils.Math;
 
 namespace Utils.GameLogic
 {
-    public static class Settings
+    public static class GameSettings
     {
         // Defaults
         public static Vector2 DefaultPlayerDirection { get { return Direction.Down; } }

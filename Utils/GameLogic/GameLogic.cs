@@ -5,6 +5,8 @@ using System.Text;
 using System.Threading.Tasks;
 
 using Utils.GameObjects;
+using Utils.GameObjects.Animates;
+using Utils.GameObjects.Explosives;
 using Utils.GUIElements;
 using Utils.Math;
 
@@ -12,7 +14,7 @@ namespace Utils.GameLogic
 {
     public static class GameLogic
     {
-        public static void ApplyEffects(Character player, Map gameMap, List<Vector2> indexes)
+        public static void ApplyEffects(Character player, GameMap gameMap, List<Vector2> indexes)
         {
             for (int i = 0; i < indexes.Count; i++)
             {
@@ -24,7 +26,7 @@ namespace Utils.GameLogic
             }
         }
 
-        public static void UpdateLookupTables(Character player, Map gameMap)
+        public static void UpdateLookupTables(Character player, GameMap gameMap)
         {
             for (int i = 0; i < gameMap.ExplosivesLookupTable.Count; i++)
             {
