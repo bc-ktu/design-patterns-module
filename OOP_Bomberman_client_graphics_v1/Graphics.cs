@@ -83,7 +83,7 @@ namespace client_graphics
             e.Graphics.DrawRectangle(pen, rect);
         }
 
-        public static void DrawGUI(GUI gui, Font font, Brush brush, PaintEventArgs e)
+        public static void DrawGUI(GUI gui, PaintEventArgs e)
         {
             e.Graphics.DrawImage(gui.FrameImage, gui.ToRectangle());
 
@@ -93,17 +93,14 @@ namespace client_graphics
             e.Graphics.DrawImage(gui.RangeIcon.Image, gui.RangeIcon.ToRectangle());
             e.Graphics.DrawImage(gui.DamageIcon.Image, gui.DamageIcon.ToRectangle());
 
-            // Pen pen = new Pen(gui.FrameColor, gui.FrameThickness);
-            // e.Graphics.DrawRectangles(pen, gui.Rectangles);
-
             StringFormat stringFormat = new StringFormat();
             stringFormat.Alignment = StringAlignment.Center;
             stringFormat.LineAlignment = StringAlignment.Center;
-            e.Graphics.DrawString(gui.HealthText.Text, font, brush, gui.HealthText.ToRectangle(), stringFormat);
-            e.Graphics.DrawString(gui.SpeedText.Text, font, brush, gui.SpeedText.ToRectangle(), stringFormat);
-            e.Graphics.DrawString(gui.CapacityText.Text, font, brush, gui.CapacityText.ToRectangle(), stringFormat);
-            e.Graphics.DrawString(gui.RangeText.Text, font, brush, gui.RangeText.ToRectangle(), stringFormat);
-            e.Graphics.DrawString(gui.DamageText.Text, font, brush, gui.DamageText.ToRectangle(), stringFormat);
+            e.Graphics.DrawString(gui.HealthText.Text, gui.Font, gui.FontColor, gui.HealthText.ToRectangle(), stringFormat);
+            e.Graphics.DrawString(gui.SpeedText.Text, gui.Font, gui.FontColor, gui.SpeedText.ToRectangle(), stringFormat);
+            e.Graphics.DrawString(gui.CapacityText.Text, gui.Font, gui.FontColor, gui.CapacityText.ToRectangle(), stringFormat);
+            e.Graphics.DrawString(gui.RangeText.Text, gui.Font, gui.FontColor, gui.RangeText.ToRectangle(), stringFormat);
+            e.Graphics.DrawString(gui.DamageText.Text, gui.Font, gui.FontColor, gui.DamageText.ToRectangle(), stringFormat);
         }
 
     }

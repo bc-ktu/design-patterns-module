@@ -4,10 +4,10 @@ using System.Drawing.Text;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+
 using Utils.AbstractFactory;
 using Utils.GameObjects;
 using Utils.GameObjects.Animates;
-using Utils.GameObjects.Destructables;
 using Utils.GUIElements;
 using Utils.Helpers;
 using Utils.Math;
@@ -16,10 +16,16 @@ namespace Utils.GameLogic
 {
     public static class GameInitializer
     {
-        public static GUI CreateGUI(Vector2 position, Vector2 size)
+        public static void LoadTextures()
+        {
+            
+        }
+
+        public static GUI CreateGUI(Vector2 position, Vector2 size, Brush fontColor, int fontSize)
         {
             GUI gui;
             string filepath;
+            PrivateFontCollection pfc = new PrivateFontCollection();
 
             filepath = Pather.Create(Pather.FolderAssets, Pather.FolderTextures, Pather.FolderGUI, Pather.GUIFrameImage);
             Bitmap frameImage = new Bitmap(filepath);
@@ -34,7 +40,11 @@ namespace Utils.GameLogic
             filepath = Pather.Create(Pather.FolderAssets, Pather.FolderTextures, Pather.FolderGUI, Pather.GuiDamageIcon);
             Bitmap damageIcon = new Bitmap(filepath);
 
-            gui = new GUI(position, size, frameImage);
+            filepath = Pather.Create(Pather.FolderAssets, Pather.FolderFonts, Pather.GuiFontFile);
+            pfc.AddFontFile(filepath);
+            Font font = new Font(pfc.Families[0].Name, fontSize);
+
+            gui = new GUI(position, size, frameImage, font, fontColor);
             gui.SetHealthImage(healthIcon);
             gui.SetSpeedImage(speedIcon);
             gui.SetCapacityImage(capacityIcon);

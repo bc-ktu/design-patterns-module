@@ -26,11 +26,15 @@ namespace Utils.GameObjects.Interactables
 
         }
         
-        public void Affect(Character character)
+        public void Affect(Character character, GameMap gameMap)
         {
             character.ChangeSpeed(SpeedModifier);
             character.ChangeExplosivesCapacity(CapacityModifier);
             character.ChangeExplosivesDamage(DamageModifier);
+
+            Vector2 index = WorldPosition / gameMap.TileSize;
+            gameMap[index].GameObject = new EmptyGameObject();
+            gameMap.PowerupLookupTable.Remove(index);
         }
 
     }

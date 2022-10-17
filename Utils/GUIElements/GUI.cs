@@ -18,19 +18,14 @@ namespace Utils.GUIElements
         private static readonly int RangeIndex = 3;
         private static readonly int DamageIndex = 4;
 
-        private Bitmap _frameImage;
-        private Vector2 _position;
-        private Vector2 _size;
-
         private Vector2 _elementSize;
 
         private GUIIcon[] _icons = new GUIIcon[NumberOfElements];
         private GUIText[] _texts = new GUIText[NumberOfElements];
-        private Rectangle[] _rectanges = new Rectangle[2 * NumberOfElements];
 
-        public Bitmap FrameImage { get { return _frameImage; } }
-        public Vector2 Position { get { return _position; } }
-        public Vector2 Size { get { return _size; } }
+        public Bitmap FrameImage { get; private set; }
+        public Vector2 Position { get; set; }
+        public Vector2 Size { get; set; }
 
         public GUIIcon HealthIcon { get { return _icons[HealthIndex]; } }
         public GUIIcon SpeedIcon { get { return _icons[SpeedIndex]; } }
@@ -44,37 +39,39 @@ namespace Utils.GUIElements
         public GUIText RangeText { get { return _texts[RangeIndex]; } }
         public GUIText DamageText { get { return _texts[DamageIndex]; } }
 
-        public Rectangle[] Rectangles { get { return _rectanges; } }
-        public Color FrameColor { get; set; }
-        public int FrameThickness { get; set; }
+        public Rectangle[] Rectangles { get; private set; }
 
-        public GUI(Vector2 position, Vector2 size, Bitmap frameImage)
+        public Font Font { get; private set; }
+        public Brush FontColor { get; private set; }
+        public int FontSize { get; private set; }
+
+        public GUI(Vector2 position, Vector2 size, Bitmap frameImage, Font font, Brush fontColor)
         {
-            _position = position;
-            _size = size;
+            Rectangles = new Rectangle[2 * NumberOfElements];
+            Position = position;
+            Size = size;
             _elementSize = new Vector2(size.X / NumberOfElements, size.Y / 2);
-            _frameImage = frameImage;
+            FrameImage = frameImage;
+            FontColor = fontColor;
+            Font = font;
 
             for (int i = 0; i < NumberOfElements; i++)
             {
-                int x = _position.X + i * _elementSize.X;
-                int y = _position.Y;
+                int x = Position.X + i * _elementSize.X;
+                int y = Position.Y;
                 _icons[i] = new GUIIcon();
                 _icons[i].SetPosition(x, y);
                 _icons[i].SetSize(_elementSize);
 
-                y = _position.Y + _elementSize.Y;
+                y = Position.Y + _elementSize.Y;
                 _texts[i] = new GUIText();
                 _texts[i].SetPosition(x, y);
                 _texts[i].SetSize(_elementSize);
                 _texts[i].SetText("0");
 
-                _rectanges[i * 2] = new Rectangle(x, _position.Y, _elementSize.X, _elementSize.Y);
-                _rectanges[i * 2 + 1] = new Rectangle(x, y, _elementSize.X, _elementSize.Y);
+                Rectangles[i * 2] = new Rectangle(x, Position.Y, _elementSize.X, _elementSize.Y);
+                Rectangles[i * 2 + 1] = new Rectangle(x, y, _elementSize.X, _elementSize.Y);
             }
-
-            FrameColor = Color.FromArgb(255, 37, 13, 8);
-            FrameThickness = 4;
         }
 
         public void SetHealthImage(Bitmap image)
@@ -129,7 +126,7 @@ namespace Utils.GUIElements
 
         public Rectangle ToRectangle()
         {
-            return new Rectangle(_position.X, _position.Y, _size.X, _size.Y);
+            return new Rectangle(Position.X, Position.Y, Size.X, Size.Y);
         }
 
     }

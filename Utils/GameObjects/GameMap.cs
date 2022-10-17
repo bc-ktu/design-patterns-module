@@ -20,6 +20,7 @@ namespace Utils.GameObjects
         
         public LookupTable ExplosivesLookupTable { get; private set; }
         public LookupTable FireLookupTable { get; private set; }
+        public LookupTable PowerupLookupTable { get; private set; }
 
         public MapTile this[Vector2 position]
         {
@@ -45,6 +46,7 @@ namespace Utils.GameObjects
             TileSize = new Vector2(viewSize.X / mapSize.X, viewSize.Y / mapSize.Y);
             ExplosivesLookupTable = new LookupTable();
             FireLookupTable = new LookupTable();
+            PowerupLookupTable = new LookupTable();
         }
         
         public void SetTile(int x, int y, Bitmap image)
