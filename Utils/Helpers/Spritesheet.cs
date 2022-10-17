@@ -33,7 +33,7 @@ namespace Utils.Helpers
         public static Bitmap[,] ExtractAll(Bitmap spritesheet, Vector2 tileSize)
         {
             Vector2 tileMapSize = GetTileMapSize(spritesheet, tileSize);
-            Bitmap[,] images = new Bitmap[tileMapSize.X, tileMapSize.Y]; 
+            Bitmap[,] images = new Bitmap[tileMapSize.X, tileMapSize.Y];
 
             for (int y = 0; y < tileMapSize.Y; y++)
             {

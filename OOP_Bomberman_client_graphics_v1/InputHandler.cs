@@ -8,12 +8,13 @@ using Microsoft.AspNetCore.SignalR.Client;
 using client_graphics.SignalR;
 using Utils.GameObjects;
 using Utils.Helpers;
+using Utils.GameObjects.Animates;
 
 namespace client_graphics
 {
-    internal static class InputHandler // state machine better?
+    internal static class InputHandler
     {
-        public static void HandleKey(Keys key, Character character, Map gameMap, SignalRConnection Con)
+        public static void HandleKey(Keys key, Character character, GameMap gameMap, SignalRConnection Con)
         {
             if (key == Input.KeyUp)
             {
@@ -37,7 +38,7 @@ namespace client_graphics
             }
             else if (key == Input.KeyBomb)
             {
-                character.PlaceBomb(gameMap);
+                character.PlaceExplosive(gameMap);
                 //Con.Connection.InvokeAsync("MapSeed"); place bomb change later
             }
         }

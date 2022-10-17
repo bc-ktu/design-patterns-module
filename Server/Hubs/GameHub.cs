@@ -4,7 +4,6 @@ using Utils.Math;
 
 namespace Server.Hubs
 {
-
     public static class Storage
     {
         public static int UserCount { get; set; } = 0;
@@ -18,27 +17,36 @@ namespace Server.Hubs
         {
             await Clients.All.SendAsync("ReceiveMessage", player, message);
         }
+
         public async Task MapSeed()
         {
             await Clients.Client(Context.ConnectionId).SendAsync("GenMap", Storage.generator.getValues());
         }
-        public async Task Move(int X,int Y)
+
+        public async Task Move(int x,int y)
         {
             Vector2 temp;
 
             if (Storage.Players.TryGetValue(Context.ConnectionId, out temp))
             {
-                temp.SetX(temp.X + 7 * X);
-                temp.SetY(temp.Y + 7 * Y);
+                temp.X = temp.X + 7 * x;
+                temp.Y = temp.Y + 7 * y;
                 Storage.Players[Context.ConnectionId] = temp;
-                await Clients.Others.SendAsync("PlayerMove", Context.ConnectionId, X, Y);
+                await Clients.Others.SendAsync("PlayerMove", Context.ConnectionId, x, y);
             };         
         }
+
+        public async Task PlaceExplosive(int x, int y)
+        {
+
+        }
+
         public async Task JoinGame(int X, int Y)
         {
             Storage.Players[Context.ConnectionId] = new Vector2(X,Y);
             await Clients.Others.SendAsync("NewPlayer", Context.ConnectionId, X, Y);
         }
+
         public async Task GetPlayingPlayers()
         {
             foreach (var player in Storage.Players)
@@ -50,6 +58,7 @@ namespace Server.Hubs
                 await Clients.Client(Context.ConnectionId).SendAsync("NewPlayer", player.Key, player.Value.X, player.Value.Y);
             }
         }
+
         public override async Task OnConnectedAsync()
         {
             Storage.Players.Add(Context.ConnectionId, new Vector2(0,0));
