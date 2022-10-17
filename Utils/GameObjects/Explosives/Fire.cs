@@ -57,7 +57,7 @@ namespace Utils.GameObjects.Explosives
         public void Dissapear(GameMap gameMap)
         {
             Vector2 thisIndex = WorldPosition / gameMap.TileSize;
-            gameMap.Tiles[thisIndex.X, thisIndex.Y].GameObject = new EmptyGameObject();
+            gameMap[thisIndex].GameObject = new EmptyGameObject();
             gameMap.FireLookupTable.Remove(thisIndex);
         }
 

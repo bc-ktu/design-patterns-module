@@ -115,13 +115,13 @@ namespace Utils.GameObjects.Animates
         public void PlaceExplosive(GameMap gameMap)
         {
             Vector2 index = WorldPosition / gameMap.TileSize;
-            if (gameMap.Tiles[index.X, index.Y].GameObject is EmptyGameObject && CanPlaceExplosive())
+            if (gameMap[index].GameObject is EmptyGameObject && CanPlaceExplosive())
             {
                 var prm = gameMap.CreateScaledGameObjectParameters(index.X, index.Y, ExplosiveImage);
                 Explosive explosive = new ExplosiveHVDi(prm.Item1, prm.Item2, prm.Item3, prm.Item4, FireImage);
                 explosive.Range = ExplosivesRange;
                 explosive.StartCountdown();
-                gameMap.Tiles[index.X, index.Y].GameObject = explosive;
+                gameMap[index].GameObject = explosive;
                 gameMap.ExplosivesLookupTable.Set(index, explosive);
                 _explosivesPlaced++;
             }

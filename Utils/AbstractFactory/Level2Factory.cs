@@ -12,7 +12,7 @@ using Utils.Math;
 
 namespace Utils.AbstractFactory
 {
-    internal class Level2Factory : ILevelFactory
+    public class Level2Factory : ILevelFactory
     {
         public Level2Factory()
         {

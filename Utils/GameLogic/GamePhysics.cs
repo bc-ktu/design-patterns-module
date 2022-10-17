@@ -25,7 +25,7 @@ namespace Utils.GameLogic
                 for (int x = -1; x <= 1; x++)
                 {
                     Vector2 index = characterIndex + new Vector2(x, y);
-                    GameObject otherGO = gameMap.Tiles[index.X, index.Y].GameObject;
+                    GameObject otherGO = gameMap[index].GameObject;
 
                     if (otherGO is EmptyGameObject)
                         continue;

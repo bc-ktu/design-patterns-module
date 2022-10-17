@@ -18,7 +18,7 @@ namespace Utils.GameLogic
         {
             for (int i = 0; i < indexes.Count; i++)
             {
-                GameObject go = gameMap.Tiles[indexes[i].X, indexes[i].Y].GameObject;
+                GameObject go = gameMap[indexes[i]].GameObject;
                 if (go is Fire) {
                     Fire fire = go as Fire;
                     player.TakeDamage(fire.Damage);

@@ -11,41 +11,31 @@ namespace Utils.GameLogic
 {
     public static class GameSettings
     {
-        // Defaults
-        public static Vector2 DefaultPlayerDirection { get { return Direction.Down; } }
-        public static int DefaultPlayerHealth { get { return 3; } }
-        public static int DefaultPlayerSpeed { get { return 7; } }
-        public static int DefaultPlayerCapacity { get { return 3; } }
-        public static int DefaultExplosionRange { get { return 7; } }
-        public static int DefaultExplosionDamage { get { return 1; } }
+        // ******************** LOGIC SETTINGS **********************
 
-        public static int DefaultTimeTillExplosion { get { return 4000; } } // ms
-        public static int DefaultFireBurnTime { get { return 2000; } } // ms
-        public static int DefaultIFramesTime { get { return 500; } } // ms
+        public static Vector2 InitialPlayerDirection = Direction.Down;
+        public static int InitialPlayerHealth = 3;
+        public static int InitialPlayerSpeed = 14;
+        public static int InitialPlayerCapacity = 3;
+        public static int InitialExplosionRange = 7;
+        public static int InitialExplosionDamage = 1;
 
-        // Private fields
-        private static Vector2 _facing = DefaultPlayerDirection;
-        private static int _health = DefaultPlayerHealth;
-        private static int _speed = DefaultPlayerSpeed;
-        private static int _capacity = DefaultPlayerCapacity;
-        private static int _range = DefaultExplosionRange;
-        private static int _damage = DefaultExplosionDamage;
+        public static int InitialTimeTillExplosion = 4000;  // ms
+        public static int InitialFireBurnTime = 2000;       // ms
+        public static int InitialIFramesTime = 500;         // ms
 
-        private static int _timeTillExposion = DefaultTimeTillExplosion;
-        private static int _fireBurnTime = DefaultFireBurnTime;
-        private static int _iFramesTime = DefaultIFramesTime;
+        public static Vector2 MapSize = new Vector2(10, 10);
 
-        // Properties
-        public static Vector2 InitialPlayerDirection { get { return _facing; } set { _facing = value; } }
-        public static int InitialPlayerHealth { get { return _health; } set { _health = value; } }
-        public static int InitialPlayerSpeed { get { return _speed; } set { _speed = value; } }
-        public static int InitialPlayerCapacity { get { return _capacity; } set { _capacity = value; } }
-        public static int InitialExplosionRange { get { return _range; } set { _range = value; } }
-        public static int InitialExplosionDamage { get { return _damage; } set { _damage = value; } }
+        // ******************** GUI SETTINGS **********************
 
-        public static int InitialTimeTillExplosion { get { return _timeTillExposion; } set { _timeTillExposion = value; } }
-        public static int InitialFireBurnTime { get { return _fireBurnTime; } set { _fireBurnTime = value; } }
-        public static int InitialIFramesTime { get { return _iFramesTime; } set { _iFramesTime = value; } }
-        
+        public static Vector2 GUIPosition = new Vector2(0, 0);
+        public static Vector2 GUISize = new Vector2(5 * 50, 80);
+        public static Brush GUIBrushColor = Brushes.White;
+        public static int GUIFontSize = 24;
+
+        // ******************** TEXTURES SETTINGS ********************
+
+        public static Vector2 GroundSpritesheetIndex = new Vector2(0, 0);
+        public static Vector2 PlayerSpritesheetIndex = new Vector2(11, 4);
     }
 }

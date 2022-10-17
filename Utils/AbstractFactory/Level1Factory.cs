@@ -12,41 +12,41 @@ using Utils.Math;
 
 namespace Utils.AbstractFactory
 {
-    internal class Level3Factory : ILevelFactory
+    public class Level1Factory : ILevelFactory
     {
-        public Level3Factory()
-        {
-
+        public Level1Factory() 
+        { 
+            
         }
 
         public GameObject CreateExplosive(Vector2 position, Vector2 size, Vector4 collider, Bitmap image, Bitmap fireImage)
         {
-            return new ExplosiveHVDi(position, size, collider, image, fireImage);
+            return new ExplosiveHV(position, size, collider, image, fireImage);
         }
 
         public GameObject CreateExplosive(int x, int y, int width, int height, int cx, int cy, int cWidth, int cHeight, Bitmap image, Bitmap fireImage)
         {
-            return new ExplosiveHVDi(x, y, width, height, cx, cy, cWidth, cHeight, image, fireImage);
+            return new ExplosiveHV(x, y, width, height, cx, cy, cWidth, cHeight, image, fireImage);
         }
 
         public GameObject CreatePowerup(Vector2 position, Vector2 size, Vector4 collider, Bitmap image)
         {
-            return new DamagePowerup(position, size, collider, image);
+            return new SpeedPowerup(position, size, collider, image);
         }
 
         public GameObject CreatePowerup(int x, int y, int width, int height, int cx, int cy, int cWidth, int cHeight, Bitmap image)
         {
-            return new DamagePowerup(x, y, width, height, cx, cy, cWidth, cHeight, image);
+            return new SpeedPowerup(x, y, width, height, cx, cy, cWidth, cHeight, image);
         }
 
         public GameObject CreateWall(Vector2 position, Vector2 size, Vector4 collider, Bitmap image)
         {
-            return new StoneWall(position, size, collider, image);
+            return new PaperWall(position, size, collider, image);
         }
 
         public GameObject CreateWall(int x, int y, int width, int height, int cx, int cy, int cWidth, int cHeight, Bitmap image)
         {
-            return new StoneWall(x, y, width, height, cx, cy, cWidth, cHeight, image);
+            return new PaperWall(x, y, width, height, cx, cy, cWidth, cHeight, image);
         }
     }
 }

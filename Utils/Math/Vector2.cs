@@ -29,6 +29,16 @@ namespace Utils.Math
             return new Point(X, Y);
         }
 
+        public static Vector2 FromPoint(Point point)
+        {
+            return new Vector2(point.X, point.Y);
+        }
+
+        public static Vector2 FromSize(Size size)
+        {
+            return new Vector2(size.Width, size.Height);
+        }
+
         public static Vector2 operator +(Vector2 left, Vector2 right)
         {
             return new Vector2(left.X + right.X, left.Y + right.Y);

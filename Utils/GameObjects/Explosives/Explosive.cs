@@ -78,19 +78,19 @@ namespace Utils.GameObjects.Explosives
             for (int i = 0; i < ExplosionDirections.Length; i++)
             {
                 Vector2 index = thisIndex + ExplosionDirections[i];
-                GameObject gameObject = gameMap.Tiles[index.X, index.Y].GameObject;
+                GameObject gameObject = gameMap[index].GameObject;
                 int range = 1;
                 while ((gameObject is EmptyGameObject || gameObject is Fire) && range < Range)
                 {
                     var prm = gameMap.CreateScaledGameObjectParameters(index.X, index.Y, FireImage);
                     Fire fireGO = new Fire(prm.Item1, prm.Item2, prm.Item3, prm.Item4);
                     fireGO.Damage = Damage;
-                    gameMap.Tiles[index.X, index.Y].GameObject = fireGO;
+                    gameMap[index].GameObject = fireGO;
                     gameMap.FireLookupTable.Set(index, fireGO);
                     fireGO.StartBurning();
 
                     index += ExplosionDirections[i];
-                    gameObject = gameMap.Tiles[index.X, index.Y].GameObject;
+                    gameObject = gameMap[index].GameObject;
                     range++;
                 }
             }
@@ -98,7 +98,7 @@ namespace Utils.GameObjects.Explosives
             gameMap.ExplosivesLookupTable.Remove(thisIndex);
             var prms = gameMap.CreateScaledGameObjectParameters(thisIndex.X, thisIndex.Y, FireImage);
             Fire fire = new Fire(prms.Item1, prms.Item2, prms.Item3, prms.Item4);
-            gameMap.Tiles[thisIndex.X, thisIndex.Y].GameObject = fire;
+            gameMap[thisIndex].GameObject = fire;
             gameMap.FireLookupTable.Set(thisIndex, fire);
             fire.StartBurning();
         }

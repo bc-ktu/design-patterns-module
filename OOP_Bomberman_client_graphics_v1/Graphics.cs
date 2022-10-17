@@ -23,10 +23,10 @@ namespace client_graphics
             {
                 for (int x = 0; x < gameMap.Size.X; x++)
                 {
-                    e.Graphics.DrawImage(gameMap.Tiles[x, y].Image, gameMap.Tiles[x, y].ToRectangle());
-                    if (!(gameMap.Tiles[x, y].GameObject is EmptyGameObject)) 
+                    e.Graphics.DrawImage(gameMap[x, y].Image, gameMap[x, y].ToRectangle());
+                    if (!(gameMap[x, y].GameObject is EmptyGameObject)) 
                     {
-                        e.Graphics.DrawImage(gameMap.Tiles[x, y].GameObject.Image, gameMap.Tiles[x, y].GameObject.ToRectangle());
+                        e.Graphics.DrawImage(gameMap[x, y].GameObject.Image, gameMap[x, y].GameObject.ToRectangle());
                     }
                 }
             }
@@ -42,7 +42,7 @@ namespace client_graphics
             {
                 for (int x = 0; x < gameMap.Size.X; x++)
                 {
-                    GameObject go = gameMap.Tiles[x, y].GameObject;
+                    GameObject go = gameMap[x, y].GameObject;
                     if (go is not EmptyGameObject)
                     {
                         int xGO = go.Collider.X;
@@ -57,7 +57,7 @@ namespace client_graphics
 
             for (int i = 0; i < collisions.Count; i++)
             {
-                GameObject go = gameMap.Tiles[collisions[i].X, collisions[i].Y].GameObject;
+                GameObject go = gameMap[collisions[i]].GameObject;
                 int xGO = go.Collider.X;
                 int yGO = go.Collider.Y;
                 int widthGO = go.Collider.Z - xGO;

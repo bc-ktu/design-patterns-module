@@ -13,23 +13,16 @@ using Utils.Helpers;
 using Utils.GUIElements;
 using Utils.GameLogic;
 using Utils.GameObjects.Animates;
+using Utils.AbstractFactory;
 
 namespace client_graphics
 {
     public partial class GameView : Form
     {
-        private const bool DRAW_COLLIDERS = true;
-        private Color DEFAULT_COLLIDERS_COLOR = Color.LimeGreen;
-        private Color COLLIDING_COLLIDERS_COLOR = Color.Red;
-        private const float COLLIDERS_WIDTH = 2;
-
-        private Vector2 GTI = new Vector2(2, 2); // Ground Tile Index = const how?
-        private Vector2 MAP_SIZE = new Vector2(10, 10);
-
-        private Vector2 GUI_POSITION = new Vector2(0, 0);
-        private Vector2 GUI_SIZE = new Vector2(5 * 50, 80);
-        private Brush GUI_BRUSH = Brushes.White;
-        private const int GUI_FONT_SIZE = 32;
+        private readonly bool DRAW_COLLIDERS = true;
+        private readonly Color DEFAULT_COLLIDERS_COLOR = Color.LimeGreen;
+        private readonly Color COLLIDING_COLLIDERS_COLOR = Color.Red;
+        private readonly float COLLIDERS_WIDTH = 2;
 
         private Bitmap[,] characterImages;
 
@@ -46,6 +39,7 @@ namespace client_graphics
         public SignalRConnection Con { get; set; }
         private Dictionary<string, Character> players = new Dictionary<string, Character>();
 
+        private ILevelFactory levelFactory;
 
         public GameView()
         {
@@ -55,21 +49,22 @@ namespace client_graphics
         public void GameStartUp(List<int> GameSeed)
         {
             InitializeComponent();
+            Startup(GameSeed);
 
             Debug.Set(ConsoleTextBox);
             Debug.Enabled(false);
             Debug.LogLine("Hello World!");
-            Debug.LogLine(this.ClientSize.ToString());
-            Startup(GameSeed);
         }
 
-        public void AddPlayer (string uuid, int x, int y)
+        public void AddPlayer (string uuid, int x, int y) // use GameInitialize.CreatePlayer() method
         {
             string filepath = Pather.Create(Pather.FolderAssets, Pather.FolderTextures, Pather.FolderSprites, Pather.FolderExplosives, Pather.ExplosiveImage);
             Bitmap explosiveImage = new Bitmap(filepath);
             filepath = Pather.Create(Pather.FolderAssets, Pather.FolderTextures, Pather.FolderGUI, Pather.GuiDamageIcon);
             Bitmap fireImage = new Bitmap(filepath);
-            players.Add(uuid, new Character(new Vector2(x, y), gameMap.TileSize, collider, characterImages[10, 4], explosiveImage, fireImage));
+            int px = GameSettings.PlayerSpritesheetIndex.X;
+            int py = GameSettings.PlayerSpritesheetIndex.Y;
+            players.Add(uuid, new Character(new Vector2(x, y), gameMap.TileSize, collider, characterImages[px, py], explosiveImage, fireImage));
         }
 
         public void UpdatePostion(string uuid, int X, int Y)
@@ -98,28 +93,13 @@ namespace client_graphics
 
             filepath = Pather.Create(Pather.FolderAssets, Pather.FolderFonts, Pather.GuiFontFile);
             pfc.AddFontFile(filepath);
-            guiFont = new Font(pfc.Families[0].Name, GUI_FONT_SIZE);
+            guiFont = new Font(pfc.Families[0].Name, GameSettings.GUIFontSize);
 
-            gui = GameInitializer.CreateGUI(GUI_POSITION, GUI_SIZE);
-            gameMap = GameInitializer.CreateMap(MAP_SIZE, new Vector2(this.ClientSize.Width, this.ClientSize.Height), GameSeed);
+            gui = GameInitializer.CreateGUI(GameSettings.GUIPosition, GameSettings.GUISize);
+            gameMap = GameInitializer.CreateMap(GameSettings.MapSize, Vector2.FromSize(ClientSize), GameSeed, GameSettings.GroundSpritesheetIndex);
+            player = GameInitializer.CreatePlayer(gameMap, GameSettings.PlayerSpritesheetIndex);
 
-            filepath = Pather.Create(Pather.FolderAssets, Pather.FolderTextures, Pather.FolderSpritesheets, Pather.CharacterSpritesheet);
-            Bitmap charactersSpritesheet = new Bitmap(filepath);
-            characterImages = Spritesheet.ExtractAll(charactersSpritesheet, new Vector2(32, 32));
-            filepath = Pather.Create(Pather.FolderAssets, Pather.FolderTextures, Pather.FolderSprites, Pather.FolderExplosives, Pather.ExplosiveImage);
-            Bitmap explosiveImage = new Bitmap(filepath);
-            filepath = Pather.Create(Pather.FolderAssets, Pather.FolderTextures, Pather.FolderGUI, Pather.GuiDamageIcon);
-            Bitmap fireImage = new Bitmap(filepath);
-
-            Vector2 position = new Vector2(this.ClientSize.Width, this.ClientSize.Height) / 2;
-            double colliderSize = 0.75;
-            int tlx = (int)(position.X + (1 - colliderSize) * gameMap.TileSize.X);
-            int tly = (int)(position.Y + (1 - colliderSize) * gameMap.TileSize.Y);
-            int brx = (int)(position.X + colliderSize * gameMap.TileSize.X);
-            int bry = (int)(position.Y + colliderSize * gameMap.TileSize.Y);
-            collider = new Vector4(tlx, tly, brx, bry);
-            player = new Character(position, gameMap.TileSize, collider, characterImages[10, 4], explosiveImage, fireImage); // maybe later add not the image, but Explosive object
-            
+            Vector2 position = gameMap.ViewSize / 2;
             Con.Connection.InvokeAsync("JoinGame", position.X, position.Y);
         }
 
@@ -139,8 +119,9 @@ namespace client_graphics
                     Graphics.DrawCollider(p.Value, DEFAULT_COLLIDERS_COLOR, COLLIDERS_WIDTH, e);
             }
 
-            Graphics.DrawGUI(gui, guiFont, GUI_BRUSH, e);
+            Graphics.DrawGUI(gui, guiFont, GameSettings.GUIBrushColor, e);
         }
+
         private void OnTick(object sender, EventArgs e)
         {
             GameLogic.UpdateLookupTables(player, gameMap);
