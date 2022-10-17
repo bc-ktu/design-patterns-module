@@ -14,7 +14,7 @@ namespace Utils.GameLogic
         // ******************** LOGIC SETTINGS **********************
 
         public static Vector2 InitialPlayerDirection = Direction.Down;
-        public static int InitialPlayerHealth = 3;
+        public static int InitialPlayerHealth = 99;
         public static int InitialPlayerSpeed = 14;
         public static int InitialPlayerCapacity = 3;
         public static int InitialExplosionRange = 7;

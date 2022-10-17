@@ -85,9 +85,11 @@ namespace client_graphics
 
         private void Startup(List<int> GameSeed)
         {
+            levelFactory = new Level2Factory();
+
             inputStack = new InputStack();
             collisions = new List<Vector2>();
-
+            
             string filepath;
             PrivateFontCollection pfc = new PrivateFontCollection();
 
@@ -96,8 +98,8 @@ namespace client_graphics
             guiFont = new Font(pfc.Families[0].Name, GameSettings.GUIFontSize);
 
             gui = GameInitializer.CreateGUI(GameSettings.GUIPosition, GameSettings.GUISize);
-            gameMap = GameInitializer.CreateMap(GameSettings.MapSize, Vector2.FromSize(ClientSize), GameSeed, GameSettings.GroundSpritesheetIndex);
-            player = GameInitializer.CreatePlayer(gameMap, GameSettings.PlayerSpritesheetIndex);
+            gameMap = GameInitializer.CreateMap(levelFactory, GameSettings.MapSize, Vector2.FromSize(ClientSize), GameSeed, GameSettings.GroundSpritesheetIndex);
+            player = GameInitializer.CreatePlayer(levelFactory, gameMap, GameSettings.PlayerSpritesheetIndex);
 
             Vector2 position = gameMap.ViewSize / 2;
             Con.Connection.InvokeAsync("JoinGame", position.X, position.Y);

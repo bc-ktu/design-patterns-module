@@ -11,6 +11,8 @@ namespace Utils.GameObjects.Destructables
 {
     public class DestructableGameObject : GameObject // make abstract
     {
+        public int Durability { get; protected set; }
+
         public DestructableGameObject(Vector2 position, Vector2 size, Vector4 collider, Bitmap image)
             : base(position, size, collider, image)
         {
@@ -22,5 +24,18 @@ namespace Utils.GameObjects.Destructables
         {
 
         }
+
+        public void DecreaseDurability()
+        {
+            Durability--;
+            if (Durability >= 0)
+                Break();
+        }
+
+        private void Break()
+        {
+            throw new NotImplementedException("Wall cannot break");
+        }
+
     }
 }

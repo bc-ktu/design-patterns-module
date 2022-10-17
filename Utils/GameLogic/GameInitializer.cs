@@ -4,7 +4,7 @@ using System.Drawing.Text;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-
+using Utils.AbstractFactory;
 using Utils.GameObjects;
 using Utils.GameObjects.Animates;
 using Utils.GameObjects.Destructables;
@@ -44,7 +44,7 @@ namespace Utils.GameLogic
             return gui;
         }
 
-        public static GameMap CreateMap(Vector2 mapSize, Vector2 viewSize, List<int> mapSeed, Vector2 groundSpritesheetIndex)
+        public static GameMap CreateMap(ILevelFactory levelFactory, Vector2 mapSize, Vector2 viewSize, List<int> mapSeed, Vector2 groundSpritesheetIndex)
         {
             GameMap gameMap = new GameMap(mapSize, viewSize);
             string filepath;
@@ -70,8 +70,10 @@ namespace Utils.GameLogic
                     int isEmpty = mapSeed[index];
                     if (isEmpty == 0)
                     {
+                        // var prm = gameMap.CreateScaledGameObjectParameters(x, y, crateImage);
+                        // go = new DestructableGameObject(prm.Item1, prm.Item2, prm.Item3, prm.Item4);
                         var prm = gameMap.CreateScaledGameObjectParameters(x, y, crateImage);
-                        go = new DestructableGameObject(prm.Item1, prm.Item2, prm.Item3, prm.Item4);
+                        go = levelFactory.CreateWall(prm.Item1, prm.Item2, prm.Item3, prm.Item4);
                     }
 
                     gameMap[x, y].GameObject = go;
@@ -104,13 +106,14 @@ namespace Utils.GameLogic
             return gameMap;
         }
 
-        public static Character CreatePlayer(GameMap gameMap, Vector2 playerSpritesheetIndex)
+        public static Character CreatePlayer(ILevelFactory levelFactory, GameMap gameMap, Vector2 playerSpritesheetIndex)
         {
             string filepath;
 
             filepath = Pather.Create(Pather.FolderAssets, Pather.FolderTextures, Pather.FolderSpritesheets, Pather.CharacterSpritesheet);
             Bitmap charactersSpritesheet = new Bitmap(filepath);
             Bitmap[,] characterImages = Spritesheet.ExtractAll(charactersSpritesheet, new Vector2(32, 32));
+            Bitmap characterImage = characterImages[playerSpritesheetIndex.X, playerSpritesheetIndex.Y];
             filepath = Pather.Create(Pather.FolderAssets, Pather.FolderTextures, Pather.FolderSprites, Pather.FolderExplosives, Pather.ExplosiveImage);
             Bitmap explosiveImage = new Bitmap(filepath);
             filepath = Pather.Create(Pather.FolderAssets, Pather.FolderTextures, Pather.FolderGUI, Pather.GuiDamageIcon);
@@ -124,7 +127,7 @@ namespace Utils.GameLogic
             int bry = (int)(position.Y + colliderSize * gameMap.TileSize.Y);
             Vector4 collider = new Vector4(tlx, tly, brx, bry);
 
-            return new Character(position, gameMap.TileSize, collider, characterImages[playerSpritesheetIndex.X, playerSpritesheetIndex.Y], explosiveImage, fireImage); // maybe later add not the image, but Explosive object
+            return new Character(position, gameMap.TileSize, collider, characterImage, explosiveImage, fireImage, levelFactory); // maybe later add not the image, but Explosive object
         }
 
     }

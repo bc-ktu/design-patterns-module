@@ -9,6 +9,7 @@ using Utils.Math;
 using Utils.GameLogic;
 using System.Timers;
 using Utils.GameObjects.Explosives;
+using Utils.AbstractFactory;
 
 namespace Utils.GameObjects.Animates
 {
@@ -28,6 +29,17 @@ namespace Utils.GameObjects.Animates
 
         public Bitmap ExplosiveImage { get; private set; }
         public Bitmap FireImage { get; private set; }
+
+        public Explosive Explosive { get; private set; }
+        public Fire Fire { get; private set; }
+        public ILevelFactory LevelFactory { get; private set; }
+
+        public Character(Vector2 position, Vector2 size, Vector4 collider, Bitmap image, Bitmap explosiveImage, Bitmap fireImage, ILevelFactory levelFactory)
+            : base(position, size, collider, image)
+        {
+            Initialize(explosiveImage, fireImage);
+            LevelFactory = levelFactory;
+        }
 
         public Character(Vector2 position, Vector2 size, Vector4 collider, Bitmap image, Bitmap explosiveImage, Bitmap fireImage)
             : base(position, size, collider, image)
@@ -118,7 +130,8 @@ namespace Utils.GameObjects.Animates
             if (gameMap[index].GameObject is EmptyGameObject && CanPlaceExplosive())
             {
                 var prm = gameMap.CreateScaledGameObjectParameters(index.X, index.Y, ExplosiveImage);
-                Explosive explosive = new ExplosiveHVDi(prm.Item1, prm.Item2, prm.Item3, prm.Item4, FireImage);
+                // Explosive explosive = new ExplosiveHVDi(prm.Item1, prm.Item2, prm.Item3, prm.Item4, FireImage);
+                Explosive explosive = LevelFactory.CreateExplosive(prm.Item1, prm.Item2, prm.Item3, prm.Item4, FireImage);
                 explosive.Range = ExplosivesRange;
                 explosive.StartCountdown();
                 gameMap[index].GameObject = explosive;

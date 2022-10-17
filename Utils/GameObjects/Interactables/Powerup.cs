@@ -8,7 +8,7 @@ using Utils.Math;
 
 namespace Utils.GameObjects.Interactables
 {
-    internal abstract class Powerup : GameObject
+    public abstract class Powerup : GameObject
     {
         public int SpeedModifier { get; protected set; }
         public int CapacityModifier { get; protected set; }
