@@ -5,6 +5,7 @@ using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
+using Utils.Factory;
 using Utils.Helpers;
 using Utils.Math;
 
@@ -15,7 +16,7 @@ namespace Utils.GameObjects
         public Vector2 Size { get; private set; }
         public Vector2 ViewSize { get; private set; }
 
-        private MapTile[,] _tiles;
+        public MapTile[,] _tiles;
         public Vector2 TileSize { get; private set; }
         
         public LookupTable ExplosivesLookupTable { get; private set; }
@@ -51,7 +52,7 @@ namespace Utils.GameObjects
         {
             int xWorld = TileSize.X * x;
             int yWorld = TileSize.Y * y;
-            _tiles[x, y] = new MapTile(xWorld, yWorld, TileSize.X, TileSize.Y, image);
+            _tiles[x, y] = new RegularTile(xWorld, yWorld, TileSize.X, TileSize.Y, image);
         }
 
         /// <param name="x">Index on x axis of the tile to place the new GameObject </param>
@@ -64,5 +65,6 @@ namespace Utils.GameObjects
             Vector4 collider = new Vector4(position.X, _tiles[x, y].LocalPosition.Y, position.X + TileSize.X, _tiles[x, y].LocalPosition.Y + TileSize.Y);
             return new Tuple<Vector2, Vector2, Vector4, Bitmap>(position, size, collider, image);
         }
+
     }
 }

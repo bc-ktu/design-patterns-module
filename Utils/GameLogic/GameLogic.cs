@@ -24,6 +24,9 @@ namespace Utils.GameLogic
                     player.TakeDamage(fire.Damage);
                 }
             }
+
+            Vector2 characterIndex = player.WorldPosition / gameMap.TileSize;
+            gameMap[characterIndex].AffectPlayer(player);
         }
 
         public static void UpdateLookupTables(Character player, GameMap gameMap)

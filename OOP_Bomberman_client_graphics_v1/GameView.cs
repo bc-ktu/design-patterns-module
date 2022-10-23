@@ -14,6 +14,10 @@ using Utils.GUIElements;
 using Utils.GameLogic;
 using Utils.GameObjects.Animates;
 using Utils.AbstractFactory;
+using System;
+using Utils.GameObjects.Explosives;
+using java.lang;
+using Character = Utils.GameObjects.Animates.Character;
 
 namespace client_graphics
 {
