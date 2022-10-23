@@ -19,13 +19,16 @@ namespace Utils.GameObjects.Animates
 
         private System.Timers.Timer _iFramesTimer;
         private bool _isInIFrames;
+        private int _movementSpeed;
 
         public Vector2 Facing { get; private set; }
         public int Health { get; private set; }
-        public int MovementSpeed { get; private set; }
+        public int MovementSpeed { get { return _movementSpeed + SpeedModifier; } }
         public int ExplosivesCapacity { get; private set; }
         public int ExplosivesRange { get; private set; }
         public int ExplosiveDamage { get; private set; }
+        
+        public int SpeedModifier { get; set; }
 
         public Bitmap ExplosiveImage { get; private set; }
         public Bitmap FireImage { get; private set; }
@@ -59,10 +62,12 @@ namespace Utils.GameObjects.Animates
 
             Facing = GameSettings.InitialPlayerDirection;
             Health = GameSettings.InitialPlayerHealth;
-            MovementSpeed = GameSettings.InitialPlayerSpeed;
+            _movementSpeed = GameSettings.InitialPlayerSpeed;
             ExplosivesCapacity = GameSettings.InitialPlayerCapacity;
             ExplosivesRange = GameSettings.InitialExplosionRange;
             ExplosiveDamage = GameSettings.InitialExplosionDamage;
+
+            SpeedModifier = 0;
 
             FireImage = fireImage;
             ExplosiveImage = explosiveImage;
@@ -94,11 +99,6 @@ namespace Utils.GameObjects.Animates
             StartIFramesTimer();
         }
 
-        public void SetSpeed(int speed)
-        {
-            MovementSpeed = speed;
-        }
-
         public void ChangeHealth(int amount)
         {
             Health += amount;
@@ -106,7 +106,7 @@ namespace Utils.GameObjects.Animates
 
         public void ChangeSpeed(int amount)
         {
-            MovementSpeed += amount;
+            _movementSpeed += amount;
         }
 
         public void ChangeExplosivesCapacity(int amount)
@@ -153,12 +153,25 @@ namespace Utils.GameObjects.Animates
             _explosivesPlaced--;
         }
 
+        /// <param name="direction">Vienetinis vektorius</param>
         public void Move(Vector2 direction)
         {
             Vector2 vPtoC = new Vector2(Collider.X, Collider.Y) - LocalPosition;
             Vector2 vTLtoBR = new Vector2(Collider.Z - Collider.X, Collider.W - Collider.Y);
             Facing = direction;
             LocalPosition += MovementSpeed * Facing;
+            int tlx = LocalPosition.X + vPtoC.X;
+            int tly = LocalPosition.Y + vPtoC.Y;
+            int brx = tlx + vTLtoBR.X;
+            int bry = tly + vTLtoBR.Y;
+            Collider = new Vector4(tlx, tly, brx, bry);
+        }
+
+        public void Teleport(Vector2 position)
+        {
+            Vector2 vPtoC = new Vector2(Collider.X, Collider.Y) - LocalPosition;
+            Vector2 vTLtoBR = new Vector2(Collider.Z - Collider.X, Collider.W - Collider.Y);
+            LocalPosition = position;
             int tlx = LocalPosition.X + vPtoC.X;
             int tly = LocalPosition.Y + vPtoC.Y;
             int brx = tlx + vTLtoBR.X;

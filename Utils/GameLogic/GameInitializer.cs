@@ -5,6 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Utils.AbstractFactory;
+using Utils.Factory;
 using Utils.GameObjects;
 using Utils.GameObjects.Animates;
 using Utils.GameObjects.Destructables;
@@ -80,6 +81,14 @@ namespace Utils.GameLogic
                     index++;
                 }
             }
+
+            PortalTile pt1 = new PortalTile(2 * gameMap.TileSize.X, 2 * gameMap.TileSize.Y, gameMap.TileSize.X, gameMap.TileSize.Y, outerWallImage);
+            PortalTile pt2 = new PortalTile(6 * gameMap.TileSize.X, 6 * gameMap.TileSize.Y, gameMap.TileSize.X, gameMap.TileSize.Y, outerWallImage);
+            pt1.ExitTile = pt2;
+            // pt2.ExitTile = pt1;
+            gameMap._tiles[2, 2] = pt1;
+            gameMap._tiles[6, 6] = pt2;
+            gameMap._tiles[7, 7] = new MudTile(7 * gameMap.TileSize.X, 7 * gameMap.TileSize.Y, gameMap.TileSize.X, gameMap.TileSize.Y, wallImage);
 
             for (int i = 0; i < mapSize.X; i++)
             {

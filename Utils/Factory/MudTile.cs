@@ -11,7 +11,8 @@ namespace Utils.Factory
 {
     public class MudTile : MapTile
     {
-        private int speed = 7;
+        private readonly int speed = -7;
+
         public MudTile(Vector2 position, Vector2 size, Bitmap image) : base(position, size, image)
         {
         }
@@ -22,7 +23,7 @@ namespace Utils.Factory
 
         public override void AffectPlayer(Character player)
         {
-            player.SetSpeed(speed);
+            player.SpeedModifier = speed;
             //return;
         }
     }

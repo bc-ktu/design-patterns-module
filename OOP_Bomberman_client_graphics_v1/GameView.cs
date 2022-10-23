@@ -128,18 +128,11 @@ namespace client_graphics
             Graphics.DrawGUI(gui, guiFont, GameSettings.GUIBrushColor, e);
         }
 
-        private void TileAffect(GameMap gameMap, Character player)
-        {
-            Vector2 characterIndex = player.WorldPosition / gameMap.TileSize;
-            gameMap[characterIndex].AffectPlayer(player);
-        }
-
         private void OnTick(object sender, EventArgs e)
         {
             GameLogic.UpdateLookupTables(player, gameMap);
             GameLogic.ApplyEffects(player, gameMap, collisions);
             GameLogic.UpdateGUI(player, gui);
-            TileAffect(gameMap, player);
 
             collisions = GamePhysics.GetCollisions(player, gameMap);
 

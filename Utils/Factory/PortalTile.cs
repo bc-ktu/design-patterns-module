@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+
 using Utils.GameObjects;
 using Utils.GameObjects.Animates;
 using Utils.Math;
@@ -11,20 +12,24 @@ namespace Utils.Factory
 {
     public class PortalTile : MapTile
     {
-        public PortalTile ExitPoint { get; set; }
-        public PortalTile(Vector2 position, Vector2 size, Bitmap image, PortalTile exitPoint) : base(position, size, image)
+        public MapTile ExitTile { get; set; }
+
+        public PortalTile(Vector2 position, Vector2 size, Bitmap image) : base(position, size, image)
         {
-            ExitPoint = exitPoint;
+            ExitTile = new EmptyTile();
         }
 
-        public PortalTile(int x, int y, int width, int height, Bitmap image, PortalTile exitPoint) : base(x, y, width, height, image)
+        public PortalTile(int x, int y, int width, int height, Bitmap image) : base(x, y, width, height, image)
         {
-            ExitPoint = exitPoint;
+            ExitTile = new EmptyTile();
         }
 
         public override void AffectPlayer(Character player)
         {
-            return;
+            if (ExitTile is EmptyTile)
+                return;
+
+            player.Teleport(ExitTile.LocalPosition);
         }
     }
 }

@@ -24,6 +24,9 @@ namespace Utils.GameLogic
             {
                 for (int x = -1; x <= 1; x++)
                 {
+                    if (x < 0 || x > gameMap.Size.X || y < 0 || y > gameMap.Size.Y) // fix it !!!
+                        continue;
+
                     Vector2 index = characterIndex + new Vector2(x, y);
                     GameObject otherGO = gameMap[index].GameObject;
 

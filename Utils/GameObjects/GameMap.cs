@@ -16,7 +16,7 @@ namespace Utils.GameObjects
         public Vector2 Size { get; private set; }
         public Vector2 ViewSize { get; private set; }
 
-        private MapTile[,] _tiles;
+        public MapTile[,] _tiles;
         public Vector2 TileSize { get; private set; }
         
         public LookupTable ExplosivesLookupTable { get; private set; }
@@ -65,5 +65,6 @@ namespace Utils.GameObjects
             Vector4 collider = new Vector4(position.X, _tiles[x, y].LocalPosition.Y, position.X + TileSize.X, _tiles[x, y].LocalPosition.Y + TileSize.Y);
             return new Tuple<Vector2, Vector2, Vector4, Bitmap>(position, size, collider, image);
         }
+
     }
 }

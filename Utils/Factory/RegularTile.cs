@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+
 using Utils.GameLogic;
 using Utils.GameObjects;
 using Utils.GameObjects.Animates;
@@ -12,7 +13,7 @@ namespace Utils.Factory
 {
     internal class RegularTile : MapTile
     {
-        public RegularTile(Vector2 position, Vector2 size, Bitmap image) : base(position, size, image)
+        public RegularTile(Vector2 localPosition, Vector2 size, Bitmap image) : base(localPosition, size, image)
         {
         }
 
@@ -22,7 +23,7 @@ namespace Utils.Factory
 
         public override void AffectPlayer(Character player)
         {
-            player.SetSpeed(GameSettings.InitialPlayerSpeed);
+            player.SpeedModifier = 0;
             //return;
         }
     }
