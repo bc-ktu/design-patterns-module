@@ -94,6 +94,11 @@ namespace Utils.GameObjects.Animates
             StartIFramesTimer();
         }
 
+        public void SetSpeed(int speed)
+        {
+            MovementSpeed = speed;
+        }
+
         public void ChangeHealth(int amount)
         {
             Health += amount;

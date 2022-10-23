@@ -5,12 +5,12 @@ using System.Linq;
 using System.Security.Policy;
 using System.Text;
 using System.Threading.Tasks;
-
+using Utils.GameObjects.Animates;
 using Utils.Math;
 
 namespace Utils.GameObjects
 {
-    public class MapTile
+    public abstract class MapTile
     {
         public Vector2 LocalPosition { get; private set; }
         public Vector2 WorldPosition { get { return LocalPosition + Size / 2; } }
@@ -39,5 +39,7 @@ namespace Utils.GameObjects
         {
             return new Rectangle(LocalPosition.X, LocalPosition.Y, Size.X, Size.Y);
         }
+
+        public abstract void AffectPlayer(Character player);
     }
 }

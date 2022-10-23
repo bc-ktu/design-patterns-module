@@ -5,6 +5,7 @@ using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
+using Utils.Factory;
 using Utils.Helpers;
 using Utils.Math;
 
@@ -51,7 +52,7 @@ namespace Utils.GameObjects
         {
             int xWorld = TileSize.X * x;
             int yWorld = TileSize.Y * y;
-            _tiles[x, y] = new MapTile(xWorld, yWorld, TileSize.X, TileSize.Y, image);
+            _tiles[x, y] = new RegularTile(xWorld, yWorld, TileSize.X, TileSize.Y, image);
         }
 
         /// <param name="x">Index on x axis of the tile to place the new GameObject </param>

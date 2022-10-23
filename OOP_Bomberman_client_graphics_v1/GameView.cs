@@ -14,6 +14,10 @@ using Utils.GUIElements;
 using Utils.GameLogic;
 using Utils.GameObjects.Animates;
 using Utils.AbstractFactory;
+using System;
+using Utils.GameObjects.Explosives;
+using java.lang;
+using Character = Utils.GameObjects.Animates.Character;
 
 namespace client_graphics
 {
@@ -124,11 +128,18 @@ namespace client_graphics
             Graphics.DrawGUI(gui, guiFont, GameSettings.GUIBrushColor, e);
         }
 
+        private void TileAffect(GameMap gameMap, Character player)
+        {
+            Vector2 characterIndex = player.WorldPosition / gameMap.TileSize;
+            gameMap[characterIndex].AffectPlayer(player);
+        }
+
         private void OnTick(object sender, EventArgs e)
         {
             GameLogic.UpdateLookupTables(player, gameMap);
             GameLogic.ApplyEffects(player, gameMap, collisions);
             GameLogic.UpdateGUI(player, gui);
+            TileAffect(gameMap, player);
 
             collisions = GamePhysics.GetCollisions(player, gameMap);
 
