@@ -19,7 +19,7 @@ namespace Utils.Factory
 
         public override void AffectPlayer(Character player)
         {
-            throw new NotImplementedException();
+            return;
         }
     }
 }
