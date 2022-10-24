@@ -135,9 +135,9 @@ namespace Utils.GameObjects.Animates
             if (gameMap[index].GameObject is EmptyGameObject && CanPlaceExplosive())
             {
                 var prm = gameMap.CreateScaledGameObjectParameters(index.X, index.Y, ExplosiveImage);
-                // Explosive explosive = new ExplosiveHVDi(prm.Item1, prm.Item2, prm.Item3, prm.Item4, FireImage);
                 Explosive explosive = LevelFactory.CreateExplosive(prm.Item1, prm.Item2, prm.Item3, prm.Item4, FireImage);
                 explosive.Range = ExplosivesRange;
+                explosive.Damage = ExplosiveDamage;
                 explosive.StartCountdown();
                 gameMap[index].GameObject = explosive;
                 gameMap.ExplosivesLookupTable.Set(index, explosive);

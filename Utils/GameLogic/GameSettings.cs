@@ -30,7 +30,7 @@ namespace Utils.GameLogic
 
         public static Vector2 GUIPosition = new Vector2(0, 0);
         public static Vector2 GUISize = new Vector2(5 * 50, 80);
-        public static Brush GUIBrushColor = Brushes.White;
+        public static Brush GUIFontColor = Brushes.White;
         public static int GUIFontSize = 24;
 
         // ******************** TEXTURES SETTINGS ********************

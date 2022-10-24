@@ -18,6 +18,7 @@ namespace Utils.Helpers
         public static readonly string FolderExplosives = "Explosives/";
         public static readonly string FolderGUI = "GUI/";
         public static readonly string FolderFonts = "Fonts/";
+        public static readonly string FolderPowerups = "Powerups/";
 
         // Files
         public static readonly string MapSpritesheet = "TX_Tileset_Grass.png";
@@ -27,6 +28,9 @@ namespace Utils.Helpers
         public static readonly string InnerWallImage = "Wall000.png";
         public static readonly string OuterWallImage = "Wall001.png";
         public static readonly string ExplosiveImage = "bomb32ign.png";
+        public static readonly string SpeedPowerupImage = "SpeedPowerup.png";
+        public static readonly string CapacityPowerupImage = "CapacityPowerup.png";
+        public static readonly string DamagePowerupImage = "DamagePowerup.png";
 
         public static readonly string GUIFrameImage = "panel001.png";
         public static readonly string GUIHealthIcon = "6-pixel-heart-4.png";
