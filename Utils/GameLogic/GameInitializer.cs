@@ -45,21 +45,8 @@ namespace Utils.GameLogic
             return gui;
         }
 
-        public static GameMap CreateMap(ILevelFactory levelFactory, Vector2 mapSize, Vector2 viewSize, List<int> mapSeed, Vector2 groundSpritesheetIndex)
+        public static void AddCrates(GameMap gameMap, Vector2 mapSize, List<int> mapSeed, Bitmap mapTileImage, Bitmap crateImage, ILevelFactory levelFactory)
         {
-            GameMap gameMap = new GameMap(mapSize, viewSize);
-            string filepath;
-
-            filepath = Pather.Create(Pather.FolderAssets, Pather.FolderTextures, Pather.FolderSpritesheets, Pather.MapSpritesheet);
-            Bitmap mapSpritesheet = new Bitmap(filepath);
-            Bitmap mapTileImage = Spritesheet.ExtractSprite(mapSpritesheet, new Vector2(32, 32), groundSpritesheetIndex);
-            filepath = Pather.Create(Pather.FolderAssets, Pather.FolderTextures, Pather.FolderSprites, Pather.FolderExplodables, Pather.CrateImage);
-            Bitmap crateImage = new Bitmap(filepath);
-            filepath = Pather.Create(Pather.FolderAssets, Pather.FolderTextures, Pather.FolderSprites, Pather.FolderWalls, Pather.InnerWallImage);
-            Bitmap wallImage = new Bitmap(filepath);
-            filepath = Pather.Create(Pather.FolderAssets, Pather.FolderTextures, Pather.FolderSprites, Pather.FolderWalls, Pather.OuterWallImage);
-            Bitmap outerWallImage = new Bitmap(filepath);
-
             int index = 0;
             for (int y = 1; y < mapSize.Y - 1; y++)
             {
@@ -81,15 +68,9 @@ namespace Utils.GameLogic
                     index++;
                 }
             }
-
-            PortalTile pt1 = new PortalTile(2 * gameMap.TileSize.X, 2 * gameMap.TileSize.Y, gameMap.TileSize.X, gameMap.TileSize.Y, outerWallImage);
-            PortalTile pt2 = new PortalTile(6 * gameMap.TileSize.X, 6 * gameMap.TileSize.Y, gameMap.TileSize.X, gameMap.TileSize.Y, outerWallImage);
-            pt1.ExitTile = pt2;
-            // pt2.ExitTile = pt1;
-            gameMap._tiles[2, 2] = pt1;
-            gameMap._tiles[6, 6] = pt2;
-            gameMap._tiles[7, 7] = new MudTile(7 * gameMap.TileSize.X, 7 * gameMap.TileSize.Y, gameMap.TileSize.X, gameMap.TileSize.Y, wallImage);
-
+        }
+        public static void AddOuterRing(GameMap gameMap, Vector2 mapSize, Bitmap mapTileImage, Bitmap outerWallImage)
+        {
             for (int i = 0; i < mapSize.X; i++)
             {
                 gameMap.SetTile(i, 0, mapTileImage);
@@ -111,6 +92,35 @@ namespace Utils.GameLogic
                 prm = gameMap.CreateScaledGameObjectParameters(mapSize.X - 1, i, outerWallImage);
                 gameMap[mapSize.X - 1, i].GameObject = new IndestructableWall(prm.Item1, prm.Item2, prm.Item3, prm.Item4);
             }
+        }
+
+        public static GameMap CreateMap(ILevelFactory levelFactory, Vector2 mapSize, Vector2 viewSize, List<int> mapSeed, Vector2 groundSpritesheetIndex)
+        {
+            GameMap gameMap = new GameMap(mapSize, viewSize);
+            string filepath;
+
+            filepath = Pather.Create(Pather.FolderAssets, Pather.FolderTextures, Pather.FolderSpritesheets, Pather.MapSpritesheet);
+            Bitmap mapSpritesheet = new Bitmap(filepath);
+            Bitmap mapTileImage = Spritesheet.ExtractSprite(mapSpritesheet, new Vector2(32, 32), groundSpritesheetIndex);
+            filepath = Pather.Create(Pather.FolderAssets, Pather.FolderTextures, Pather.FolderSprites, Pather.FolderExplodables, Pather.CrateImage);
+            Bitmap crateImage = new Bitmap(filepath);
+            filepath = Pather.Create(Pather.FolderAssets, Pather.FolderTextures, Pather.FolderSprites, Pather.FolderWalls, Pather.InnerWallImage);
+            Bitmap wallImage = new Bitmap(filepath);
+            filepath = Pather.Create(Pather.FolderAssets, Pather.FolderTextures, Pather.FolderSprites, Pather.FolderWalls, Pather.OuterWallImage);
+            Bitmap outerWallImage = new Bitmap(filepath);
+
+            AddCrates(gameMap, mapSize, mapSeed, mapTileImage, crateImage, levelFactory);
+
+            PortalTile pt1 = new PortalTile(2 * gameMap.TileSize.X, 2 * gameMap.TileSize.Y, gameMap.TileSize.X, gameMap.TileSize.Y, outerWallImage);
+            PortalTile pt2 = new PortalTile(6 * gameMap.TileSize.X, 6 * gameMap.TileSize.Y, gameMap.TileSize.X, gameMap.TileSize.Y, outerWallImage);
+            pt1.ExitTile = pt2;
+            // pt2.ExitTile = pt1;
+            gameMap._tiles[2, 2] = pt1;
+            gameMap._tiles[6, 6] = pt2;
+            gameMap._tiles[7, 7] = new MudTile(7 * gameMap.TileSize.X, 7 * gameMap.TileSize.Y, gameMap.TileSize.X, gameMap.TileSize.Y, wallImage);
+            gameMap._tiles[5, 5] = new IceTile(7 * gameMap.TileSize.X, 7 * gameMap.TileSize.Y, gameMap.TileSize.X, gameMap.TileSize.Y, wallImage);
+
+            AddOuterRing(gameMap, mapSize, mapTileImage, outerWallImage);
 
             return gameMap;
         }

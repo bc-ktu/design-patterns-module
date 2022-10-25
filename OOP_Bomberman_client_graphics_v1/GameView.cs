@@ -33,6 +33,7 @@ namespace client_graphics
         private GameMap gameMap;
         private Character player;
         private Vector4 collider;
+        private Bitmap characterImage;
         private InputStack inputStack;
         List<Vector2> collisions;
 
@@ -68,7 +69,7 @@ namespace client_graphics
             Bitmap fireImage = new Bitmap(filepath);
             int px = GameSettings.PlayerSpritesheetIndex.X;
             int py = GameSettings.PlayerSpritesheetIndex.Y;
-            players.Add(uuid, new Character(new Vector2(x, y), gameMap.TileSize, collider, characterImages[px, py], explosiveImage, fireImage));
+            players.Add(uuid, new Character(new Vector2(x, y), gameMap.TileSize, collider, characterImage, explosiveImage, fireImage));
         }
 
         public void UpdatePostion(string uuid, int X, int Y)
@@ -106,6 +107,8 @@ namespace client_graphics
             player = GameInitializer.CreatePlayer(levelFactory, gameMap, GameSettings.PlayerSpritesheetIndex);
 
             Vector2 position = gameMap.ViewSize / 2;
+            collider = player.Collider;
+            characterImage = player.Image;
             Con.Connection.InvokeAsync("JoinGame", position.X, position.Y);
         }
 
