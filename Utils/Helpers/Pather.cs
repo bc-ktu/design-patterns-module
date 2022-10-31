@@ -19,6 +19,7 @@ namespace Utils.Helpers
         public static readonly string FolderGUI = "GUI/";
         public static readonly string FolderFonts = "Fonts/";
         public static readonly string FolderPowerups = "Powerups/";
+        public static readonly string FolderSoundEffects = "SoundEffects/";
 
         // Files
         public static readonly string MapSpritesheet = "TX_Tileset_Grass.png";
