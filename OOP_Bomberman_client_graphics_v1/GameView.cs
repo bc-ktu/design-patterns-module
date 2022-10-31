@@ -4,7 +4,6 @@ using System.Security.AccessControl;
 using System.Threading.Channels;
 using System.Windows.Forms.Design;
 using Microsoft.AspNetCore.SignalR.Client;
-using System.Drawing.Text;
 
 using client_graphics.SignalR;
 using Utils.GameObjects;
@@ -37,8 +36,7 @@ namespace client_graphics
         private InputStack inputStack;
         List<Vector2> collisions;
 
-        private GUI gui; // require font in constructor
-        private Font guiFont;
+        private GUI gui;
 
         public List<int> Maps { get; set; }
         public SignalRConnection Con { get; set; }
@@ -78,7 +76,7 @@ namespace client_graphics
             if (!players.TryGetValue(uuid, out p))
                 return;
 
-            p.Move(new Vector2(X,Y));
+            p.Move(new Vector2(X, Y));
         }
 
         private void GameView_Load(object sender, EventArgs e)
@@ -90,21 +88,18 @@ namespace client_graphics
 
         private void Startup(List<int> GameSeed)
         {
-            levelFactory = new Level2Factory();
+            levelFactory = new Level1Factory();
 
             inputStack = new InputStack();
             collisions = new List<Vector2>();
-            
-            string filepath;
-            PrivateFontCollection pfc = new PrivateFontCollection();
 
-            filepath = Pather.Create(Pather.FolderAssets, Pather.FolderFonts, Pather.GuiFontFile);
-            pfc.AddFontFile(filepath);
-            guiFont = new Font(pfc.Families[0].Name, GameSettings.GUIFontSize);
-
-            gui = GameInitializer.CreateGUI(GameSettings.GUIPosition, GameSettings.GUISize);
+            gui = GameInitializer.CreateGUI(GameSettings.GUIPosition, GameSettings.GUISize, GameSettings.GUIFontColor, GameSettings.GUIFontSize);
             gameMap = GameInitializer.CreateMap(levelFactory, GameSettings.MapSize, Vector2.FromSize(ClientSize), GameSeed, GameSettings.GroundSpritesheetIndex);
             player = GameInitializer.CreatePlayer(levelFactory, gameMap, GameSettings.PlayerSpritesheetIndex);
+
+            string filepath = Pather.Create(Pather.FolderAssets, Pather.FolderTextures, Pather.FolderSprites, Pather.FolderPowerups, Pather.SpeedPowerupImage);
+            Bitmap powerupImage = new Bitmap(filepath);
+            GameLogic.GeneratePowerups(levelFactory, gameMap, 14, powerupImage);
 
             Vector2 position = gameMap.ViewSize / 2;
             collider = player.Collider;
@@ -128,12 +123,13 @@ namespace client_graphics
                     Graphics.DrawCollider(p.Value, DEFAULT_COLLIDERS_COLOR, COLLIDERS_WIDTH, e);
             }
 
-            Graphics.DrawGUI(gui, guiFont, GameSettings.GUIBrushColor, e);
+            Graphics.DrawGUI(gui, e);
         }
 
         private void OnTick(object sender, EventArgs e)
         {
-            GameLogic.UpdateLookupTables(player, gameMap);
+            GameLogic.UpdateExplosives(player, gameMap);
+            GameLogic.UpdateFires(gameMap);
             GameLogic.ApplyEffects(player, gameMap, collisions);
             GameLogic.UpdateGUI(player, gui);
 
