@@ -66,14 +66,16 @@ namespace Utils.GameObjects.Explosives
         {
             if (_coundownEnded)
             {
-                Explode(gameMap);
+                player.Subject.MakeSound("Explode");
+                Explode(gameMap, player);
                 player.GiveExplosive();
             }
         }
 
-        private void Explode(GameMap gameMap) // add index out of bounds handling (fake object)
+        private void Explode(GameMap gameMap, Character player) // add index out of bounds handling (fake object)
         {
             Vector2 thisIndex = WorldPosition / gameMap.TileSize;
+         //   player.Subject.MakeSound("Fire"); 
 
             for (int i = 0; i < ExplosionDirections.Length; i++)
             {

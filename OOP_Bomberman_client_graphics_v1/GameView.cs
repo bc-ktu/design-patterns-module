@@ -17,6 +17,7 @@ using System;
 using Utils.GameObjects.Explosives;
 using java.lang;
 using Character = Utils.GameObjects.Animates.Character;
+using Utils.Observer;
 
 namespace client_graphics
 {
@@ -36,6 +37,7 @@ namespace client_graphics
         private InputStack inputStack;
         List<Vector2> collisions;
 
+        public Subject subject { get; set; }
         private GUI gui;
 
         public List<int> Maps { get; set; }
@@ -95,7 +97,8 @@ namespace client_graphics
 
             gui = GameInitializer.CreateGUI(GameSettings.GUIPosition, GameSettings.GUISize, GameSettings.GUIFontColor, GameSettings.GUIFontSize);
             gameMap = GameInitializer.CreateMap(levelFactory, GameSettings.MapSize, Vector2.FromSize(ClientSize), GameSeed, GameSettings.GroundSpritesheetIndex);
-            player = GameInitializer.CreatePlayer(levelFactory, gameMap, GameSettings.PlayerSpritesheetIndex);
+            subject = new Subject();
+            player = GameInitializer.CreatePlayer(levelFactory, gameMap, GameSettings.PlayerSpritesheetIndex, subject);
 
             string filepath = Pather.Create(Pather.FolderAssets, Pather.FolderTextures, Pather.FolderSprites, Pather.FolderPowerups, Pather.SpeedPowerupImage);
             Bitmap powerupImage = new Bitmap(filepath);
