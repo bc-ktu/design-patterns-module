@@ -10,6 +10,7 @@ using Utils.GameLogic;
 using System.Timers;
 using Utils.GameObjects.Explosives;
 using Utils.AbstractFactory;
+using Utils.Observer;
 
 namespace Utils.GameObjects.Animates
 {
@@ -36,10 +37,12 @@ namespace Utils.GameObjects.Animates
         public Explosive Explosive { get; private set; }
         public Fire Fire { get; private set; }
         public ILevelFactory LevelFactory { get; private set; }
+        public Subject Subject { get; private set; }
 
-        public Character(Vector2 position, Vector2 size, Vector4 collider, Bitmap image, Bitmap explosiveImage, Bitmap fireImage, ILevelFactory levelFactory)
+        public Character(Vector2 position, Vector2 size, Vector4 collider, Bitmap image, Bitmap explosiveImage, Bitmap fireImage, ILevelFactory levelFactory, Subject subject)
             : base(position, size, collider, image)
         {
+            this.Subject = subject;
             Initialize(explosiveImage, fireImage);
             LevelFactory = levelFactory;
         }
@@ -76,6 +79,8 @@ namespace Utils.GameObjects.Animates
             _iFramesTimer.Elapsed += new ElapsedEventHandler(OnIFramesEnd);
             _iFramesTimer.Interval = GameSettings.InitialTimeTillExplosion;
             _isInIFrames = false;
+
+            RegisterObserver();
         }
 
         private void StartIFramesTimer()
@@ -90,11 +95,12 @@ namespace Utils.GameObjects.Animates
             _isInIFrames = false;
         }
 
-        public void TakeDamage(int amount)
+        public void TakeDamage(int amount) 
         {
             if (_isInIFrames)
                 return;
 
+            this.Subject.MakeSound("Damage"); 
             Health -= amount;
             StartIFramesTimer();
         }
@@ -142,6 +148,7 @@ namespace Utils.GameObjects.Animates
                 gameMap[index].GameObject = explosive;
                 gameMap.ExplosivesLookupTable.Set(index, explosive);
                 _explosivesPlaced++;
+                this.Subject.MakeSound("PlaceBomb");
             }
         }
 
@@ -178,6 +185,17 @@ namespace Utils.GameObjects.Animates
             int bry = tly + vTLtoBR.Y;
             Collider = new Vector4(tlx, tly, brx, bry);
         }
+        public void RegisterObserver()
+        {
+            DamageObserver damageObserver = new();
+            ExplosionObserver explosionObserver = new();
+            FireObserver fireObserver = new();
+            PlaceBombObserver placeBombObserver = new();
 
+            this.Subject.RegisterObserver(damageObserver);
+            this.Subject.RegisterObserver(explosionObserver);
+            this.Subject.RegisterObserver(fireObserver);
+            this.Subject.RegisterObserver(placeBombObserver);
+        }
     }
 }

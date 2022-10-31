@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Drawing.Text;
 using System.Linq;
+using System.Security.Policy;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -12,6 +13,7 @@ using Utils.GameObjects.Animates;
 using Utils.GUIElements;
 using Utils.Helpers;
 using Utils.Math;
+using Utils.Observer;
 
 namespace Utils.GameLogic
 {
@@ -125,7 +127,7 @@ namespace Utils.GameLogic
             return gameMap;
         }
 
-        public static Character CreatePlayer(ILevelFactory levelFactory, GameMap gameMap, Vector2 playerSpritesheetIndex)
+        public static Character CreatePlayer(ILevelFactory levelFactory, GameMap gameMap, Vector2 playerSpritesheetIndex, Subject subject)
         {
             string filepath;
 
@@ -146,8 +148,7 @@ namespace Utils.GameLogic
             int bry = (int)(position.Y + colliderSize * gameMap.TileSize.Y);
             Vector4 collider = new Vector4(tlx, tly, brx, bry);
 
-            return new Character(position, gameMap.TileSize, collider, characterImage, explosiveImage, fireImage, levelFactory); // maybe later add not the image, but Explosive object
+            return new Character(position, gameMap.TileSize, collider, characterImage, explosiveImage, fireImage, levelFactory, subject); // maybe later add not the image, but Explosive object
         }
-
     }
 }
