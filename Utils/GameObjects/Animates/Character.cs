@@ -11,6 +11,7 @@ using System.Timers;
 using Utils.GameObjects.Explosives;
 using Utils.AbstractFactory;
 using Utils.Observer;
+using Utils.Helpers;
 
 namespace Utils.GameObjects.Animates
 {
@@ -24,7 +25,7 @@ namespace Utils.GameObjects.Animates
 
         public Vector2 Facing { get; private set; }
         public int Health { get; private set; }
-        public int MovementSpeed { get { return _movementSpeed + SpeedModifier; } }
+        public int MovementSpeed { get; set; }
         public int ExplosivesCapacity { get; private set; }
         public int ExplosivesRange { get; private set; }
         public int ExplosiveDamage { get; private set; }
@@ -47,9 +48,10 @@ namespace Utils.GameObjects.Animates
             LevelFactory = levelFactory;
         }
 
-        public Character(Vector2 position, Vector2 size, Vector4 collider, Bitmap image, Bitmap explosiveImage, Bitmap fireImage)
+        public Character(Vector2 position, Vector2 size, Vector4 collider, Bitmap image, Bitmap explosiveImage, Bitmap fireImage, Subject subject)
             : base(position, size, collider, image)
         {
+            this.Subject = subject;
             Initialize(explosiveImage, fireImage);
         }
 
@@ -115,6 +117,21 @@ namespace Utils.GameObjects.Animates
             _movementSpeed += amount;
         }
 
+        public void SetMoveSpeed(int amount)
+        {
+            _movementSpeed = amount;
+        }
+
+        public int GetSpeed()
+        {
+            return _movementSpeed + SpeedModifier;
+        }
+
+        public int GetMoveSpeed()
+        {
+            return _movementSpeed;
+        }
+
         public void ChangeExplosivesCapacity(int amount)
         {
             ExplosivesCapacity += amount;
@@ -166,7 +183,7 @@ namespace Utils.GameObjects.Animates
             Vector2 vPtoC = new Vector2(Collider.X, Collider.Y) - LocalPosition;
             Vector2 vTLtoBR = new Vector2(Collider.Z - Collider.X, Collider.W - Collider.Y);
             Facing = direction;
-            LocalPosition += MovementSpeed * Facing;
+            LocalPosition += GetSpeed() * Facing;
             int tlx = LocalPosition.X + vPtoC.X;
             int tly = LocalPosition.Y + vPtoC.Y;
             int brx = tlx + vTLtoBR.X;

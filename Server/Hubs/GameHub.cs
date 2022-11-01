@@ -1,5 +1,5 @@
 ﻿using Microsoft.AspNetCore.SignalR;
-
+using Utils.GameLogic;
 using Utils.Math;
 
 namespace Server.Hubs
@@ -23,16 +23,16 @@ namespace Server.Hubs
             await Clients.Client(Context.ConnectionId).SendAsync("GenMap", Storage.generator.getValues());
         }
 
-        public async Task Move(int x,int y)
+        public async Task Move(int x, int y, int speedMod, int speed)
         {
             Vector2 temp;
 
             if (Storage.Players.TryGetValue(Context.ConnectionId, out temp))
             {
-                temp.X = temp.X + 7 * x;
-                temp.Y = temp.Y + 7 * y;
+                temp.X = temp.X + (speed + speedMod) * x;
+                temp.Y = temp.Y + (speed + speedMod) * y;
                 Storage.Players[Context.ConnectionId] = temp;
-                await Clients.Others.SendAsync("PlayerMove", Context.ConnectionId, x, y);
+                await Clients.Others.SendAsync("PlayerMove", Context.ConnectionId, x, y, speedMod, speed);
             };         
         }
 
