@@ -33,8 +33,8 @@ namespace client_graphics
         private GameMap gameMap;
         private Character player;
         private Vector4 collider;
+        private InputStack inputStack; 
         private Bitmap characterImage;
-        private InputStack inputStack;
         List<Vector2> collisions;
 
         public Subject subject { get; set; }
@@ -69,15 +69,16 @@ namespace client_graphics
             Bitmap fireImage = new Bitmap(filepath);
             int px = GameSettings.PlayerSpritesheetIndex.X;
             int py = GameSettings.PlayerSpritesheetIndex.Y;
-            players.Add(uuid, new Character(new Vector2(x, y), gameMap.TileSize, collider, characterImage, explosiveImage, fireImage));
+            players.Add(uuid, new Character(new Vector2(x, y), gameMap.TileSize, collider, characterImage, explosiveImage, fireImage, subject));
         }
 
-        public void UpdatePostion(string uuid, int X, int Y)
+        public void UpdatePosition(string uuid, int X, int Y, int speedMod, int speed)
         {
             Character p;
             if (!players.TryGetValue(uuid, out p))
                 return;
-
+            p.SpeedModifier = speedMod;
+            p.SetMoveSpeed(speed);
             p.Move(new Vector2(X, Y));
         }
 
@@ -105,9 +106,10 @@ namespace client_graphics
             GameLogic.GeneratePowerups(levelFactory, gameMap, 14, powerupImage);
 
             Vector2 position = gameMap.ViewSize / 2;
+            Con.Connection.InvokeAsync("JoinGame", position.X, position.Y);
+
             collider = player.Collider;
             characterImage = player.Image;
-            Con.Connection.InvokeAsync("JoinGame", position.X, position.Y);
         }
 
         private void OnPaint(object sender, PaintEventArgs e)
