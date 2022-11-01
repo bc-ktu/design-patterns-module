@@ -56,7 +56,7 @@ namespace Utils.GameLogic
         public static void UpdateGUI(Character player, GUI gui)
         {
             gui.SetHealthValue(player.Health);
-            gui.SetSpeedValue(player.MovementSpeed);
+            gui.SetSpeedValue(player.GetSpeed());
             gui.SetCapacityValue(player.ExplosivesCapacity);
             gui.SetRangeValue(player.ExplosivesRange);
             gui.SetDamageValue(player.ExplosiveDamage);
