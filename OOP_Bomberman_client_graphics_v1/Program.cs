@@ -47,9 +47,9 @@ namespace client_graphics
             {
                 game.AddPlayer(uuid, X, Y);
             });
-            Con.Connection.On<string, int, int>("PlayerMove", (uuid, X, Y) =>
+            Con.Connection.On<string, int, int, int, int>("PlayerMove", (uuid, X, Y, speedMod, speed) =>
             {
-                game.UpdatePostion(uuid, X, Y);
+                game.UpdatePosition(uuid, X, Y, speedMod, speed);
             });
 
             Application.Run(game);
