@@ -17,6 +17,7 @@ using System;
 using Utils.GameObjects.Explosives;
 using java.lang;
 using Character = Utils.GameObjects.Animates.Character;
+using Utils.Observer;
 
 namespace client_graphics
 {
@@ -32,9 +33,11 @@ namespace client_graphics
         private GameMap gameMap;
         private Character player;
         private Vector4 collider;
-        private InputStack inputStack;
+        private InputStack inputStack; 
+        private Bitmap characterImage;
         List<Vector2> collisions;
 
+        public Subject subject { get; set; }
         private GUI gui;
 
         public List<int> Maps { get; set; }
@@ -66,15 +69,16 @@ namespace client_graphics
             Bitmap fireImage = new Bitmap(filepath);
             int px = GameSettings.PlayerSpritesheetIndex.X;
             int py = GameSettings.PlayerSpritesheetIndex.Y;
-            players.Add(uuid, new Character(new Vector2(x, y), gameMap.TileSize, collider, characterImages[px, py], explosiveImage, fireImage));
+            players.Add(uuid, new Character(new Vector2(x, y), gameMap.TileSize, collider, characterImage, explosiveImage, fireImage, subject));
         }
 
-        public void UpdatePostion(string uuid, int X, int Y)
+        public void UpdatePosition(string uuid, int X, int Y, int speedMod, int speed)
         {
             Character p;
             if (!players.TryGetValue(uuid, out p))
                 return;
-
+            p.SpeedModifier = speedMod;
+            p.SetMoveSpeed(speed);
             p.Move(new Vector2(X, Y));
         }
 
@@ -94,7 +98,8 @@ namespace client_graphics
 
             gui = GameInitializer.CreateGUI(GameSettings.GUIPosition, GameSettings.GUISize, GameSettings.GUIFontColor, GameSettings.GUIFontSize);
             gameMap = GameInitializer.CreateMap(levelFactory, GameSettings.MapSize, Vector2.FromSize(ClientSize), GameSeed, GameSettings.GroundSpritesheetIndex);
-            player = GameInitializer.CreatePlayer(levelFactory, gameMap, GameSettings.PlayerSpritesheetIndex);
+            subject = new Subject();
+            player = GameInitializer.CreatePlayer(levelFactory, gameMap, GameSettings.PlayerSpritesheetIndex, subject);
 
             string filepath = Pather.Create(Pather.FolderAssets, Pather.FolderTextures, Pather.FolderSprites, Pather.FolderPowerups, Pather.SpeedPowerupImage);
             Bitmap powerupImage = new Bitmap(filepath);
@@ -102,6 +107,9 @@ namespace client_graphics
 
             Vector2 position = gameMap.ViewSize / 2;
             Con.Connection.InvokeAsync("JoinGame", position.X, position.Y);
+
+            collider = player.Collider;
+            characterImage = player.Image;
         }
 
         private void OnPaint(object sender, PaintEventArgs e)

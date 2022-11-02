@@ -10,6 +10,8 @@ using Utils.GameLogic;
 using System.Timers;
 using Utils.GameObjects.Explosives;
 using Utils.AbstractFactory;
+using Utils.Observer;
+using Utils.Helpers;
 
 namespace Utils.GameObjects.Animates
 {
@@ -23,7 +25,7 @@ namespace Utils.GameObjects.Animates
 
         public Vector2 Facing { get; private set; }
         public int Health { get; private set; }
-        public int MovementSpeed { get { return _movementSpeed + SpeedModifier; } }
+        public int MovementSpeed { get; set; }
         public int ExplosivesCapacity { get; private set; }
         public int ExplosivesRange { get; private set; }
         public int ExplosiveDamage { get; private set; }
@@ -36,17 +38,20 @@ namespace Utils.GameObjects.Animates
         public Explosive Explosive { get; private set; }
         public Fire Fire { get; private set; }
         public ILevelFactory LevelFactory { get; private set; }
+        public Subject Subject { get; private set; }
 
-        public Character(Vector2 position, Vector2 size, Vector4 collider, Bitmap image, Bitmap explosiveImage, Bitmap fireImage, ILevelFactory levelFactory)
+        public Character(Vector2 position, Vector2 size, Vector4 collider, Bitmap image, Bitmap explosiveImage, Bitmap fireImage, ILevelFactory levelFactory, Subject subject)
             : base(position, size, collider, image)
         {
+            this.Subject = subject;
             Initialize(explosiveImage, fireImage);
             LevelFactory = levelFactory;
         }
 
-        public Character(Vector2 position, Vector2 size, Vector4 collider, Bitmap image, Bitmap explosiveImage, Bitmap fireImage)
+        public Character(Vector2 position, Vector2 size, Vector4 collider, Bitmap image, Bitmap explosiveImage, Bitmap fireImage, Subject subject)
             : base(position, size, collider, image)
         {
+            this.Subject = subject;
             Initialize(explosiveImage, fireImage);
         }
 
@@ -76,6 +81,8 @@ namespace Utils.GameObjects.Animates
             _iFramesTimer.Elapsed += new ElapsedEventHandler(OnIFramesEnd);
             _iFramesTimer.Interval = GameSettings.InitialTimeTillExplosion;
             _isInIFrames = false;
+
+            RegisterObserver();
         }
 
         private void StartIFramesTimer()
@@ -90,11 +97,12 @@ namespace Utils.GameObjects.Animates
             _isInIFrames = false;
         }
 
-        public void TakeDamage(int amount)
+        public void TakeDamage(int amount) 
         {
             if (_isInIFrames)
                 return;
 
+            this.Subject.MakeSound("Damage"); 
             Health -= amount;
             StartIFramesTimer();
         }
@@ -107,6 +115,21 @@ namespace Utils.GameObjects.Animates
         public void ChangeSpeed(int amount)
         {
             _movementSpeed += amount;
+        }
+
+        public void SetMoveSpeed(int amount)
+        {
+            _movementSpeed = amount;
+        }
+
+        public int GetSpeed()
+        {
+            return _movementSpeed + SpeedModifier;
+        }
+
+        public int GetMoveSpeed()
+        {
+            return _movementSpeed;
         }
 
         public void ChangeExplosivesCapacity(int amount)
@@ -142,6 +165,7 @@ namespace Utils.GameObjects.Animates
                 gameMap[index].GameObject = explosive;
                 gameMap.ExplosivesLookupTable.Set(index, explosive);
                 _explosivesPlaced++;
+                this.Subject.MakeSound("PlaceBomb");
             }
         }
 
@@ -159,7 +183,7 @@ namespace Utils.GameObjects.Animates
             Vector2 vPtoC = new Vector2(Collider.X, Collider.Y) - LocalPosition;
             Vector2 vTLtoBR = new Vector2(Collider.Z - Collider.X, Collider.W - Collider.Y);
             Facing = direction;
-            LocalPosition += MovementSpeed * Facing;
+            LocalPosition += GetSpeed() * Facing;
             int tlx = LocalPosition.X + vPtoC.X;
             int tly = LocalPosition.Y + vPtoC.Y;
             int brx = tlx + vTLtoBR.X;
@@ -178,6 +202,17 @@ namespace Utils.GameObjects.Animates
             int bry = tly + vTLtoBR.Y;
             Collider = new Vector4(tlx, tly, brx, bry);
         }
+        public void RegisterObserver()
+        {
+            DamageObserver damageObserver = new();
+            ExplosionObserver explosionObserver = new();
+            FireObserver fireObserver = new();
+            PlaceBombObserver placeBombObserver = new();
 
+            this.Subject.RegisterObserver(damageObserver);
+            this.Subject.RegisterObserver(explosionObserver);
+            this.Subject.RegisterObserver(fireObserver);
+            this.Subject.RegisterObserver(placeBombObserver);
+        }
     }
 }

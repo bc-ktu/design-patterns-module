@@ -19,22 +19,22 @@ namespace client_graphics
             if (key == Input.KeyUp)
             {
                 character.Move(Direction.Up);
-                Con.Connection.InvokeAsync("Move", Direction.Up.X, Direction.Up.Y);
+                Con.Connection.InvokeAsync("Move", Direction.Up.X, Direction.Up.Y, character.SpeedModifier, character.GetMoveSpeed());
             }
             else if (key == Input.KeyDown)
             {
                 character.Move(Direction.Down);
-                Con.Connection.InvokeAsync("Move", Direction.Down.X, Direction.Down.Y);
+                Con.Connection.InvokeAsync("Move", Direction.Down.X, Direction.Down.Y, character.SpeedModifier, character.GetMoveSpeed());
             }
             else if (key == Input.KeyRight)
             {
                 character.Move(Direction.Right);
-                Con.Connection.InvokeAsync("Move", Direction.Right.X, Direction.Right.Y);
+                Con.Connection.InvokeAsync("Move", Direction.Right.X, Direction.Right.Y, character.SpeedModifier, character.GetMoveSpeed());
             }
             else if (key == Input.KeyLeft)
             {
                 character.Move(Direction.Left);
-                Con.Connection.InvokeAsync("Move", Direction.Left.X, Direction.Left.Y);
+                Con.Connection.InvokeAsync("Move", Direction.Left.X, Direction.Left.Y, character.SpeedModifier, character.GetMoveSpeed());
             }
             else if (key == Input.KeyBomb)
             {
