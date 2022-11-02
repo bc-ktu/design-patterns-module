@@ -19,15 +19,14 @@ namespace Utils.Builder
 
         public override void AddSpecialTiles()
         {
-            MapTile tile;
-            Random random = new Random();
-            int rx = random.Next(1, mapSize.X - 1);
-            int ry = random.Next(1, mapSize.Y - 1);
+            int index = mapSeed.Count - 10;
+            int rx = mapSeed[index];
+            int ry = mapSeed[index + 1];
             PortalTile pt1 = new PortalTile(rx * gameMap.TileSize.X, ry * gameMap.TileSize.Y, gameMap.TileSize.X, gameMap.TileSize.Y, specTileImage);
 
-            int rxx = random.Next(1, mapSize.X - 1);
-            int ryy = random.Next(1, mapSize.Y - 1);
-            tile = gameMap._tiles[rx, ry];
+            int rxx = mapSeed[index + 3];
+            int ryy = mapSeed[index + 4];
+            MapTile tile = gameMap._tiles[rxx, ryy];
             if (tile is PortalTile)
             {
                 rxx++;
@@ -37,7 +36,6 @@ namespace Utils.Builder
             pt1.ExitTile = pt2;
             gameMap._tiles[rx, ry] = pt1;
             gameMap._tiles[rxx, ryy] = pt2;
-            //return;
         }
     }
 }

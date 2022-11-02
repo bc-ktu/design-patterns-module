@@ -20,17 +20,13 @@ namespace Utils.Builder
 
         public override void AddSpecialTiles()
         {
-            Random random = new Random();
-            int num = 5;
-            for (int i = 0; i < num; i++)
+            int index = mapSeed.Count - 10;
+            for (int i = index; i < index + 5; i++)
             {
-                int rx = random.Next(1, mapSize.X - 1);
-                int ry = random.Next(1, mapSize.Y - 1);
-                MapTile tile = gameMap._tiles[rx, ry];
-                if (tile is not MudTile) gameMap._tiles[rx, ry] = new MudTile(rx * gameMap.TileSize.X, ry * gameMap.TileSize.Y, gameMap.TileSize.X, gameMap.TileSize.Y, specTileImage);
-                else num++;
+                int rx = mapSeed[i];
+                int ry = mapSeed[i + 5];
+                gameMap._tiles[rx, ry] = new MudTile(rx * gameMap.TileSize.X, ry * gameMap.TileSize.Y, gameMap.TileSize.X, gameMap.TileSize.Y, specTileImage);
             }
-            //return;
         }
     }
 }

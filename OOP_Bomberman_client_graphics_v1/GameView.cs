@@ -91,7 +91,7 @@ namespace client_graphics
 
         private void Startup(List<int> GameSeed)
         {
-            levelFactory = new Level1Factory();
+            levelFactory = new Level2Factory();
 
             inputStack = new InputStack();
             collisions = new List<Vector2>();
