@@ -5,11 +5,12 @@ using System.Drawing;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+
 using Utils.Math;
 
 namespace Utils.GameObjects
 {
-    public abstract class GameObject : INullable
+    public abstract class GameObject : INullable //, IEquatable<GameObject>
     {
         public Vector2 LocalPosition { get; protected set; }
         public Vector2 WorldPosition { get { return LocalPosition + Size / 2; } }
@@ -62,5 +63,12 @@ namespace Utils.GameObjects
                    "collider: " + Collider.ToString();
         }
 
+        //public bool Equals(GameObject other)
+        //{
+        //    return LocalPosition == other.LocalPosition &&
+        //           Size == other.Size &&
+        //           Collider == other.Collider &&
+        //           Image == other.Image;
+        //}
     }
 }

@@ -6,6 +6,8 @@ using System.Threading.Tasks;
 
 using Utils.GameObjects;
 using Utils.GUIElements;
+using Utils.Helpers;
+using Utils.Map;
 using Utils.Math;
 
 namespace client_graphics
@@ -24,15 +26,14 @@ namespace client_graphics
                 for (int x = 0; x < gameMap.Size.X; x++)
                 {
                     e.Graphics.DrawImage(gameMap[x, y].Image, gameMap[x, y].ToRectangle());
-                    if (!(gameMap[x, y].GameObject is EmptyGameObject)) 
-                    {
-                        e.Graphics.DrawImage(gameMap[x, y].GameObject.Image, gameMap[x, y].GameObject.ToRectangle());
-                    }
+
+                    foreach (GameObject go in gameMap[x, y].GameObjects)
+                        e.Graphics.DrawImage(go.Image, go.ToRectangle());
                 }
             }
         }
 
-        public static void DrawColliders(GameMap gameMap, List<Vector2> collisions, Color color, Color collisionColor, float width, PaintEventArgs e)
+        public static void DrawColliders(GameMap gameMap, LookupTable collisions, Color color, Color collisionColor, float width, PaintEventArgs e)
         {
             Pen pen = new Pen(color, width);
             Pen collisionsPen = new Pen(collisionColor, width);
@@ -42,8 +43,8 @@ namespace client_graphics
             {
                 for (int x = 0; x < gameMap.Size.X; x++)
                 {
-                    GameObject go = gameMap[x, y].GameObject;
-                    if (go is not EmptyGameObject)
+                    MapTile mapTile = gameMap[x, y];
+                    foreach (GameObject go in mapTile.GameObjects)
                     {
                         int xGO = go.Collider.X;
                         int yGO = go.Collider.Y;
@@ -55,15 +56,21 @@ namespace client_graphics
                 }
             }
 
-            for (int i = 0; i < collisions.Count; i++)
+            for (int i = 0; i < collisions.Positions.Length; i++)
             {
-                GameObject go = gameMap[collisions[i]].GameObject;
-                int xGO = go.Collider.X;
-                int yGO = go.Collider.Y;
-                int widthGO = go.Collider.Z - xGO;
-                int heightGO = go.Collider.W - yGO;
-                Rectangle rect = new Rectangle(xGO, yGO, widthGO, heightGO);
-                e.Graphics.DrawRectangle(collisionsPen, rect);
+                MapTile mapTile = gameMap[collisions.Positions[i]];
+                foreach (GameObject go in mapTile.GameObjects)
+                {
+                    if (!collisions.Contains(collisions.Positions[i], go))
+                        continue;
+
+                    int xGO = go.Collider.X;
+                    int yGO = go.Collider.Y;
+                    int widthGO = go.Collider.Z - xGO;
+                    int heightGO = go.Collider.W - yGO;
+                    Rectangle rect = new Rectangle(xGO, yGO, widthGO, heightGO);
+                    e.Graphics.DrawRectangle(collisionsPen, rect);
+                }
             }
         }
 

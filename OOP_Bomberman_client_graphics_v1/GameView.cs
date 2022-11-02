@@ -1,23 +1,14 @@
-using javax.print.attribute.standard;
-using sun.swing;
-using System.Security.AccessControl;
-using System.Threading.Channels;
-using System.Windows.Forms.Design;
 using Microsoft.AspNetCore.SignalR.Client;
 
 using client_graphics.SignalR;
-using Utils.GameObjects;
 using Utils.Math;
 using Utils.Helpers;
 using Utils.GUIElements;
 using Utils.GameLogic;
-using Utils.GameObjects.Animates;
 using Utils.AbstractFactory;
-using System;
-using Utils.GameObjects.Explosives;
-using java.lang;
-using Character = Utils.GameObjects.Animates.Character;
+using Utils.GameObjects.Animates;
 using Utils.Observer;
+using Utils.Map;
 
 namespace client_graphics
 {
@@ -28,21 +19,19 @@ namespace client_graphics
         private readonly Color COLLIDING_COLLIDERS_COLOR = Color.Red;
         private readonly float COLLIDERS_WIDTH = 2;
 
-        private Bitmap[,] characterImages;
-
         private GameMap gameMap;
-        private Character player;
+        private Player player;
         private Vector4 collider;
         private InputStack inputStack; 
         private Bitmap characterImage;
-        List<Vector2> collisions;
+        private LookupTable collisions;
 
         public Subject subject { get; set; }
         private GUI gui;
 
         public List<int> Maps { get; set; }
         public SignalRConnection Con { get; set; }
-        private Dictionary<string, Character> players = new Dictionary<string, Character>();
+        private Dictionary<string, Player> players = new Dictionary<string, Player>();
 
         private ILevelFactory levelFactory;
 
@@ -69,12 +58,12 @@ namespace client_graphics
             Bitmap fireImage = new Bitmap(filepath);
             int px = GameSettings.PlayerSpritesheetIndex.X;
             int py = GameSettings.PlayerSpritesheetIndex.Y;
-            players.Add(uuid, new Character(new Vector2(x, y), gameMap.TileSize, collider, characterImage, explosiveImage, fireImage, subject));
+            players.Add(uuid, new Player(new Vector2(x, y), gameMap.TileSize, collider, characterImage, explosiveImage, fireImage, subject));
         }
 
         public void UpdatePosition(string uuid, int X, int Y, int speedMod, int speed)
         {
-            Character p;
+            Player p;
             if (!players.TryGetValue(uuid, out p))
                 return;
             p.SpeedModifier = speedMod;
@@ -94,7 +83,7 @@ namespace client_graphics
             levelFactory = new Level1Factory();
 
             inputStack = new InputStack();
-            collisions = new List<Vector2>();
+            collisions = new LookupTable();
 
             gui = GameInitializer.CreateGUI(GameSettings.GUIPosition, GameSettings.GUISize, GameSettings.GUIFontColor, GameSettings.GUIFontSize);
             gameMap = GameInitializer.CreateMap(levelFactory, GameSettings.MapSize, Vector2.FromSize(ClientSize), GameSeed, GameSettings.GroundSpritesheetIndex);
@@ -117,14 +106,14 @@ namespace client_graphics
             Graphics.DrawMap(gameMap, e);
             Graphics.DrawGameObject(player, e);
 
-            foreach (KeyValuePair<string, Character> p in players)
+            foreach (KeyValuePair<string, Player> p in players)
                 Graphics.DrawGameObject(p.Value, e);
 
             if (DRAW_COLLIDERS)
             {
                 Graphics.DrawColliders(gameMap, collisions, DEFAULT_COLLIDERS_COLOR, COLLIDING_COLLIDERS_COLOR, COLLIDERS_WIDTH, e);
                 Graphics.DrawCollider(player, DEFAULT_COLLIDERS_COLOR, COLLIDERS_WIDTH, e);
-                foreach (KeyValuePair<string, Character> p in players)
+                foreach (KeyValuePair<string, Player> p in players)
                     Graphics.DrawCollider(p.Value, DEFAULT_COLLIDERS_COLOR, COLLIDERS_WIDTH, e);
             }
 
@@ -134,11 +123,12 @@ namespace client_graphics
         private void OnTick(object sender, EventArgs e)
         {
             GameLogic.UpdateExplosives(player, gameMap);
-            GameLogic.UpdateFires(gameMap);
-            GameLogic.ApplyEffects(player, gameMap, collisions);
-            GameLogic.UpdateGUI(player, gui);
+            GameLogic.UpdateFires(gameMap, levelFactory);
 
             collisions = GamePhysics.GetCollisions(player, gameMap);
+
+            GameLogic.ApplyEffects(player, gameMap, collisions.GameObjects);
+            GameLogic.UpdateGUI(player, gui);
 
             InputHandler.HandleKey(inputStack.Peek(), player, gameMap, Con);
 

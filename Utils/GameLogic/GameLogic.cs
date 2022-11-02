@@ -9,24 +9,25 @@ using Utils.GameObjects.Animates;
 using Utils.GameObjects.Explosives;
 using Utils.GameObjects.Interactables;
 using Utils.GUIElements;
+using Utils.Map;
 using Utils.Math;
 
 namespace Utils.GameLogic
 {
     public static class GameLogic
     {
-        public static void ApplyEffects(Character player, GameMap gameMap, List<Vector2> indexes)
+        public static void ApplyEffects(Player player, GameMap gameMap, GameObject[] gameObjects)
         {
-            for (int i = 0; i < indexes.Count; i++)
+            for (int i = 0; i < gameObjects.Length; i++)
             {
-                GameObject go = gameMap[indexes[i]].GameObject;
-                if (go is Fire) {
-                    Fire fire = go as Fire;
+                if (gameObjects[i] is Fire)
+                {
+                    Fire fire = gameObjects[i] as Fire;
                     player.TakeDamage(fire.Damage);
                 }
-                if (go is Powerup)
+                if (gameObjects[i] is Powerup)
                 {
-                    Powerup powerup = go as Powerup;
+                    Powerup powerup = gameObjects[i] as Powerup;
                     powerup.Affect(player, gameMap);
                 }
             }
@@ -35,7 +36,7 @@ namespace Utils.GameLogic
             gameMap[characterIndex].AffectPlayer(player);
         }
 
-        public static void UpdateExplosives(Character player, GameMap gameMap)
+        public static void UpdateExplosives(Player player, GameMap gameMap)
         {
             for (int i = 0; i < gameMap.ExplosivesLookupTable.Count; i++)
             {
@@ -44,16 +45,16 @@ namespace Utils.GameLogic
             }
         }
 
-        public static void UpdateFires(GameMap gameMap)
+        public static void UpdateFires(GameMap gameMap, ILevelFactory levelFactory)
         {
             for (int i = 0; i < gameMap.FireLookupTable.Count; i++)
             {
                 Fire fire = gameMap.FireLookupTable.GameObjects[i] as Fire;
-                fire.UpdateState(gameMap);
+                fire.UpdateState(gameMap, levelFactory);
             }
         }
 
-        public static void UpdateGUI(Character player, GUI gui)
+        public static void UpdateGUI(Player player, GUI gui)
         {
             gui.SetHealthValue(player.Health);
             gui.SetSpeedValue(player.GetSpeed());
@@ -69,7 +70,7 @@ namespace Utils.GameLogic
             {
                 for (int x = 1; x < gameMap.Size.X - 1; x++)
                 {
-                    if (gameMap[x, y].GameObject is EmptyGameObject)
+                    if (gameMap[x, y].IsEmpty)
                     {
                         emptyTiles.Add(new Vector2(x, y));
                     }
@@ -81,10 +82,10 @@ namespace Utils.GameLogic
             {
                 int index = rnd.Next(0, emptyTiles.Count);
                 Vector2 position = emptyTiles[index];
-                var prm = gameMap.CreateScaledGameObjectParameters(position.X, position.Y, image);
+                var prm = gameMap.CreateScaledGameObjectParameters(position.X, position.Y, image, 0.75);
                 Powerup powerup = levelFactory.CreatePowerup(prm.Item1, prm.Item2, prm.Item3, prm.Item4);
-                gameMap[position].GameObject = powerup;
-                gameMap.PowerupLookupTable.Set(position, powerup);
+                gameMap[position].GameObjects.Add(powerup);
+                gameMap.PowerupLookupTable.Add(position, powerup);
                 emptyTiles.Remove(position);
             }
         }

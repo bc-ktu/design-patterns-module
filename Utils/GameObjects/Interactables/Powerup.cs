@@ -4,11 +4,12 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Utils.GameObjects.Animates;
+using Utils.Map;
 using Utils.Math;
 
 namespace Utils.GameObjects.Interactables
 {
-    public abstract class Powerup : GameObject
+    public abstract class Powerup : TriggerGameObject
     {
         public int SpeedModifier { get; protected set; }
         public int CapacityModifier { get; protected set; }
@@ -26,15 +27,15 @@ namespace Utils.GameObjects.Interactables
 
         }
         
-        public void Affect(Character character, GameMap gameMap)
+        public void Affect(Player character, GameMap gameMap)
         {
             character.ChangeSpeed(SpeedModifier);
             character.ChangeExplosivesCapacity(CapacityModifier);
             character.ChangeExplosivesDamage(DamageModifier);
 
             Vector2 index = WorldPosition / gameMap.TileSize;
-            gameMap[index].GameObject = new EmptyGameObject();
-            gameMap.PowerupLookupTable.Remove(index);
+            gameMap[index].GameObjects.Remove(this);
+            gameMap.PowerupLookupTable.Remove(index, this);
         }
 
     }

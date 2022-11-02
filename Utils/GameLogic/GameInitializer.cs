@@ -10,8 +10,10 @@ using Utils.AbstractFactory;
 using Utils.Factory;
 using Utils.GameObjects;
 using Utils.GameObjects.Animates;
+using Utils.GameObjects.Walls;
 using Utils.GUIElements;
 using Utils.Helpers;
+using Utils.Map;
 using Utils.Math;
 using Utils.Observer;
 
@@ -78,7 +80,6 @@ namespace Utils.GameLogic
                 for (int x = 1; x < mapSize.X - 1; x++)
                 {
                     gameMap.SetTile(x, y, mapTileImage);
-                    GameObject go = new EmptyGameObject();
 
                     int isEmpty = mapSeed[index];
                     if (isEmpty == 0)
@@ -86,10 +87,10 @@ namespace Utils.GameLogic
                         // var prm = gameMap.CreateScaledGameObjectParameters(x, y, crateImage);
                         // go = new DestructableGameObject(prm.Item1, prm.Item2, prm.Item3, prm.Item4);
                         var prm = gameMap.CreateScaledGameObjectParameters(x, y, crateImage);
-                        go = levelFactory.CreateWall(prm.Item1, prm.Item2, prm.Item3, prm.Item4);
+                        GameObject go = levelFactory.CreateWall(prm.Item1, prm.Item2, prm.Item3, prm.Item4);
+                        gameMap[x, y].GameObjects.Add(go);
                     }
 
-                    gameMap[x, y].GameObject = go;
                     index++;
                 }
             }
@@ -106,28 +107,28 @@ namespace Utils.GameLogic
             {
                 gameMap.SetTile(i, 0, mapTileImage);
                 var prm = gameMap.CreateScaledGameObjectParameters(i, 0, outerWallImage);
-                gameMap[i, 0].GameObject = new IndestructableWall(prm.Item1, prm.Item2, prm.Item3, prm.Item4);
+                gameMap[i, 0].GameObjects.Add(new IndestructableWall(prm.Item1, prm.Item2, prm.Item3, prm.Item4));
 
                 gameMap.SetTile(i, mapSize.Y - 1, mapTileImage);
                 prm = gameMap.CreateScaledGameObjectParameters(i, mapSize.Y - 1, outerWallImage);
-                gameMap[i, mapSize.Y - 1].GameObject = new IndestructableWall(prm.Item1, prm.Item2, prm.Item3, prm.Item4);
+                gameMap[i, mapSize.Y - 1].GameObjects.Add(new IndestructableWall(prm.Item1, prm.Item2, prm.Item3, prm.Item4));
             }
 
             for (int i = 1; i < mapSize.Y - 1; i++)
             {
                 gameMap.SetTile(0, i, mapTileImage);
                 var prm = gameMap.CreateScaledGameObjectParameters(0, i, outerWallImage);
-                gameMap[0, i].GameObject = new IndestructableWall(prm.Item1, prm.Item2, prm.Item3, prm.Item4);
+                gameMap[0, i].GameObjects.Add(new IndestructableWall(prm.Item1, prm.Item2, prm.Item3, prm.Item4));
 
                 gameMap.SetTile(mapSize.X - 1, i, mapTileImage);
                 prm = gameMap.CreateScaledGameObjectParameters(mapSize.X - 1, i, outerWallImage);
-                gameMap[mapSize.X - 1, i].GameObject = new IndestructableWall(prm.Item1, prm.Item2, prm.Item3, prm.Item4);
+                gameMap[mapSize.X - 1, i].GameObjects.Add(new IndestructableWall(prm.Item1, prm.Item2, prm.Item3, prm.Item4));
             }
 
             return gameMap;
         }
 
-        public static Character CreatePlayer(ILevelFactory levelFactory, GameMap gameMap, Vector2 playerSpritesheetIndex, Subject subject)
+        public static Player CreatePlayer(ILevelFactory levelFactory, GameMap gameMap, Vector2 playerSpritesheetIndex, Subject subject)
         {
             string filepath;
 
@@ -148,7 +149,7 @@ namespace Utils.GameLogic
             int bry = (int)(position.Y + colliderSize * gameMap.TileSize.Y);
             Vector4 collider = new Vector4(tlx, tly, brx, bry);
 
-            return new Character(position, gameMap.TileSize, collider, characterImage, explosiveImage, fireImage, levelFactory, subject); // maybe later add not the image, but Explosive object
+            return new Player(position, gameMap.TileSize, collider, characterImage, explosiveImage, fireImage, levelFactory, subject); // maybe later add not the image, but Explosive object
         }
     }
 }

@@ -4,12 +4,12 @@ using System.Drawing;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-
+using Utils.Map;
 using Utils.Math;
 
-namespace Utils.GameObjects.Destructables
+namespace Utils.GameObjects
 {
-    public class DestructableGameObject : GameObject // make abstract
+    public abstract class DestructableGameObject : SolidGameObject
     {
         public int Durability { get; protected set; }
 
@@ -28,13 +28,6 @@ namespace Utils.GameObjects.Destructables
         public void DecreaseDurability()
         {
             Durability--;
-            if (Durability >= 0)
-                Break();
-        }
-
-        private void Break()
-        {
-            throw new NotImplementedException("Wall cannot break");
         }
 
     }

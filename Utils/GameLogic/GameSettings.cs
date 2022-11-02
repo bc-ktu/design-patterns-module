@@ -17,7 +17,7 @@ namespace Utils.GameLogic
         public static int InitialPlayerHealth = 99;
         public static int InitialPlayerSpeed = 14;
         public static int InitialPlayerCapacity = 3;
-        public static int InitialExplosionRange = 7;
+        public static int InitialExplosionRange = 7;        // center not included
         public static int InitialExplosionDamage = 1;
 
         public static int InitialTimeTillExplosion = 4000;  // ms

@@ -28,6 +28,5 @@ namespace Utils.GameObjects.Interactables
             DamageModifier = 0;
         }
 
-
     }
 }

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Drawing;
 using System.Linq;
 using System.Text;
@@ -84,12 +85,12 @@ namespace Utils.Math
             return left.X != right.X && left.Y != right.Y;
         }
 
-        public bool Equals(Vector2 other)
+        public bool Equals(Vector2? other)
         {
             return X == other.X && Y == other.Y;
         }
 
-        public int GetHashCode()
+        public override int GetHashCode()
         {
             return X + Y;
         }
@@ -98,5 +99,6 @@ namespace Utils.Math
         {
             return "(" + X.ToString() + ", " + Y.ToString() + ")";
         }
+
     }
 }
