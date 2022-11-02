@@ -32,6 +32,9 @@ namespace Utils.Helpers
         public static readonly string SpeedPowerupImage = "SpeedPowerup.png";
         public static readonly string CapacityPowerupImage = "CapacityPowerup.png";
         public static readonly string DamagePowerupImage = "DamagePowerup.png";
+        public static readonly string MudTileImage = "MudTile.png";
+        public static readonly string IceTileImage = "IceTile.png";
+        public static readonly string PortalTileImage = "PortalTile.png";
 
         public static readonly string GUIFrameImage = "panel001.png";
         public static readonly string GUIHealthIcon = "6-pixel-heart-4.png";
