@@ -32,6 +32,7 @@ namespace client_graphics
         public List<int> Maps { get; set; }
         public SignalRConnection Con { get; set; }
         private Dictionary<string, Player> players = new Dictionary<string, Player>();
+        private List<int> GameSeed;
 
         private ILevelFactory levelFactory;
 
@@ -39,38 +40,7 @@ namespace client_graphics
         {
 
         }
-
-        public void GameStartUp(List<int> GameSeed)
-        {
-            InitializeComponent();
-            Startup(GameSeed);
-
-            Debug.Set(ConsoleTextBox);
-            Debug.Enabled(false);
-            Debug.LogLine("Hello World!");
-        }
-
-        public void AddPlayer (string uuid, int x, int y) // use GameInitialize.CreatePlayer() method
-        {
-            string filepath = Pather.Create(Pather.FolderAssets, Pather.FolderTextures, Pather.FolderSprites, Pather.FolderExplosives, Pather.ExplosiveImage);
-            Bitmap explosiveImage = new Bitmap(filepath);
-            filepath = Pather.Create(Pather.FolderAssets, Pather.FolderTextures, Pather.FolderGUI, Pather.GuiDamageIcon);
-            Bitmap fireImage = new Bitmap(filepath);
-            int px = GameSettings.PlayerSpritesheetIndex.X;
-            int py = GameSettings.PlayerSpritesheetIndex.Y;
-            players.Add(uuid, new Player(new Vector2(x, y), gameMap.TileSize, collider, characterImage, explosiveImage, fireImage, subject));
-        }
-
-        public void UpdatePosition(string uuid, int X, int Y, int speedMod, int speed)
-        {
-            Player p;
-            if (!players.TryGetValue(uuid, out p))
-                return;
-            p.SpeedModifier = speedMod;
-            p.SetMoveSpeed(speed);
-            p.Move(new Vector2(X, Y));
-        }
-
+        
         private void GameView_Load(object sender, EventArgs e)
         {
             this.KeyPreview = true;
@@ -78,9 +48,25 @@ namespace client_graphics
             this.Paint += new PaintEventHandler(OnPaint);
         }
 
-        private void Startup(List<int> GameSeed)
+        public void GameStartUp(List<int> gameSeed)
         {
             levelFactory = new Level1Factory();
+
+            InitializeComponent();
+            Startup(gameSeed);
+
+            Level1Button.Enabled = false;
+            Level2Button.Enabled = true;
+            Level3Button.Enabled = true;
+
+            Debug.Set(ConsoleTextBox);
+            Debug.Enabled(false);
+            Debug.LogLine("Hello World!");
+        }
+
+        private void Startup(List<int> gameSeed)
+        {
+            GameSeed = gameSeed;
 
             inputStack = new InputStack();
             collisions = new LookupTable();
@@ -99,6 +85,34 @@ namespace client_graphics
 
             collider = player.Collider;
             characterImage = player.Image;
+        }
+
+        public void AddPlayer (string uuid, int x, int y) // use GameInitialize.CreatePlayer() method
+        {
+            string filepath = Pather.Create(Pather.FolderAssets, Pather.FolderTextures, Pather.FolderSprites, Pather.FolderExplosives, Pather.ExplosiveImage);
+            Bitmap explosiveImage = new Bitmap(filepath);
+            filepath = Pather.Create(Pather.FolderAssets, Pather.FolderTextures, Pather.FolderGUI, Pather.GuiDamageIcon);
+            Bitmap fireImage = new Bitmap(filepath);
+            int px = GameSettings.PlayerSpritesheetIndex.X;
+            int py = GameSettings.PlayerSpritesheetIndex.Y;
+            players.Add(uuid, new Player(new Vector2(x, y), gameMap.TileSize, collider, characterImage, explosiveImage, fireImage, subject));
+
+            if (players.Values.Count != 0)
+            {
+                Level1Button.Enabled = false;
+                Level2Button.Enabled = false;
+                Level3Button.Enabled = false;
+            }
+        }
+
+        public void UpdatePosition(string uuid, int X, int Y, int speedMod, int speed)
+        {
+            Player p;
+            if (!players.TryGetValue(uuid, out p))
+                return;
+            p.SpeedModifier = speedMod;
+            p.SetMoveSpeed(speed);
+            p.Move(new Vector2(X, Y));
         }
 
         private void OnPaint(object sender, PaintEventArgs e)
@@ -145,19 +159,31 @@ namespace client_graphics
             inputStack.Remove(e.KeyCode);
         }
 
-        private void Level1Button_Click(object sender, EventArgs e)
+        private void Level1Button_MouseClick(object sender, MouseEventArgs e)
         {
-
+            levelFactory = new Level1Factory();
+            Startup(GameSeed);
+            Level1Button.Enabled = false;
+            Level2Button.Enabled = true;
+            Level3Button.Enabled = true;
         }
 
-        private void Level2Button_Click(object sender, EventArgs e)
+        private void Level2Button_MouseClick(object sender, MouseEventArgs e)
         {
-
+            levelFactory = new Level2Factory();
+            Startup(GameSeed);
+            Level1Button.Enabled = true;
+            Level2Button.Enabled = false;
+            Level3Button.Enabled = true;
         }
 
-        private void Level3Button_Click(object sender, EventArgs e)
+        private void Level3Button_MouseClick(object sender, MouseEventArgs e)
         {
-
+            levelFactory = new Level3Factory();
+            Startup(GameSeed);
+            Level1Button.Enabled = true;
+            Level2Button.Enabled = true;
+            Level3Button.Enabled = false;
         }
     }
 }

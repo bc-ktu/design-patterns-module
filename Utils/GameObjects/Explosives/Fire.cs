@@ -86,13 +86,8 @@ namespace Utils.GameObjects.Explosives
                 if (dgo is not Crate)
                     return;
 
-                Random rand = new Random();
-                double chance = rand.NextDouble();
-
-                if (chance >= 0.65)
-                    return;
-                        
-                // generate powerup
+                Crate crate = (Crate)dgo;
+                crate.CreatePowerup(gameMap, levelFactory);
             }
         }
     }

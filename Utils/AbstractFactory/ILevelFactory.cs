@@ -15,11 +15,7 @@ namespace Utils.AbstractFactory
     public interface ILevelFactory
     {
         public Explosive CreateExplosive(GameMap gameMap, Vector2 index);
-
-        public DestructableWall CreateWall(Vector2 position, Vector2 size, Vector4 collider, Bitmap image);
-        public DestructableWall CreateWall(int x, int y, int width, int height, int cx, int cy, int cWidth, int cHeight, Bitmap image);
-
-        public Powerup CreatePowerup(Vector2 position, Vector2 size, Vector4 collider, Bitmap image);
-        public Powerup CreatePowerup(int x, int y, int width, int height, int cx, int cy, int cWidth, int cHeight, Bitmap image);
+        public Powerup CreatePowerup(GameMap gameMap, Vector2 index);
+        public DestructableWall CreateWall(GameMap gameMap, Vector2 index);
     }
 }

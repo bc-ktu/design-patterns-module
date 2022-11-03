@@ -82,8 +82,9 @@ namespace Utils.GameLogic
             {
                 int index = rnd.Next(0, emptyTiles.Count);
                 Vector2 position = emptyTiles[index];
-                var prm = gameMap.CreateScaledGameObjectParameters(position.X, position.Y, image, 0.75);
-                Powerup powerup = levelFactory.CreatePowerup(prm.Item1, prm.Item2, prm.Item3, prm.Item4);
+                //var prm = gameMap.CreateScaledGameObjectParameters(position.X, position.Y, image, 0.75);
+                //Powerup powerup = levelFactory.CreatePowerup(prm.Item1, prm.Item2, prm.Item3, prm.Item4);
+                Powerup powerup = levelFactory.CreatePowerup(gameMap, position);
                 gameMap[position].GameObjects.Add(powerup);
                 gameMap.PowerupLookupTable.Add(position, powerup);
                 emptyTiles.Remove(position);

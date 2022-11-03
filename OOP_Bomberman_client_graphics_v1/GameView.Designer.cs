@@ -63,7 +63,7 @@
             this.Level1Button.TabIndex = 1;
             this.Level1Button.Text = "Level 1";
             this.Level1Button.UseVisualStyleBackColor = true;
-            this.Level1Button.Click += new System.EventHandler(this.Level1Button_Click);
+            this.Level1Button.MouseClick += new System.Windows.Forms.MouseEventHandler(this.Level1Button_MouseClick);
             // 
             // Level2Button
             // 
@@ -73,7 +73,7 @@
             this.Level2Button.TabIndex = 2;
             this.Level2Button.Text = "Level 2";
             this.Level2Button.UseVisualStyleBackColor = true;
-            this.Level2Button.Click += new System.EventHandler(this.Level2Button_Click);
+            this.Level2Button.MouseClick += new System.Windows.Forms.MouseEventHandler(this.Level2Button_MouseClick);
             // 
             // Level3Button
             // 
@@ -83,7 +83,7 @@
             this.Level3Button.TabIndex = 3;
             this.Level3Button.Text = "Level 3";
             this.Level3Button.UseVisualStyleBackColor = true;
-            this.Level3Button.Click += new System.EventHandler(this.Level3Button_Click);
+            this.Level3Button.MouseClick += new System.Windows.Forms.MouseEventHandler(this.Level3Button_MouseClick);
             // 
             // GameView
             // 

@@ -14,6 +14,7 @@ namespace Utils.GameObjects.Interactables
         public int SpeedModifier { get; protected set; }
         public int CapacityModifier { get; protected set; }
         public int DamageModifier { get; protected set; }
+        public int RangeModifier { get; protected set; }
 
         public Powerup(Vector2 position, Vector2 size, Vector4 collider, Bitmap image) 
             : base(position, size, collider, image)
@@ -32,6 +33,7 @@ namespace Utils.GameObjects.Interactables
             character.ChangeSpeed(SpeedModifier);
             character.ChangeExplosivesCapacity(CapacityModifier);
             character.ChangeExplosivesDamage(DamageModifier);
+            character.ChangeExplosivesRange(RangeModifier);
 
             Vector2 index = WorldPosition / gameMap.TileSize;
             gameMap[index].GameObjects.Remove(this);
