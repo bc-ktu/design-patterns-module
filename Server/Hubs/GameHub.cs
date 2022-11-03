@@ -8,7 +8,7 @@ namespace Server.Hubs
     {
         public static int UserCount { get; set; } = 0;
         public static Dictionary<string, Vector2> Players = new();
-        public static MapSeedGen generator; //kaip si rysi atvaizduoti?
+        public static MapSeedGenerator generator; //kaip si rysi atvaizduoti?
     }
 
     public class GameHub : Hub
@@ -66,7 +66,7 @@ namespace Server.Hubs
             //await this.SendMessage($"Player {Storage.UserCount} ", $"Connected {Context.ConnectionId}");
             if (Storage.generator == null)
             {
-                Storage.generator = new MapSeedGen(10, 10);
+                Storage.generator = new MapSeedGenerator(10, 10);
             }
             //possible place 
             Console.WriteLine($"Player connected with ID {Context.ConnectionId}");

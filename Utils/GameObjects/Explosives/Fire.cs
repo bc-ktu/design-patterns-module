@@ -6,12 +6,15 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Timers;
 
+using Utils.AbstractFactory;
 using Utils.GameLogic;
+using Utils.GameObjects.Crates;
+using Utils.Map;
 using Utils.Math;
 
 namespace Utils.GameObjects.Explosives
 {
-    public class Fire : GameObject
+    public class Fire : TriggerGameObject
     {
         private System.Timers.Timer _burnTimer;
         private bool _isBurning;
@@ -48,18 +51,44 @@ namespace Utils.GameObjects.Explosives
             _isBurning = false;
         }
 
-        public void UpdateState(GameMap gameMap)
+        public void UpdateState(GameMap gameMap, ILevelFactory levelFactory)
         {
             if (!_isBurning)
-                Dissapear(gameMap);
+                Dissapear(gameMap, levelFactory);
         }
 
-        public void Dissapear(GameMap gameMap)
+        public void Dissapear(GameMap gameMap, ILevelFactory levelFactory)
         {
             Vector2 thisIndex = WorldPosition / gameMap.TileSize;
-            gameMap[thisIndex].GameObject = new EmptyGameObject();
-            gameMap.FireLookupTable.Remove(thisIndex);
+            gameMap[thisIndex].GameObjects.Remove(this);
+            gameMap.FireLookupTable.Remove(thisIndex, this);
+            DestroyGameObjects(gameMap, levelFactory);
         }
 
+        private void DestroyGameObjects(GameMap gameMap, ILevelFactory levelFactory)
+        {
+            Vector2 thisIndex = WorldPosition / gameMap.TileSize;
+            
+            for (int i = 0; i < gameMap[thisIndex].GameObjects.Count; i++)
+            {
+                if (gameMap[thisIndex].GameObjects[i] is not DestructableGameObject)
+                    return;
+
+                DestructableGameObject dgo = (DestructableGameObject)gameMap[thisIndex].GameObjects[i];
+
+                dgo.DecreaseDurability();
+                if (dgo.Durability > 0)
+                    return;
+
+                gameMap[thisIndex].GameObjects.Remove(dgo);
+                i--;
+                        
+                if (dgo is not Crate)
+                    return;
+
+                Crate crate = (Crate)dgo;
+                crate.CreatePowerup(gameMap, levelFactory);
+            }
+        }
     }
 }

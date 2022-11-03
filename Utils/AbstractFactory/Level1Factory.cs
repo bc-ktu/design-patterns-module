@@ -4,11 +4,15 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-using Utils.GameObjects;
-using Utils.GameObjects.Destructables.Walls;
+using Utils.GameObjects.Walls;
 using Utils.GameObjects.Explosives;
 using Utils.GameObjects.Interactables;
 using Utils.Math;
+using Utils.Helpers;
+using Utils.Map;
+using System.Drawing;
+using System.Reflection;
+using Utils.GameLogic;
 
 namespace Utils.AbstractFactory
 {
@@ -19,34 +23,41 @@ namespace Utils.AbstractFactory
             
         }
 
-        public Explosive CreateExplosive(Vector2 position, Vector2 size, Vector4 collider, Bitmap image, Bitmap fireImage)
+        public Explosive CreateExplosive(GameMap gameMap, Vector2 index)
         {
-            return new ExplosiveHV(position, size, collider, image, fireImage);
+            string filepath = Pather.Create(Pather.FolderAssets, Pather.FolderTextures, Pather.FolderGUI, Pather.GuiDamageIcon);
+            Bitmap fireImage = new Bitmap(filepath);
+            filepath = Pather.Create(Pather.FolderAssets, Pather.FolderTextures, Pather.FolderSprites, Pather.FolderExplosives, Pather.ExplosiveImage);
+            Bitmap explosiveImage = new Bitmap(filepath);
+
+            var prm = gameMap.CreateScaledGameObjectParameters(index.X, index.Y, explosiveImage, GameSettings.ExplosiveColliderScale);
+            return new ExplosiveHV(prm.Item1, prm.Item2, prm.Item3, prm.Item4, fireImage);
         }
 
-        public Explosive CreateExplosive(int x, int y, int width, int height, int cx, int cy, int cWidth, int cHeight, Bitmap image, Bitmap fireImage)
+        public Powerup CreatePowerup(GameMap gameMap, Vector2 index)
         {
-            return new ExplosiveHV(x, y, width, height, cx, cy, cWidth, cHeight, image, fireImage);
+            string filepath = Pather.Create(Pather.FolderAssets, Pather.FolderTextures, Pather.FolderSprites, Pather.FolderPowerups, Pather.RangePowerupImage);
+            Bitmap rangeImage = new Bitmap(filepath);
+            filepath = Pather.Create(Pather.FolderAssets, Pather.FolderTextures, Pather.FolderSprites, Pather.FolderPowerups, Pather.SpeedPowerupImage);
+            Bitmap image = new Bitmap(filepath);
+            var prm = gameMap.CreateScaledGameObjectParameters(index.X, index.Y, image, GameSettings.PowerupColliderScale);
+
+            Random rnd = new Random();
+            double chance = rnd.NextDouble();
+
+            if (chance <= GameSettings.Level1RangePowerupChance)
+                return new RangePowerup(prm.Item1, prm.Item2, prm.Item3, rangeImage);
+
+            return new SpeedPowerup(prm.Item1, prm.Item2, prm.Item3, prm.Item4);
         }
 
-        public Powerup CreatePowerup(Vector2 position, Vector2 size, Vector4 collider, Bitmap image)
+        public DestructableWall CreateWall(GameMap gameMap, Vector2 index)
         {
-            return new SpeedPowerup(position, size, collider, image);
-        }
+            string filepath = Pather.Create(Pather.FolderAssets, Pather.FolderTextures, Pather.FolderSprites, Pather.FolderWalls, Pather.PaperWallImage);
+            Bitmap image = new Bitmap(filepath);
 
-        public Powerup CreatePowerup(int x, int y, int width, int height, int cx, int cy, int cWidth, int cHeight, Bitmap image)
-        {
-            return new SpeedPowerup(x, y, width, height, cx, cy, cWidth, cHeight, image);
-        }
-
-        public DestructableWall CreateWall(Vector2 position, Vector2 size, Vector4 collider, Bitmap image)
-        {
-            return new PaperWall(position, size, collider, image);
-        }
-
-        public DestructableWall CreateWall(int x, int y, int width, int height, int cx, int cy, int cWidth, int cHeight, Bitmap image)
-        {
-            return new PaperWall(x, y, width, height, cx, cy, cWidth, cHeight, image);
+            var prm = gameMap.CreateScaledGameObjectParameters(index.X, index.Y, image);
+            return new PaperWall(prm.Item1, prm.Item2, prm.Item3, prm.Item4);
         }
     }
 }

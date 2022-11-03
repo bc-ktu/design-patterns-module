@@ -12,7 +12,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="GameObjects\Destructables\Crates\" />
     <Folder Include="Command\" />
   </ItemGroup>
 

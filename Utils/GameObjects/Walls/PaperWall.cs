@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 using Utils.Math;
 
-namespace Utils.GameObjects.Destructables.Walls
+namespace Utils.GameObjects.Walls
 {
     internal class PaperWall : DestructableWall
     {

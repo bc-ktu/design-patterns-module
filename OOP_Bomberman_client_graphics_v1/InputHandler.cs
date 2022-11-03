@@ -6,15 +6,15 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.SignalR.Client;
 
 using client_graphics.SignalR;
-using Utils.GameObjects;
 using Utils.Helpers;
 using Utils.GameObjects.Animates;
+using Utils.Map;
 
 namespace client_graphics
 {
     internal static class InputHandler
     {
-        public static void HandleKey(Keys key, Character character, GameMap gameMap, SignalRConnection Con)
+        public static void HandleKey(Keys key, Player character, GameMap gameMap, SignalRConnection Con)
         {
             if (key == Input.KeyUp)
             {

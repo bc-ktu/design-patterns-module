@@ -5,8 +5,8 @@ using System.Text;
 using System.Threading.Tasks;
 
 using Utils.GameLogic;
-using Utils.GameObjects;
 using Utils.GameObjects.Animates;
+using Utils.Map;
 using Utils.Math;
 
 namespace Utils.Factory
@@ -23,7 +23,7 @@ namespace Utils.Factory
 
         }
 
-        public override void AffectPlayer(Character player)
+        public override void AffectPlayer(Player player)
         {
             player.SpeedModifier = 0;
         }

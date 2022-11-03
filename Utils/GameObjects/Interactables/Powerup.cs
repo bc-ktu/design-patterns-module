@@ -4,15 +4,17 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Utils.GameObjects.Animates;
+using Utils.Map;
 using Utils.Math;
 
 namespace Utils.GameObjects.Interactables
 {
-    public abstract class Powerup : GameObject
+    public abstract class Powerup : TriggerGameObject
     {
         public int SpeedModifier { get; protected set; }
         public int CapacityModifier { get; protected set; }
         public int DamageModifier { get; protected set; }
+        public int RangeModifier { get; protected set; }
 
         public Powerup(Vector2 position, Vector2 size, Vector4 collider, Bitmap image) 
             : base(position, size, collider, image)
@@ -26,15 +28,16 @@ namespace Utils.GameObjects.Interactables
 
         }
         
-        public void Affect(Character character, GameMap gameMap)
+        public void Affect(Player character, GameMap gameMap)
         {
             character.ChangeSpeed(SpeedModifier);
             character.ChangeExplosivesCapacity(CapacityModifier);
             character.ChangeExplosivesDamage(DamageModifier);
+            character.ChangeExplosivesRange(RangeModifier);
 
             Vector2 index = WorldPosition / gameMap.TileSize;
-            gameMap[index].GameObject = new EmptyGameObject();
-            gameMap.PowerupLookupTable.Remove(index);
+            gameMap[index].GameObjects.Remove(this);
+            gameMap.PowerupLookupTable.Remove(index, this);
         }
 
     }

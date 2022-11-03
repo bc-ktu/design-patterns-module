@@ -6,11 +6,12 @@ using System.Threading.Tasks;
 
 using Utils.Math;
 
-namespace Utils.GameObjects
+namespace Utils.GameObjects.Walls
 {
-    public class IndestructableWall : GameObject
+    public class IndestructableWall : SolidGameObject
     {
-        public IndestructableWall(Vector2 position, Vector2 size, Vector4 collider, Bitmap image) : base(position, size, collider, image)
+        public IndestructableWall(Vector2 position, Vector2 size, Vector4 collider, Bitmap image) 
+            : base(position, size, collider, image)
         {
 
         }

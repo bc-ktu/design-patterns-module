@@ -11,11 +11,11 @@ using System.Timers;
 using Utils.GameObjects.Explosives;
 using Utils.AbstractFactory;
 using Utils.Observer;
-using Utils.Helpers;
+using Utils.Map;
 
 namespace Utils.GameObjects.Animates
 {
-    public class Character : GameObject
+    public class Player : TriggerGameObject
     {
         private int _explosivesPlaced;
 
@@ -40,7 +40,7 @@ namespace Utils.GameObjects.Animates
         public ILevelFactory LevelFactory { get; private set; }
         public Subject Subject { get; private set; }
 
-        public Character(Vector2 position, Vector2 size, Vector4 collider, Bitmap image, Bitmap explosiveImage, Bitmap fireImage, ILevelFactory levelFactory, Subject subject)
+        public Player(Vector2 position, Vector2 size, Vector4 collider, Bitmap image, Bitmap explosiveImage, Bitmap fireImage, ILevelFactory levelFactory, Subject subject)
             : base(position, size, collider, image)
         {
             this.Subject = subject;
@@ -48,14 +48,14 @@ namespace Utils.GameObjects.Animates
             LevelFactory = levelFactory;
         }
 
-        public Character(Vector2 position, Vector2 size, Vector4 collider, Bitmap image, Bitmap explosiveImage, Bitmap fireImage, Subject subject)
+        public Player(Vector2 position, Vector2 size, Vector4 collider, Bitmap image, Bitmap explosiveImage, Bitmap fireImage, Subject subject)
             : base(position, size, collider, image)
         {
             this.Subject = subject;
             Initialize(explosiveImage, fireImage);
         }
 
-        public Character(int x, int y, int width, int height, int cx, int cy, int cWidth, int cHeight, Bitmap image, Bitmap explosiveImage, Bitmap fireImage)
+        public Player(int x, int y, int width, int height, int cx, int cy, int cWidth, int cHeight, Bitmap image, Bitmap explosiveImage, Bitmap fireImage)
             : base(x, y, width, height, cx, cy, cWidth, cHeight, image)
         {
             Initialize(explosiveImage, fireImage);
@@ -155,15 +155,14 @@ namespace Utils.GameObjects.Animates
         public void PlaceExplosive(GameMap gameMap)
         {
             Vector2 index = WorldPosition / gameMap.TileSize;
-            if (gameMap[index].GameObject is EmptyGameObject && CanPlaceExplosive())
+            if (gameMap[index].IsEmpty && CanPlaceExplosive())
             {
-                var prm = gameMap.CreateScaledGameObjectParameters(index.X, index.Y, ExplosiveImage);
-                Explosive explosive = LevelFactory.CreateExplosive(prm.Item1, prm.Item2, prm.Item3, prm.Item4, FireImage);
+                Explosive explosive = LevelFactory.CreateExplosive(gameMap, index);
                 explosive.Range = ExplosivesRange;
                 explosive.Damage = ExplosiveDamage;
                 explosive.StartCountdown();
-                gameMap[index].GameObject = explosive;
-                gameMap.ExplosivesLookupTable.Set(index, explosive);
+                gameMap[index].GameObjects.Add(explosive);
+                gameMap.ExplosivesLookupTable.Add(index, explosive);
                 _explosivesPlaced++;
                 this.Subject.MakeSound("PlaceBomb");
             }

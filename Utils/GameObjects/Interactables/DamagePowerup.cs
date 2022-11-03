@@ -27,6 +27,7 @@ namespace Utils.GameObjects.Interactables
             SpeedModifier = 0;
             CapacityModifier = 0;
             DamageModifier = 1;
+            RangeModifier = 0;
         }
 
     }
