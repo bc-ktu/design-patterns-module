@@ -137,7 +137,7 @@ namespace Utils.GameLogic
             return gameMap;
         }
 
-        public static Player CreatePlayer(ILevelFactory levelFactory, GameMap gameMap, Vector2 playerSpritesheetIndex, Subject subject)
+        public static Player CreatePlayer(GameMap gameMap, Vector2 playerSpritesheetIndex, Subject subject)
         {
             string filepath;
 
@@ -158,7 +158,7 @@ namespace Utils.GameLogic
             int bry = (int)(position.Y + colliderSize * gameMap.TileSize.Y);
             Vector4 collider = new Vector4(tlx, tly, brx, bry);
 
-            return new Player(position, gameMap.TileSize, collider, characterImage, explosiveImage, fireImage, levelFactory, subject); // maybe later add not the image, but Explosive object
+            return new Player(position, gameMap.TileSize, collider, characterImage, explosiveImage, fireImage, subject); // maybe later add not the image, but Explosive object
         }
     }
 }

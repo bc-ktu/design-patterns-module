@@ -9,12 +9,13 @@ using client_graphics.SignalR;
 using Utils.Helpers;
 using Utils.GameObjects.Animates;
 using Utils.Map;
+using Utils.AbstractFactory;
 
 namespace client_graphics
 {
     internal static class InputHandler
     {
-        public static void HandleKey(Keys key, Player character, GameMap gameMap, SignalRConnection Con)
+        public static void HandleKey(Keys key, Player character, GameMap gameMap, ILevelFactory levelFactory, SignalRConnection Con)
         {
             if (key == Input.KeyUp)
             {
@@ -38,7 +39,7 @@ namespace client_graphics
             }
             else if (key == Input.KeyBomb)
             {
-                character.PlaceExplosive(gameMap);
+                character.PlaceExplosive(gameMap, levelFactory);
                 //Con.Connection.InvokeAsync("MapSeed"); place bomb change later
             }
         }

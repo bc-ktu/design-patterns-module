@@ -12,6 +12,13 @@ namespace Utils.GameObjects.Explosives
 {
     public class ExplosiveDi : Explosive
     {
+        public ExplosiveDi()
+        {
+            Initialize();
+        }
+
+        public ExplosiveDi(ExplosiveDi edi) : base(edi) { }
+
         public ExplosiveDi(Vector2 position, Vector2 size, Vector4 collider, Bitmap image, Bitmap fireImage)
             : base(position, size, collider, image, fireImage)
         {
@@ -35,6 +42,10 @@ namespace Utils.GameObjects.Explosives
             Range = 2;
         }
 
+        public override GameObject Clone()
+        {
+            return new ExplosiveDi(this);
+        }
 
     }
 }

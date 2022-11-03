@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -10,6 +11,13 @@ namespace Utils.GameObjects.Interactables
 {
     public class CapacityPowerup : Powerup
     {
+        public CapacityPowerup()
+        { 
+            Initialize(); 
+        }
+
+        public CapacityPowerup(CapacityPowerup cp) : base(cp) { }
+
         public CapacityPowerup(Vector2 position, Vector2 size, Vector4 collider, Bitmap image)
             : base(position, size, collider, image)
         {
@@ -29,5 +37,11 @@ namespace Utils.GameObjects.Interactables
             DamageModifier = 0;
             RangeModifier = 0;
         }
+
+        public override GameObject Clone()
+        {
+            return new CapacityPowerup(this);
+        }
+
     }
 }

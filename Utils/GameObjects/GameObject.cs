@@ -7,10 +7,11 @@ using System.Text;
 using System.Threading.Tasks;
 
 using Utils.Math;
+using Utils.Prototype;
 
 namespace Utils.GameObjects
 {
-    public abstract class GameObject : INullable //, IEquatable<GameObject>
+    public abstract class GameObject : IClonable
     {
         public Vector2 LocalPosition { get; protected set; }
         public Vector2 WorldPosition { get { return LocalPosition + Size / 2; } }
@@ -19,12 +20,14 @@ namespace Utils.GameObjects
 
         public Bitmap Image { get; protected set; }
 
-        // How to implement? Is it neccesary
-        public bool IsNull => throw new NotImplementedException();
+        public GameObject() { }
 
-        public GameObject()
+        public GameObject(GameObject go)
         {
-
+            LocalPosition = go.LocalPosition;
+            Size = go.Size;
+            Collider = go.Collider;
+            Image = go.Image;
         }
 
         /// <param name="localPosition">Top left corner coordinates of the sprite</param>
@@ -63,12 +66,6 @@ namespace Utils.GameObjects
                    "collider: " + Collider.ToString();
         }
 
-        //public bool Equals(GameObject other)
-        //{
-        //    return LocalPosition == other.LocalPosition &&
-        //           Size == other.Size &&
-        //           Collider == other.Collider &&
-        //           Image == other.Image;
-        //}
+        public abstract GameObject Clone();
     }
 }

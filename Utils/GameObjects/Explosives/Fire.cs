@@ -21,6 +21,18 @@ namespace Utils.GameObjects.Explosives
 
         public int Damage { get; set; }
 
+        public Fire()
+        {
+            Initialize();
+        }
+
+        public Fire(Fire f) : base(f)
+        {
+            _burnTimer = f._burnTimer;
+            _isBurning = f._isBurning;
+            Damage = f.Damage;
+        }
+
         public Fire(Vector2 position, Vector2 size, Vector4 collider, Bitmap image) 
             : base(position, size, collider, image)
         {
@@ -90,5 +102,11 @@ namespace Utils.GameObjects.Explosives
                 crate.CreatePowerup(gameMap, levelFactory);
             }
         }
+
+        public override GameObject Clone()
+        {
+            return new Fire(this);
+        }
+
     }
 }

@@ -11,6 +11,13 @@ namespace Utils.GameObjects.Explosives
 {
     internal class ExplosiveHV : Explosive
     {
+        public ExplosiveHV()
+        {
+            Initialize();
+        }
+
+        public ExplosiveHV(ExplosiveHV ehv) : base(ehv) { }
+
         public ExplosiveHV(Vector2 position, Vector2 size, Vector4 collider, Bitmap image, Bitmap fireImage) 
             : base(position, size, collider, image, fireImage)
         {
@@ -32,6 +39,11 @@ namespace Utils.GameObjects.Explosives
                 Direction.Left
             };
             Range = 1;
+        }
+
+        public override GameObject Clone()
+        {
+            return new ExplosiveHV(this);
         }
 
     }

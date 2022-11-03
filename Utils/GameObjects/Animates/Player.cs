@@ -12,6 +12,7 @@ using Utils.GameObjects.Explosives;
 using Utils.AbstractFactory;
 using Utils.Observer;
 using Utils.Map;
+using System.Xml.Linq;
 
 namespace Utils.GameObjects.Animates
 {
@@ -35,33 +36,43 @@ namespace Utils.GameObjects.Animates
         public Bitmap ExplosiveImage { get; private set; }
         public Bitmap FireImage { get; private set; }
 
-        public Explosive Explosive { get; private set; }
-        public Fire Fire { get; private set; }
-        public ILevelFactory LevelFactory { get; private set; }
         public Subject Subject { get; private set; }
 
-        public Player(Vector2 position, Vector2 size, Vector4 collider, Bitmap image, Bitmap explosiveImage, Bitmap fireImage, ILevelFactory levelFactory, Subject subject)
-            : base(position, size, collider, image)
+        public Explosive Explosive { get; private set; }
+
+        public Player() { }
+
+        public Player(Player p) : base(p) 
         {
-            this.Subject = subject;
-            Initialize(explosiveImage, fireImage);
-            LevelFactory = levelFactory;
+            _explosivesPlaced = p._explosivesPlaced;
+            _isInIFrames = p._isInIFrames;
+            _movementSpeed = p._movementSpeed;
+            Facing = p.Facing;
+            Health = p.Health;
+            MovementSpeed = p.MovementSpeed;
+            ExplosivesCapacity = p.ExplosivesCapacity;
+            ExplosivesRange = p.ExplosivesRange;
+            ExplosiveDamage = p.ExplosiveDamage;
+            SpeedModifier = p.SpeedModifier;
+            ExplosiveImage = p.ExplosiveImage;
+            FireImage = p.FireImage;
+            Subject = p.Subject;
+            Explosive = p.Explosive;
         }
 
         public Player(Vector2 position, Vector2 size, Vector4 collider, Bitmap image, Bitmap explosiveImage, Bitmap fireImage, Subject subject)
             : base(position, size, collider, image)
         {
-            this.Subject = subject;
-            Initialize(explosiveImage, fireImage);
+            Initialize(subject, explosiveImage, fireImage);
         }
 
-        public Player(int x, int y, int width, int height, int cx, int cy, int cWidth, int cHeight, Bitmap image, Bitmap explosiveImage, Bitmap fireImage)
+        public Player(int x, int y, int width, int height, int cx, int cy, int cWidth, int cHeight, Bitmap image, Bitmap explosiveImage, Bitmap fireImage, Subject subject)
             : base(x, y, width, height, cx, cy, cWidth, cHeight, image)
         {
-            Initialize(explosiveImage, fireImage);
+            Initialize(subject, explosiveImage, fireImage);
         }
 
-        private void Initialize(Bitmap explosiveImage, Bitmap fireImage)
+        private void Initialize(Subject subject, Bitmap explosiveImage, Bitmap fireImage)
         {
             _explosivesPlaced = 0;
 
@@ -81,6 +92,8 @@ namespace Utils.GameObjects.Animates
             _iFramesTimer.Elapsed += new ElapsedEventHandler(OnIFramesEnd);
             _iFramesTimer.Interval = GameSettings.InitialTimeTillExplosion;
             _isInIFrames = false;
+
+            this.Subject = subject;
 
             RegisterObserver();
         }
@@ -152,12 +165,12 @@ namespace Utils.GameObjects.Animates
             return _explosivesPlaced < ExplosivesCapacity;
         }
 
-        public void PlaceExplosive(GameMap gameMap)
+        public void PlaceExplosive(GameMap gameMap, ILevelFactory levelFactory)
         {
             Vector2 index = WorldPosition / gameMap.TileSize;
             if (gameMap[index].IsEmpty && CanPlaceExplosive())
             {
-                Explosive explosive = LevelFactory.CreateExplosive(gameMap, index);
+                Explosive explosive = levelFactory.CreateExplosive(gameMap, index);
                 explosive.Range = ExplosivesRange;
                 explosive.Damage = ExplosiveDamage;
                 explosive.StartCountdown();
@@ -176,7 +189,7 @@ namespace Utils.GameObjects.Animates
             _explosivesPlaced--;
         }
 
-        /// <param name="direction">Vienetinis vektorius</param>
+        /// <param name="direction">unit vector</param>
         public void Move(Vector2 direction)
         {
             Vector2 vPtoC = new Vector2(Collider.X, Collider.Y) - LocalPosition;
@@ -213,5 +226,11 @@ namespace Utils.GameObjects.Animates
             this.Subject.RegisterObserver(fireObserver);
             this.Subject.RegisterObserver(placeBombObserver);
         }
+
+        public override GameObject Clone()
+        {
+            return new Player(this);
+        }
+
     }
 }

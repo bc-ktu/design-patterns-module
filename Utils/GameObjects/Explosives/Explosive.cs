@@ -32,6 +32,18 @@ namespace Utils.GameObjects.Explosives
             Initialize(null);
         }
 
+        public Explosive(Explosive e) : base(e)
+        {
+            _explosionTimer = e._explosionTimer;
+            CountdownEnded = e.CountdownEnded;
+            Damage = e.Damage;
+            Range = e.Range;
+            ExplosionDirections = new Vector2[e.ExplosionDirections.Length];
+            for (int i = 0; i < e.ExplosionDirections.Length; i++)
+                ExplosionDirections[i] = new Vector2(e.ExplosionDirections[i].X, e.ExplosionDirections[i].Y);
+            FireImage = e.FireImage;
+        }
+
         public Explosive(Vector2 position, Vector2 size, Vector4 collider, Bitmap image, Bitmap fireImage) 
             : base(position, size, collider, image)
         {

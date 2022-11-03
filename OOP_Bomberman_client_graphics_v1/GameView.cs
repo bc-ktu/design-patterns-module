@@ -74,7 +74,7 @@ namespace client_graphics
             gui = GameInitializer.CreateGUI(GameSettings.GUIPosition, GameSettings.GUISize, GameSettings.GUIFontColor, GameSettings.GUIFontSize);
             gameMap = GameInitializer.CreateMap(levelFactory, GameSettings.MapSize, Vector2.FromSize(ClientSize), GameSeed, GameSettings.GroundSpritesheetIndex);
             subject = new Subject();
-            player = GameInitializer.CreatePlayer(levelFactory, gameMap, GameSettings.PlayerSpritesheetIndex, subject);
+            player = GameInitializer.CreatePlayer(gameMap, GameSettings.PlayerSpritesheetIndex, subject);
 
             string filepath = Pather.Create(Pather.FolderAssets, Pather.FolderTextures, Pather.FolderSprites, Pather.FolderPowerups, Pather.SpeedPowerupImage);
             Bitmap powerupImage = new Bitmap(filepath);
@@ -144,7 +144,7 @@ namespace client_graphics
             GameLogic.ApplyEffects(player, gameMap, collisions.GameObjects);
             GameLogic.UpdateGUI(player, gui);
 
-            InputHandler.HandleKey(inputStack.Peek(), player, gameMap, Con);
+            InputHandler.HandleKey(inputStack.Peek(), player, gameMap, levelFactory, Con);
 
             this.Refresh();
         }

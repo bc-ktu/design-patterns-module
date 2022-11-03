@@ -14,6 +14,13 @@ namespace Utils.GameObjects.Crates
 {
     public class Crate : DestructableGameObject
     {
+        public Crate()
+        {
+            Durability = 1;
+        }
+
+        public Crate(Crate c) : base(c) { }
+
         public Crate(Vector2 position, Vector2 size, Vector4 collider, Bitmap image)
             : base(position, size, collider, image)
         {
@@ -40,6 +47,11 @@ namespace Utils.GameObjects.Crates
 
             gameMap[index].GameObjects.Add(powerup);
             gameMap.PowerupLookupTable.Add(index, powerup);
+        }
+
+        public override GameObject Clone()
+        {
+            return new Crate(this);
         }
 
     }
