@@ -5,6 +5,9 @@ using System.Text;
 using System.Threading.Tasks;
 using Utils.AbstractFactory;
 using Utils.GameObjects;
+using Utils.GameObjects.Crates;
+using Utils.GameObjects.Walls;
+using Utils.Map;
 using Utils.Math;
 
 namespace Utils.Builder
@@ -39,18 +42,29 @@ namespace Utils.Builder
                 for (int x = 1; x < mapSize.X - 1; x++)
                 {
                     gameMap.SetTile(x, y, mapTileImage);
-                    GameObject go = new EmptyGameObject();
 
-                    int isEmpty = mapSeed[index];
-                    if (isEmpty == 0)
+                    if (x == 1 && y == 1 || x == 1 && y == 2 || x == 2 && y == 1)
+                        continue;
+
+                    int tile = mapSeed[index];
+                    if (tile == 0)
                     {
-                        // var prm = gameMap.CreateScaledGameObjectParameters(x, y, crateImage);
-                        // go = new DestructableGameObject(prm.Item1, prm.Item2, prm.Item3, prm.Item4);
+                        GameObject go = levelFactory.CreateWall(gameMap, new Vector2(x, y));
+                        gameMap[x, y].GameObjects.Add(go);
+                    }
+                    else if (tile == 1 || tile == 2 || tile == 3)
+                    {
                         var prm = gameMap.CreateScaledGameObjectParameters(x, y, crateImage);
-                        go = levelFactory.CreateWall(prm.Item1, prm.Item2, prm.Item3, prm.Item4);
+                        GameObject go = new Crate(prm.Item1, prm.Item2, prm.Item3, prm.Item4);
+                        gameMap[x, y].GameObjects.Add(go);
+                    }
+                    else
+                    {
+                        GameObject go = levelFactory.CreatePowerup(gameMap, new Vector2(x, y));
+                        gameMap[x, y].GameObjects.Add(go);
+                        gameMap.PowerupLookupTable.Add(new Vector2(x, y), go);
                     }
 
-                    gameMap[x, y].GameObject = go;
                     index++;
                 }
             }
@@ -62,22 +76,22 @@ namespace Utils.Builder
             {
                 gameMap.SetTile(i, 0, mapTileImage);
                 var prm = gameMap.CreateScaledGameObjectParameters(i, 0, outerWallImage);
-                gameMap[i, 0].GameObject = new IndestructableWall(prm.Item1, prm.Item2, prm.Item3, prm.Item4);
+                gameMap[i, 0].GameObjects.Add(new IndestructableWall(prm.Item1, prm.Item2, prm.Item3, prm.Item4));
 
                 gameMap.SetTile(i, mapSize.Y - 1, mapTileImage);
                 prm = gameMap.CreateScaledGameObjectParameters(i, mapSize.Y - 1, outerWallImage);
-                gameMap[i, mapSize.Y - 1].GameObject = new IndestructableWall(prm.Item1, prm.Item2, prm.Item3, prm.Item4);
+                gameMap[i, mapSize.Y - 1].GameObjects.Add(new IndestructableWall(prm.Item1, prm.Item2, prm.Item3, prm.Item4));
             }
 
             for (int i = 1; i < mapSize.Y - 1; i++)
             {
                 gameMap.SetTile(0, i, mapTileImage);
                 var prm = gameMap.CreateScaledGameObjectParameters(0, i, outerWallImage);
-                gameMap[0, i].GameObject = new IndestructableWall(prm.Item1, prm.Item2, prm.Item3, prm.Item4);
+                gameMap[0, i].GameObjects.Add(new IndestructableWall(prm.Item1, prm.Item2, prm.Item3, prm.Item4));
 
                 gameMap.SetTile(mapSize.X - 1, i, mapTileImage);
                 prm = gameMap.CreateScaledGameObjectParameters(mapSize.X - 1, i, outerWallImage);
-                gameMap[mapSize.X - 1, i].GameObject = new IndestructableWall(prm.Item1, prm.Item2, prm.Item3, prm.Item4);
+                gameMap[mapSize.X - 1, i].GameObjects.Add(new IndestructableWall(prm.Item1, prm.Item2, prm.Item3, prm.Item4));
             }
         }
 

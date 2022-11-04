@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using Utils.AbstractFactory;
 using Utils.Factory;
 using Utils.GameObjects;
+using Utils.Map;
 using Utils.Math;
 
 namespace Utils.Builder
