@@ -3,13 +3,19 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using Utils.GameObjects.Destructables;
 using Utils.Math;
 
-namespace Utils.GameObjects.Destructables.Walls
+namespace Utils.GameObjects.Walls
 {
     internal class StoneWall : DestructableWall
     {
+        public StoneWall() 
+        {
+            Durability = 7;
+        }
+
+        public StoneWall(StoneWall sw) : base(sw) { }
+
         public StoneWall(Vector2 position, Vector2 size, Vector4 collider, Bitmap image) 
             : base(position, size, collider, image)
         {
@@ -20,6 +26,11 @@ namespace Utils.GameObjects.Destructables.Walls
             : base(x, y, width, height, cx, cy, cWidth, cHeight, image)
         {
             Durability = 7;
+        }
+
+        public override GameObject Clone()
+        {
+            return new StoneWall(this);
         }
 
     }
