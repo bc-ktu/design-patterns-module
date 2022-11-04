@@ -2,12 +2,12 @@
 
 namespace Server
 {
-    public class MapSeedGen
+    public class MapSeedGenerator
     {
         private Vector2 MapSize { get; set; }
         private List<int> Values { get; set; }
 
-        public MapSeedGen(int x, int y)
+        public MapSeedGenerator(int x, int y)
         {
             MapSize = new Vector2(x, y);
             Values = new List<int>();
