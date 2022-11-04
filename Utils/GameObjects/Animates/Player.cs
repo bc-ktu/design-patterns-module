@@ -11,11 +11,14 @@ using System.Timers;
 using Utils.GameObjects.Explosives;
 using Utils.AbstractFactory;
 using Utils.Observer;
+using Utils.Map;
+using System.Xml.Linq;
 using Utils.Helpers;
+using System.Security.Cryptography.X509Certificates;
 
 namespace Utils.GameObjects.Animates
 {
-    public class Character : GameObject
+    public class Player : TriggerGameObject
     {
         private int _explosivesPlaced;
 
@@ -25,63 +28,61 @@ namespace Utils.GameObjects.Animates
 
         public Vector2 Facing { get; private set; }
         public int Health { get; private set; }
+        public int SpeedModifier { get; set; }
         public int MovementSpeed { get; set; }
         public int ExplosivesCapacity { get; private set; }
-        public int ExplosivesRange { get; private set; }
-        public int ExplosiveDamage { get; private set; }
-        
-        public int SpeedModifier { get; set; }
-
-        public Bitmap ExplosiveImage { get; private set; }
-        public Bitmap FireImage { get; private set; }
-
         public Explosive Explosive { get; private set; }
-        public Fire Fire { get; private set; }
-        public ILevelFactory LevelFactory { get; private set; }
+        
         public Subject Subject { get; private set; }
 
-        public Character(Vector2 position, Vector2 size, Vector4 collider, Bitmap image, Bitmap explosiveImage, Bitmap fireImage, ILevelFactory levelFactory, Subject subject)
-            : base(position, size, collider, image)
+        public Player() { }
+
+        public Player(Player p) : base(p) 
         {
-            this.Subject = subject;
-            Initialize(explosiveImage, fireImage);
-            LevelFactory = levelFactory;
+            _explosivesPlaced = p._explosivesPlaced;
+            _isInIFrames = p._isInIFrames;
+            _movementSpeed = p._movementSpeed;
+            Facing = p.Facing.Clone();
+            Health = p.Health;
+            Subject = p.Subject;
+            MovementSpeed = p.MovementSpeed;
+            ExplosivesCapacity = p.ExplosivesCapacity;
+            SpeedModifier = p.SpeedModifier;
+            Explosive = (Explosive)p.Explosive.Clone();
         }
 
-        public Character(Vector2 position, Vector2 size, Vector4 collider, Bitmap image, Bitmap explosiveImage, Bitmap fireImage, Subject subject)
+        public Player(Vector2 position, Vector2 size, Vector4 collider, Bitmap image, Explosive explosive, Subject subject)
             : base(position, size, collider, image)
         {
-            this.Subject = subject;
-            Initialize(explosiveImage, fireImage);
+            Initialize(explosive, subject);
         }
 
-        public Character(int x, int y, int width, int height, int cx, int cy, int cWidth, int cHeight, Bitmap image, Bitmap explosiveImage, Bitmap fireImage)
+        public Player(int x, int y, int width, int height, int cx, int cy, int cWidth, int cHeight, Bitmap image, Explosive explosive, Subject subject)
             : base(x, y, width, height, cx, cy, cWidth, cHeight, image)
         {
-            Initialize(explosiveImage, fireImage);
+            Initialize(explosive, subject);
         }
 
-        private void Initialize(Bitmap explosiveImage, Bitmap fireImage)
+        private void Initialize(Explosive explosive, Subject subject)
         {
+            Explosive = explosive;
+
             _explosivesPlaced = 0;
+            SpeedModifier = 0;
 
             Facing = GameSettings.InitialPlayerDirection;
             Health = GameSettings.InitialPlayerHealth;
             _movementSpeed = GameSettings.InitialPlayerSpeed;
             ExplosivesCapacity = GameSettings.InitialPlayerCapacity;
-            ExplosivesRange = GameSettings.InitialExplosionRange;
-            ExplosiveDamage = GameSettings.InitialExplosionDamage;
-
-            SpeedModifier = 0;
-
-            FireImage = fireImage;
-            ExplosiveImage = explosiveImage;
-
+            Explosive.Range = GameSettings.InitialExplosionRange;
+            Explosive.Fire.Damage = GameSettings.InitialExplosionDamage;
+            
             _iFramesTimer = new System.Timers.Timer();
             _iFramesTimer.Elapsed += new ElapsedEventHandler(OnIFramesEnd);
-            _iFramesTimer.Interval = GameSettings.InitialTimeTillExplosion;
+            _iFramesTimer.Interval = GameSettings.InitialIFramesTime;
             _isInIFrames = false;
 
+            this.Subject = subject;
             RegisterObserver();
         }
 
@@ -137,14 +138,14 @@ namespace Utils.GameObjects.Animates
             ExplosivesCapacity += amount;
         }
 
-        public void ChangeExplosivesRange(int amount)
+        public void ChangeExplosiveRange(int amount)
         {
-            ExplosivesRange += amount;
+            Explosive.Range += amount;
         }
 
-        public void ChangeExplosivesDamage(int amount)
+        public void ChangeExplosiveDamage(int amount)
         {
-            ExplosiveDamage += amount;
+            Explosive.Fire.Damage += amount;
         }
 
         public bool CanPlaceExplosive()
@@ -152,19 +153,21 @@ namespace Utils.GameObjects.Animates
             return _explosivesPlaced < ExplosivesCapacity;
         }
 
-        public void PlaceExplosive(GameMap gameMap)
+        public void PlaceExplosive(GameMap gameMap, ILevelFactory levelFactory)
         {
             Vector2 index = WorldPosition / gameMap.TileSize;
-            if (gameMap[index].GameObject is EmptyGameObject && CanPlaceExplosive())
+            if (gameMap[index].IsEmpty && CanPlaceExplosive())
             {
-                var prm = gameMap.CreateScaledGameObjectParameters(index.X, index.Y, ExplosiveImage);
-                Explosive explosive = LevelFactory.CreateExplosive(prm.Item1, prm.Item2, prm.Item3, prm.Item4, FireImage);
-                explosive.Range = ExplosivesRange;
-                explosive.Damage = ExplosiveDamage;
-                explosive.StartCountdown();
-                gameMap[index].GameObject = explosive;
-                gameMap.ExplosivesLookupTable.Set(index, explosive);
                 _explosivesPlaced++;
+
+                Explosive explosive = (Explosive)Explosive.Clone();
+                Vector2 position = index * gameMap.TileSize;
+                explosive.Teleport(position);
+                explosive.StartCountdown();
+
+                gameMap[index].GameObjects.Add(explosive);
+                gameMap.ExplosivesLookupTable.Add(index, explosive);
+
                 this.Subject.MakeSound("PlaceBomb");
             }
         }
@@ -177,7 +180,7 @@ namespace Utils.GameObjects.Animates
             _explosivesPlaced--;
         }
 
-        /// <param name="direction">Vienetinis vektorius</param>
+        /// <param name="direction">unit vector</param>
         public void Move(Vector2 direction)
         {
             Vector2 vPtoC = new Vector2(Collider.X, Collider.Y) - LocalPosition;
@@ -191,17 +194,6 @@ namespace Utils.GameObjects.Animates
             Collider = new Vector4(tlx, tly, brx, bry);
         }
 
-        public void Teleport(Vector2 position)
-        {
-            Vector2 vPtoC = new Vector2(Collider.X, Collider.Y) - LocalPosition;
-            Vector2 vTLtoBR = new Vector2(Collider.Z - Collider.X, Collider.W - Collider.Y);
-            LocalPosition = position;
-            int tlx = LocalPosition.X + vPtoC.X;
-            int tly = LocalPosition.Y + vPtoC.Y;
-            int brx = tlx + vTLtoBR.X;
-            int bry = tly + vTLtoBR.Y;
-            Collider = new Vector4(tlx, tly, brx, bry);
-        }
         public void RegisterObserver()
         {
             DamageObserver damageObserver = new();
@@ -214,5 +206,11 @@ namespace Utils.GameObjects.Animates
             this.Subject.RegisterObserver(fireObserver);
             this.Subject.RegisterObserver(placeBombObserver);
         }
+
+        public override GameObject Clone()
+        {
+            return new Player(this);
+        }
+
     }
 }
