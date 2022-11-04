@@ -21,6 +21,20 @@ namespace Utils.GameObjects.Explosives
 
         public int Damage { get; set; }
 
+        public Fire()
+        {
+            Initialize();
+        }
+
+        public Fire(Fire f) : base(f)
+        {
+            _burnTimer = new System.Timers.Timer();
+            _burnTimer.Elapsed += new ElapsedEventHandler(OnBurnEnd);
+            _burnTimer.Interval = f._burnTimer.Interval;
+            _isBurning = true;
+            Damage = f.Damage;
+        }
+
         public Fire(Vector2 position, Vector2 size, Vector4 collider, Bitmap image) 
             : base(position, size, collider, image)
         {
@@ -35,6 +49,8 @@ namespace Utils.GameObjects.Explosives
 
         private void Initialize()
         {
+            Damage = GameSettings.InitialExplosionDamage;
+
             _burnTimer = new System.Timers.Timer();
             _burnTimer.Elapsed += new ElapsedEventHandler(OnBurnEnd);
             _burnTimer.Interval = GameSettings.InitialFireBurnTime;
@@ -90,5 +106,11 @@ namespace Utils.GameObjects.Explosives
                 crate.CreatePowerup(gameMap, levelFactory);
             }
         }
+
+        public override GameObject Clone()
+        {
+            return new Fire(this);
+        }
+
     }
 }

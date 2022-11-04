@@ -9,12 +9,15 @@ using Utils.AbstractFactory;
 using Utils.GameObjects.Animates;
 using Utils.Observer;
 using Utils.Map;
+using Utils.GameObjects.Explosives;
 
 namespace client_graphics
 {
     public partial class GameView : Form
     {
-        private readonly bool DRAW_COLLIDERS = true;
+        private readonly bool DEBUGGER_ENABLED = false;
+
+        private readonly bool DRAW_COLLIDERS = false;
         private readonly Color DEFAULT_COLLIDERS_COLOR = Color.LimeGreen;
         private readonly Color COLLIDING_COLLIDERS_COLOR = Color.Red;
         private readonly float COLLIDERS_WIDTH = 2;
@@ -60,7 +63,7 @@ namespace client_graphics
             Level3Button.Enabled = true;
 
             Debug.Set(ConsoleTextBox);
-            Debug.Enabled(false);
+            Debug.Enabled(DEBUGGER_ENABLED);
             Debug.LogLine("Hello World!");
         }
 
@@ -76,9 +79,9 @@ namespace client_graphics
             subject = new Subject();
             player = GameInitializer.CreatePlayer(levelFactory, gameMap, GameSettings.PlayerSpritesheetIndex, subject);
 
-            string filepath = Pather.Create(Pather.FolderAssets, Pather.FolderTextures, Pather.FolderSprites, Pather.FolderPowerups, Pather.SpeedPowerupImage);
-            Bitmap powerupImage = new Bitmap(filepath);
-            GameLogic.GeneratePowerups(levelFactory, gameMap, 14, powerupImage);
+            // string filepath = Pather.Create(Pather.FolderAssets, Pather.FolderTextures, Pather.FolderSprites, Pather.FolderPowerups, Pather.SpeedPowerupImage);
+            // Bitmap powerupImage = new Bitmap(filepath);
+            // GameLogic.GeneratePowerups(levelFactory, gameMap, 14, powerupImage);
 
             Vector2 position = gameMap.ViewSize / 2;
             Con.Connection.InvokeAsync("JoinGame", position.X, position.Y);
@@ -87,22 +90,15 @@ namespace client_graphics
             characterImage = player.Image;
         }
 
-        public void AddPlayer (string uuid, int x, int y) // use GameInitialize.CreatePlayer() method
+        public void AddPlayer (string uuid, int x, int y) // use GameInitializer.CreatePlayer() method
         {
-            string filepath = Pather.Create(Pather.FolderAssets, Pather.FolderTextures, Pather.FolderSprites, Pather.FolderExplosives, Pather.ExplosiveImage);
-            Bitmap explosiveImage = new Bitmap(filepath);
-            filepath = Pather.Create(Pather.FolderAssets, Pather.FolderTextures, Pather.FolderGUI, Pather.GuiDamageIcon);
-            Bitmap fireImage = new Bitmap(filepath);
-            int px = GameSettings.PlayerSpritesheetIndex.X;
-            int py = GameSettings.PlayerSpritesheetIndex.Y;
-            players.Add(uuid, new Player(new Vector2(x, y), gameMap.TileSize, collider, characterImage, explosiveImage, fireImage, subject));
+            Vector2 index = new Vector2(x, y) / gameMap.TileSize;
+            Explosive explosive = levelFactory.CreateExplosive(gameMap, index);
+            players.Add(uuid, new Player(new Vector2(x, y), gameMap.TileSize, collider, characterImage, explosive, subject));
 
-            if (players.Values.Count != 0)
-            {
-                Level1Button.Enabled = false;
-                Level2Button.Enabled = false;
-                Level3Button.Enabled = false;
-            }
+            Level1Button.Enabled = false;
+            Level2Button.Enabled = false;
+            Level3Button.Enabled = false;
         }
 
         public void UpdatePosition(string uuid, int X, int Y, int speedMod, int speed)
@@ -117,8 +113,8 @@ namespace client_graphics
 
         private void OnPaint(object sender, PaintEventArgs e)
         {
-            Graphics.DrawMap(gameMap, e);
-            Graphics.DrawGameObject(player, e);
+            Graphics.DrawMap(gameMap, player, players.Values.ToList(), e);
+            // Graphics.DrawGameObject(player, e);
 
             foreach (KeyValuePair<string, Player> p in players)
                 Graphics.DrawGameObject(p.Value, e);
@@ -144,7 +140,7 @@ namespace client_graphics
             GameLogic.ApplyEffects(player, gameMap, collisions.GameObjects);
             GameLogic.UpdateGUI(player, gui);
 
-            InputHandler.HandleKey(inputStack.Peek(), player, gameMap, Con);
+            InputHandler.HandleKey(inputStack.Peek(), player, gameMap, levelFactory, Con);
 
             this.Refresh();
         }

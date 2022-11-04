@@ -14,17 +14,17 @@ namespace Utils.Helpers
         private Dictionary<Vector2, List<GameObject>> _table; // key - MapIndex, value - GameObjects
 
         public Vector2[] Positions { get { return _table.Keys.ToArray(); } }
-        public GameObject[] GameObjects 
-        { 
-            get 
+        public GameObject[] GameObjects
+        {
+            get
             {
                 List<GameObject> values = new List<GameObject>();
 
                 foreach (Vector2 key in _table.Keys)
                     values.AddRange(_table[key]);
-            
+
                 return values.ToArray();
-            } 
+            }
         }
         public int Count { get { return GameObjects.Length; } }
 
@@ -38,17 +38,33 @@ namespace Utils.Helpers
             return _table[position];
         }
 
+        public List<GameObject> Get<T>() where T : GameObject
+        {
+            List<GameObject> gameObjects = new List<GameObject>();
+
+            foreach (Vector2 key in _table.Keys)
+            {
+                foreach (GameObject go in _table[key])
+                {
+                    if (go is T)
+                        gameObjects.Add(go);
+                }
+            }
+
+            return gameObjects;
+        }
+
         public void Add(Vector2 position, GameObject gameObject)
         {
             if (!_table.ContainsKey(position))
                 _table.Add(position, new List<GameObject>());
-                
+
             _table[position].Add(gameObject);
         }
 
         public void Remove(Vector2 position, GameObject gameObject)
         {
-           _table[position].Remove(gameObject);
+            _table[position].Remove(gameObject);
         }
 
         public bool Contains(Vector2 position, GameObject gameObject)
@@ -59,6 +75,20 @@ namespace Utils.Helpers
         public void Clear(Vector2 position)
         {
             _table[position].Clear();
+        }
+
+        public bool Has<T>() where T : GameObject
+        {
+            foreach (Vector2 key in _table.Keys)
+            {
+                foreach (GameObject go in _table[key])
+                {
+                    if (go is T)
+                        return true;
+                }
+            }
+
+            return false;
         }
 
     }

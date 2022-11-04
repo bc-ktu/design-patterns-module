@@ -10,6 +10,13 @@ namespace Utils.GameObjects.Interactables
 {
     internal class DamagePowerup : Powerup
     {
+        public DamagePowerup() 
+        {
+            Initialize();
+        }
+
+        public DamagePowerup(DamagePowerup dp) : base(dp) { }
+
         public DamagePowerup(Vector2 position, Vector2 size, Vector4 collider, Bitmap image) 
             : base(position, size, collider, image)
         {
@@ -28,6 +35,11 @@ namespace Utils.GameObjects.Interactables
             CapacityModifier = 0;
             DamageModifier = 1;
             RangeModifier = 0;
+        }
+
+        public override GameObject Clone()
+        {
+            return new DamagePowerup(this);
         }
 
     }
