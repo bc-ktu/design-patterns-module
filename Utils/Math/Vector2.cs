@@ -6,9 +6,11 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
+using Utils.Prototype;
+
 namespace Utils.Math
 {
-    public class Vector2 : IEquatable<Vector2>
+    public class Vector2 : IEquatable<Vector2>, ICloneable<Vector2>
     {
         public int X { get; set; }
         public int Y { get; set; }
@@ -59,6 +61,11 @@ namespace Utils.Math
         {
             return new Vector2((int)(k * v.X), (int)(k * v.Y));
         }
+        
+        public static Vector2 operator *(Vector2 left, Vector2 right)
+        {
+            return new Vector2(left.X * right.X, left.Y * right.Y);
+        }
 
         public static Vector2 operator /(Vector2 v, int k)
         {
@@ -100,5 +107,15 @@ namespace Utils.Math
             return "(" + X.ToString() + ", " + Y.ToString() + ")";
         }
 
+        private Vector2(Vector2 v)
+        {
+            X = v.X;
+            Y = v.Y;
+        }
+
+        public Vector2 Clone()
+        {
+            return new Vector2(this);
+        }
     }
 }

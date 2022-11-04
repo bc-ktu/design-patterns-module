@@ -43,7 +43,7 @@ namespace Server.Hubs
 
         public async Task JoinGame(int X, int Y)
         {
-            Storage.Players[Context.ConnectionId] = new Vector2(X,Y);
+            Storage.Players[Context.ConnectionId] = new Vector2(X, Y);
             await Clients.Others.SendAsync("NewPlayer", Context.ConnectionId, X, Y);
         }
 
@@ -61,12 +61,12 @@ namespace Server.Hubs
 
         public override async Task OnConnectedAsync()
         {
-            Storage.Players.Add(Context.ConnectionId, new Vector2(0,0));
+            Storage.Players.Add(Context.ConnectionId, new Vector2(0, 0));
             Storage.UserCount++;
             //await this.SendMessage($"Player {Storage.UserCount} ", $"Connected {Context.ConnectionId}");
             if (Storage.generator == null)
             {
-                Storage.generator = new MapSeedGenerator(10, 10);
+                Storage.generator = new MapSeedGenerator(GameSettings.MapSize.X, GameSettings.MapSize.Y);
             }
             //possible place 
             Console.WriteLine($"Player connected with ID {Context.ConnectionId}");

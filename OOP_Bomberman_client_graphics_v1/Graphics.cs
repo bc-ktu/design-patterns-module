@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 
 using Utils.GameObjects;
+using Utils.GameObjects.Animates;
 using Utils.GUIElements;
 using Utils.Helpers;
 using Utils.Map;
@@ -19,16 +20,40 @@ namespace client_graphics
             e.Graphics.DrawImage(image, position.ToPoint());
         }
 
-        public static void DrawMap(GameMap gameMap, PaintEventArgs e)
+        public static void DrawMap(GameMap gameMap, Player player, List<Player> otherPlayers, PaintEventArgs e)
         {
+            List<Vector2> playerIndexes = new List<Vector2>();
+            playerIndexes.Add(player.WorldPosition / gameMap.TileSize);
+
+            List<Player> players = new List<Player>();
+            players.Add(player);
+
+            for (int i = 0; i < otherPlayers.Count; i++)
+            {
+                playerIndexes.Add(otherPlayers[i].WorldPosition / gameMap.TileSize);
+                players.Add(otherPlayers[i]);
+            }
+
             for (int y = 0; y < gameMap.Size.Y; y++)
             {
                 for (int x = 0; x < gameMap.Size.X; x++)
                 {
                     e.Graphics.DrawImage(gameMap[x, y].Image, gameMap[x, y].ToRectangle());
+                }
+            }
 
+            for (int y = 0; y < gameMap.Size.Y; y++)
+            {
+                for (int x = 0; x < gameMap.Size.X; x++)
+                {
                     foreach (GameObject go in gameMap[x, y].GameObjects)
                         e.Graphics.DrawImage(go.Image, go.ToRectangle());
+
+                    for (int i = 0; i < playerIndexes.Count; i++)
+                    {
+                        if (playerIndexes[i] == new Vector2(x, y))
+                            e.Graphics.DrawImage(players[i].Image, players[i].ToRectangle());
+                    }
                 }
             }
         }

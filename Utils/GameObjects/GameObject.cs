@@ -11,7 +11,7 @@ using Utils.Prototype;
 
 namespace Utils.GameObjects
 {
-    public abstract class GameObject : IClonable
+    public abstract class GameObject : ICloneable<GameObject>
     {
         public Vector2 LocalPosition { get; protected set; }
         public Vector2 WorldPosition { get { return LocalPosition + Size / 2; } }
@@ -24,10 +24,10 @@ namespace Utils.GameObjects
 
         public GameObject(GameObject go)
         {
-            LocalPosition = go.LocalPosition;
-            Size = go.Size;
-            Collider = go.Collider;
-            Image = go.Image;
+            LocalPosition = go.LocalPosition.Clone();
+            Size = go.Size.Clone();
+            Collider = go.Collider.Clone();
+            Image = (Bitmap)go.Image.Clone();
         }
 
         /// <param name="localPosition">Top left corner coordinates of the sprite</param>
@@ -52,6 +52,18 @@ namespace Utils.GameObjects
             Size = new Vector2(width, height);
             Collider = new Vector4(cx, cy, cx + cWidth, cy + cHeight);
             Image = image;
+        }
+
+        public void Teleport(Vector2 position)
+        {
+            Vector2 vPtoC = new Vector2(Collider.X, Collider.Y) - LocalPosition;
+            Vector2 vTLtoBR = new Vector2(Collider.Z - Collider.X, Collider.W - Collider.Y);
+            LocalPosition = position;
+            int tlx = LocalPosition.X + vPtoC.X;
+            int tly = LocalPosition.Y + vPtoC.Y;
+            int brx = tlx + vTLtoBR.X;
+            int bry = tly + vTLtoBR.Y;
+            Collider = new Vector4(tlx, tly, brx, bry);
         }
 
         public Rectangle ToRectangle()

@@ -8,8 +8,8 @@ using Utils.GameObjects;
 
 namespace Utils.Prototype
 {
-    public interface IClonable
+    public interface ICloneable<T> where T : class
     {
-        public abstract GameObject Clone();
+        public abstract T Clone();
     }
 }

@@ -38,8 +38,8 @@ namespace Utils.GameObjects.Interactables
         {
             character.ChangeSpeed(SpeedModifier);
             character.ChangeExplosivesCapacity(CapacityModifier);
-            character.ChangeExplosivesDamage(DamageModifier);
-            character.ChangeExplosivesRange(RangeModifier);
+            character.ChangeExplosiveDamage(DamageModifier);
+            character.ChangeExplosiveRange(RangeModifier);
 
             Vector2 index = WorldPosition / gameMap.TileSize;
             gameMap[index].GameObjects.Remove(this);

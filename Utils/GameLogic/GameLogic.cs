@@ -59,8 +59,8 @@ namespace Utils.GameLogic
             gui.SetHealthValue(player.Health);
             gui.SetSpeedValue(player.GetSpeed());
             gui.SetCapacityValue(player.ExplosivesCapacity);
-            gui.SetRangeValue(player.ExplosivesRange);
-            gui.SetDamageValue(player.ExplosiveDamage);
+            gui.SetRangeValue(player.Explosive.Range);
+            gui.SetDamageValue(player.Explosive.Fire.Damage);
         }
 
         public static void GeneratePowerups(ILevelFactory levelFactory, GameMap gameMap, int amount, Bitmap image)

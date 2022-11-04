@@ -28,8 +28,10 @@ namespace Utils.GameObjects.Explosives
 
         public Fire(Fire f) : base(f)
         {
-            _burnTimer = f._burnTimer;
-            _isBurning = f._isBurning;
+            _burnTimer = new System.Timers.Timer();
+            _burnTimer.Elapsed += new ElapsedEventHandler(OnBurnEnd);
+            _burnTimer.Interval = f._burnTimer.Interval;
+            _isBurning = true;
             Damage = f.Damage;
         }
 
@@ -47,6 +49,8 @@ namespace Utils.GameObjects.Explosives
 
         private void Initialize()
         {
+            Damage = GameSettings.InitialExplosionDamage;
+
             _burnTimer = new System.Timers.Timer();
             _burnTimer.Elapsed += new ElapsedEventHandler(OnBurnEnd);
             _burnTimer.Interval = GameSettings.InitialFireBurnTime;

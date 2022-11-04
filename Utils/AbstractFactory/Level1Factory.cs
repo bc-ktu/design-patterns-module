@@ -25,13 +25,16 @@ namespace Utils.AbstractFactory
 
         public Explosive CreateExplosive(GameMap gameMap, Vector2 index)
         {
-            string filepath = Pather.Create(Pather.FolderAssets, Pather.FolderTextures, Pather.FolderGUI, Pather.GuiDamageIcon);
+            
+string filepath = Pather.Create(Pather.FolderAssets, Pather.FolderTextures, Pather.FolderGUI, Pather.GuiDamageIcon);
             Bitmap fireImage = new Bitmap(filepath);
             filepath = Pather.Create(Pather.FolderAssets, Pather.FolderTextures, Pather.FolderSprites, Pather.FolderExplosives, Pather.ExplosiveImage);
             Bitmap explosiveImage = new Bitmap(filepath);
 
+            var prmf = gameMap.CreateScaledGameObjectParameters(index.X, index.Y, fireImage, GameSettings.ExplosiveColliderScale);
+            Fire fire = new Fire(prmf.Item1, prmf.Item2, prmf.Item3, prmf.Item4);
             var prm = gameMap.CreateScaledGameObjectParameters(index.X, index.Y, explosiveImage, GameSettings.ExplosiveColliderScale);
-            return new ExplosiveHV(prm.Item1, prm.Item2, prm.Item3, prm.Item4, fireImage);
+            return new ExplosiveHV(prm.Item1, prm.Item2, prm.Item3, prm.Item4, fire);
         }
 
         public Powerup CreatePowerup(GameMap gameMap, Vector2 index)

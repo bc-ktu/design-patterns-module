@@ -22,9 +22,9 @@ namespace Utils.GameLogic
 
         public static int InitialTimeTillExplosion = 4000;  // ms
         public static int InitialFireBurnTime = 2000;       // ms
-        public static int InitialIFramesTime = 500;         // ms
+        public static int InitialIFramesTime = 1300;        // ms
 
-        public static Vector2 MapSize = new Vector2(10, 10);
+        public static Vector2 MapSize = new Vector2(14, 14);
 
         // ******************** GUI SETTINGS **********************
 
@@ -49,7 +49,7 @@ namespace Utils.GameLogic
         public static double Level2RangePowerupChance = 0.07;
         public static double Level3RangePowerupChance = 0.03;
 
-        public static double CrateDropRate = 0.85;
+        public static double CrateDropRate = 0.75;
 
     }
 }

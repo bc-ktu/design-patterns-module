@@ -11,8 +11,6 @@ using System.Timers;
 using Utils.GameObjects.Animates;
 using Utils.Map;
 using Utils.GameObjects.Walls;
-using System.Reflection;
-using System.Runtime.CompilerServices;
 
 namespace Utils.GameObjects.Explosives
 {
@@ -21,11 +19,10 @@ namespace Utils.GameObjects.Explosives
         private System.Timers.Timer _explosionTimer;
         public bool CountdownEnded { get; private set; }
 
-        public int Damage { get; set; }
         public int Range { get; set; }
         public Vector2[] ExplosionDirections { get; protected set; }
 
-        public Bitmap FireImage { get; private set; }
+        public Fire Fire { get; private set; }
 
         public Explosive()
         {
@@ -34,39 +31,39 @@ namespace Utils.GameObjects.Explosives
 
         public Explosive(Explosive e) : base(e)
         {
-            _explosionTimer = e._explosionTimer;
-            CountdownEnded = e.CountdownEnded;
-            Damage = e.Damage;
+            _explosionTimer = new System.Timers.Timer();
+            _explosionTimer.Elapsed += new ElapsedEventHandler(OnCountdownEnd);
+            _explosionTimer.Interval = e._explosionTimer.Interval;
+            CountdownEnded = false;
             Range = e.Range;
             ExplosionDirections = new Vector2[e.ExplosionDirections.Length];
             for (int i = 0; i < e.ExplosionDirections.Length; i++)
                 ExplosionDirections[i] = new Vector2(e.ExplosionDirections[i].X, e.ExplosionDirections[i].Y);
-            FireImage = e.FireImage;
+            Fire = (Fire)e.Fire.Clone();
         }
 
-        public Explosive(Vector2 position, Vector2 size, Vector4 collider, Bitmap image, Bitmap fireImage) 
+        public Explosive(Vector2 position, Vector2 size, Vector4 collider, Bitmap image, Fire fire) 
             : base(position, size, collider, image)
         {
-            Initialize(fireImage);
+            Initialize(fire);
         }
 
-        public Explosive(int x, int y, int width, int height, int cx, int cy, int cWidth, int cHeight, Bitmap image, Bitmap fireImage)
+        public Explosive(int x, int y, int width, int height, int cx, int cy, int cWidth, int cHeight, Bitmap image, Fire fire)
             : base(x, y, width, height, cx, cy, cWidth, cHeight, image)
         {
-            Initialize(fireImage);
+            Initialize(fire);
         }
 
-        private void Initialize(Bitmap fireImage)
+        private void Initialize(Fire fire)
         {
-            Damage = GameSettings.InitialExplosionDamage;
+            Fire = fire;
+
             Range = GameSettings.InitialExplosionRange;
 
             _explosionTimer = new System.Timers.Timer();
             _explosionTimer.Elapsed += new ElapsedEventHandler(OnCountdownEnd);
             _explosionTimer.Interval = GameSettings.InitialTimeTillExplosion;
             CountdownEnded = false;
-
-            FireImage = fireImage;
         }
 
         public void StartCountdown()
@@ -135,12 +132,13 @@ namespace Utils.GameObjects.Explosives
 
         private void CreateFire(GameMap gameMap, Vector2 index)
         {
-            var prm = gameMap.CreateScaledGameObjectParameters(index.X, index.Y, FireImage);
-            Fire fireGO = new Fire(prm.Item1, prm.Item2, prm.Item3, prm.Item4);
-            fireGO.Damage = Damage;
-            gameMap[index].GameObjects.Add(fireGO);
-            gameMap.FireLookupTable.Add(index, fireGO);
-            fireGO.StartBurning();
+            Fire fire = (Fire)Fire.Clone();
+            Vector2 position = index * gameMap.TileSize;
+            fire.Teleport(position);
+            fire.StartBurning();
+
+            gameMap[index].GameObjects.Add(fire);
+            gameMap.FireLookupTable.Add(index, fire);
         }
 
         private void TriggerExplosive(GameMap gameMap, Vector2 index, Player player)
