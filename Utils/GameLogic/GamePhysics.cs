@@ -1,5 +1,6 @@
 ﻿using Utils.GameObjects;
 using Utils.GameObjects.Animates;
+using Utils.GameObjects.Explosives;
 using Utils.Helpers;
 using Utils.Map;
 using Utils.Math;
@@ -66,5 +67,22 @@ namespace Utils.GameLogic
 
             return false;
         }
+
+        public static bool IsDummyColliding(Vector2 direction, Player player, GameMap gameMap)
+        {
+            LookupTable playerCollisions = GamePhysics.GetCollisions(player, gameMap);
+            bool playerIsOnExplosive = playerCollisions.Has<Explosive>();
+
+            Player dummy = (Player)player.Clone();
+            dummy.Move(direction);
+            LookupTable dummyCollisions = GamePhysics.GetCollisions(dummy, gameMap);
+            int dummyCollisionCount = dummyCollisions.Get<SolidGameObject>().Count;
+
+            if (playerIsOnExplosive && dummyCollisionCount >= 2 || !playerIsOnExplosive && dummyCollisionCount >= 1)
+                return true;
+
+            return false;
+        }
+
     }
 }

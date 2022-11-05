@@ -39,29 +39,14 @@ namespace client_graphics
             }
         }
 
-        private static void MovePlayer(Vector2 direction, Player player, GameMap gameMap, SignalRConnection Con)
+        public static void MovePlayer(Vector2 direction, Player player, GameMap gameMap, SignalRConnection Con)
         {
-            if (IsDummyColliding(direction, player, gameMap))
+            if (GamePhysics.IsDummyColliding(direction, player, gameMap))
                 return;
 
             player.Move(direction);
             Con.Connection.InvokeAsync("Move", direction.X, direction.Y, player.SpeedModifier, player.GetMoveSpeed());
         }
 
-        private static bool IsDummyColliding(Vector2 direction, Player player, GameMap gameMap)
-        {
-            LookupTable playerCollisions = GamePhysics.GetCollisions(player, gameMap);
-            bool playerIsOnExplosive = playerCollisions.Has<Explosive>();
-
-            Player dummy = (Player)player.Clone();
-            dummy.Move(direction);
-            LookupTable dummyCollisions = GamePhysics.GetCollisions(dummy, gameMap);
-            int dummyCollisionCount = dummyCollisions.Get<SolidGameObject>().Count;
-
-            if (playerIsOnExplosive && dummyCollisionCount >= 2 || !playerIsOnExplosive && dummyCollisionCount >= 1)
-                return true;
-
-            return false;
-        }
     }
 }

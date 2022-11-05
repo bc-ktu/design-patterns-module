@@ -3,7 +3,7 @@ using Utils.Helpers;
 
 namespace Utils.GameObjects.Explosives
 {
-    internal class ExplosiveHV : Explosive
+    public class ExplosiveHV : Explosive
     {
         public ExplosiveHV()
         {
