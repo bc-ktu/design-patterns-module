@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Drawing.Text;
-using System.Linq;
-using System.Security.Policy;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Drawing.Text;
 
 using Utils.AbstractFactory;
 using Utils.Factory;
@@ -153,7 +147,7 @@ namespace Utils.GameLogic
             Bitmap characterImage = characterImages[playerSpritesheetIndex.X, playerSpritesheetIndex.Y];
 
             Vector2 position = new Vector2(1, 1) * gameMap.TileSize;
-            double colliderSize = 0.75;
+            double colliderSize = GameSettings.PlayerColliderScale;
             int tlx = (int)(position.X + (1 - colliderSize) * gameMap.TileSize.X);
             int tly = (int)(position.Y + (1 - colliderSize) * gameMap.TileSize.Y);
             int brx = (int)(position.X + colliderSize * gameMap.TileSize.X);

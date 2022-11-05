@@ -1,6 +1,4 @@
 ﻿using System.Media;
-using Utils.GameObjects;
-using Utils.Helpers;
 
 namespace Utils.Observer
 {
