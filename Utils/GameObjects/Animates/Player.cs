@@ -24,6 +24,8 @@ namespace Utils.GameObjects.Animates
         public int SpeedModifier { get; set; }
         public int MovementSpeed { get; set; }
         public int ExplosivesCapacity { get; private set; }
+        public int ExplosiveRange { get; private set; }
+        public int ExplosiveFireDamage { get; private set; }
         public Explosive Explosive { get; private set; }
         
         public Subject Subject { get; private set; }
@@ -50,8 +52,22 @@ namespace Utils.GameObjects.Animates
             Initialize(explosive, subject);
         }
 
+        public Player(int Heatlh, int Speed, int ExplosivesCapacit)
+        {
+            Health = Heatlh;
+            MovementSpeed = Speed;
+            ExplosivesCapacity = ExplosivesCapacit;
+            ExplosiveRange = GameSettings.InitialExplosionRange; //2
+            ExplosiveFireDamage = GameSettings.InitialExplosionDamage; //1
+        }
+
         public Player(int x, int y, int width, int height, int cx, int cy, int cWidth, int cHeight, Bitmap image, Explosive explosive, Subject subject)
             : base(x, y, width, height, cx, cy, cWidth, cHeight, image)
+        {
+            Initialize(explosive, subject);
+        }
+
+        public Player(Explosive explosive, Subject subject)
         {
             Initialize(explosive, subject);
         }
@@ -97,9 +113,9 @@ namespace Utils.GameObjects.Animates
             if (_isInIFrames)
                 return;
 
-            this.Subject.MakeSound("Damage"); 
+            //this.Subject.MakeSound("Damage"); 
             Health -= amount;
-            StartIFramesTimer();
+            //StartIFramesTimer();
         }
 
         public void ChangeHealth(int amount)
@@ -109,12 +125,26 @@ namespace Utils.GameObjects.Animates
 
         public void ChangeSpeed(int amount)
         {
-            _movementSpeed += amount;
+            if (IsSpeedLimit(amount))
+            {
+                MovementSpeed = 10;
+            }
+            else MovementSpeed += amount;
+        }
+
+        public bool IsSpeedLimit(int movementSpeed)
+        {
+            int speedLimit = 10;
+            if (MovementSpeed + movementSpeed > speedLimit)
+            {
+                return true;
+            }
+            else return false;
         }
 
         public void SetMoveSpeed(int amount)
         {
-            _movementSpeed = amount;
+            MovementSpeed = amount;
         }
 
         public int GetSpeed()
@@ -134,12 +164,12 @@ namespace Utils.GameObjects.Animates
 
         public void ChangeExplosiveRange(int amount)
         {
-            Explosive.Range += amount;
+            ExplosiveRange += amount;
         }
 
         public void ChangeExplosiveDamage(int amount)
         {
-            Explosive.Fire.Damage += amount;
+            ExplosiveFireDamage += amount;
         }
 
         public bool CanPlaceExplosive()

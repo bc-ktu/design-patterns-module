@@ -25,7 +25,7 @@ namespace Utils.GameObjects
             LocalPosition = new Vector2(0, 0);
             Size = new Vector2(0, 0);
             Collider = new Vector4(0, 0, 0, 0);
-            Image = new Bitmap(0, 0);
+            Image = new Bitmap(1, 1);
         }
 
         public GameObject(GameObject go)

@@ -29,7 +29,7 @@ namespace Utils.GameObjects.Interactables
             : base(x, y, width, height, cx, cy, cWidth, cHeight, image)
         { }
         
-        public void Affect(Player character, GameMap gameMap)
+        public virtual void Affect(Player character, GameMap gameMap)
         {
             character.ChangeSpeed(SpeedModifier);
             character.ChangeExplosivesCapacity(CapacityModifier);
