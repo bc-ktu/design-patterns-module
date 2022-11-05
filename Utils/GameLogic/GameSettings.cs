@@ -20,9 +20,9 @@ namespace Utils.GameLogic
         public static int InitialExplosionRange = 2;
         public static int InitialExplosionDamage = 1;
 
-        public static int InitialTimeTillExplosion = 4000;  // ms
-        public static int InitialFireBurnTime = 2000;       // ms
-        public static int InitialIFramesTime = 1300;        // ms
+        public static int InitialTimeTillExplosion = 2000;  // ms
+        public static int InitialFireBurnTime = 1500;       // ms
+        public static int InitialIFramesTime = 1000;        // ms
 
         public static Vector2 MapSize = new Vector2(14, 14);
 
@@ -32,6 +32,7 @@ namespace Utils.GameLogic
         public static Vector2 GUISize = new Vector2(5 * 50, 80);
         public static Brush GUIFontColor = Brushes.White;
         public static int GUIFontSize = 24;
+        public static Font DecoratorFont = new Font(FontFamily.GenericSerif, 14);
 
         // ******************** TEXTURES SETTINGS ********************
 
@@ -42,6 +43,7 @@ namespace Utils.GameLogic
 
         public static double ExplosiveColliderScale = 0.8;
         public static double PowerupColliderScale = 0.8;
+        public static double PlayerColliderScale = 0.7;
 
         // ******************** PHYSICS SETTINGS **********************
 

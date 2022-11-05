@@ -1,9 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
+﻿using com.sun.org.apache.xml.@internal.resolver.helpers;
+using Utils.Decorator;
+using Utils.GameLogic;
 using Utils.GameObjects;
 using Utils.GameObjects.Animates;
 using Utils.GUIElements;
@@ -15,54 +12,81 @@ namespace client_graphics
 {
     internal static class Graphics
     {
-        public static void DrawBitmap(Bitmap image, Vector2 position, PaintEventArgs e)
-        {
-            e.Graphics.DrawImage(image, position.ToPoint());
-        }
-
         public static void DrawMap(GameMap gameMap, Player player, List<Player> otherPlayers, PaintEventArgs e)
         {
+            Vector2 playerIndex = player.WorldPosition / gameMap.TileSize;
             List<Vector2> playerIndexes = new List<Vector2>();
-            playerIndexes.Add(player.WorldPosition / gameMap.TileSize);
+            List<IGraphicsDecorator> players = new List<IGraphicsDecorator>();
 
-            List<Player> players = new List<Player>();
-            players.Add(player);
-
+            string filepath;
             for (int i = 0; i < otherPlayers.Count; i++)
             {
+                filepath = Pather.Create(Pather.FolderAssets, Pather.FolderTextures, Pather.FolderGUI, Pather.GUIHealthIcon);
+                Bitmap healthIcon = new Bitmap(filepath);
+                filepath = Pather.Create(Pather.FolderAssets, Pather.FolderTextures, Pather.FolderGUI, Pather.GuiDamageIcon);
+                Bitmap damageIcon = new Bitmap(filepath);
+                Vector2 size = new Vector2(32, 32);
+                string damageValue = otherPlayers[i].Explosive.Fire.Damage.ToString();
+                string healthValue = otherPlayers[i].Health.ToString();
+
+                IconDecorator healthIconDecorator = new IconDecorator(otherPlayers[i], healthIcon, new Vector2(-10, -25), size);
+                TextDecorator healthTextDecorator = new TextDecorator(healthIconDecorator, healthValue, GameSettings.DecoratorFont, GameSettings.GUIFontColor, new Vector2(20, 0), size);
+                IconDecorator damageIconDecorator = new IconDecorator(healthTextDecorator, damageIcon, new Vector2(20, 0), size);
+                TextDecorator damageTextDecorator = new TextDecorator(damageIconDecorator, damageValue, GameSettings.DecoratorFont, GameSettings.GUIFontColor, new Vector2(20, 0), size);
+
                 playerIndexes.Add(otherPlayers[i].WorldPosition / gameMap.TileSize);
-                players.Add(otherPlayers[i]);
+                players.Add(damageTextDecorator);
             }
 
+            // draw tiles
+            for (int y = 0; y < gameMap.Size.Y; y++)
+                for (int x = 0; x < gameMap.Size.X; x++)
+                    gameMap[x, y].Draw(e);
+
+            // draw game objects
             for (int y = 0; y < gameMap.Size.Y; y++)
             {
                 for (int x = 0; x < gameMap.Size.X; x++)
                 {
-                    e.Graphics.DrawImage(gameMap[x, y].Image, gameMap[x, y].ToRectangle());
-                }
-            }
+                    Vector2 index = new Vector2(x, y);
 
-            for (int y = 0; y < gameMap.Size.Y; y++)
-            {
-                for (int x = 0; x < gameMap.Size.X; x++)
-                {
                     foreach (GameObject go in gameMap[x, y].GameObjects)
-                        e.Graphics.DrawImage(go.Image, go.ToRectangle());
+                        go.Draw(e);
 
-                    for (int i = 0; i < playerIndexes.Count; i++)
-                    {
-                        if (playerIndexes[i] == new Vector2(x, y))
-                            e.Graphics.DrawImage(players[i].Image, players[i].ToRectangle());
-                    }
+                    if (playerIndex == index)
+                        player.Draw(e);
+
+                    for (int i = 0; i < playerIndexes.Count; i++) // other players are drawn incorrectly
+                        if (playerIndexes[i] == index)
+                            players[i].Draw(e);
                 }
             }
+        }
+
+        public static void DrawGUI(GUI gui, PaintEventArgs e)
+        {
+            e.Graphics.DrawImage(gui.FrameImage, gui.ToRectangle());
+
+            e.Graphics.DrawImage(gui.HealthIcon.Image, gui.HealthIcon.ToRectangle());
+            e.Graphics.DrawImage(gui.SpeedIcon.Image, gui.SpeedIcon.ToRectangle());
+            e.Graphics.DrawImage(gui.CapacityIcon.Image, gui.CapacityIcon.ToRectangle());
+            e.Graphics.DrawImage(gui.RangeIcon.Image, gui.RangeIcon.ToRectangle());
+            e.Graphics.DrawImage(gui.DamageIcon.Image, gui.DamageIcon.ToRectangle());
+
+            StringFormat stringFormat = new StringFormat();
+            stringFormat.Alignment = StringAlignment.Center;
+            stringFormat.LineAlignment = StringAlignment.Center;
+            e.Graphics.DrawString(gui.HealthText.Text, gui.Font, gui.FontColor, gui.HealthText.ToRectangle(), stringFormat);
+            e.Graphics.DrawString(gui.SpeedText.Text, gui.Font, gui.FontColor, gui.SpeedText.ToRectangle(), stringFormat);
+            e.Graphics.DrawString(gui.CapacityText.Text, gui.Font, gui.FontColor, gui.CapacityText.ToRectangle(), stringFormat);
+            e.Graphics.DrawString(gui.RangeText.Text, gui.Font, gui.FontColor, gui.RangeText.ToRectangle(), stringFormat);
+            e.Graphics.DrawString(gui.DamageText.Text, gui.Font, gui.FontColor, gui.DamageText.ToRectangle(), stringFormat);
         }
 
         public static void DrawColliders(GameMap gameMap, LookupTable collisions, Color color, Color collisionColor, float width, PaintEventArgs e)
         {
             Pen pen = new Pen(color, width);
             Pen collisionsPen = new Pen(collisionColor, width);
-            Pen currentPen;
 
             for (int y = 0; y < gameMap.Size.Y; y++)
             {
@@ -99,11 +123,6 @@ namespace client_graphics
             }
         }
 
-        public static void DrawGameObject(GameObject go, PaintEventArgs e)
-        {
-            e.Graphics.DrawImage(go.Image, go.ToRectangle());
-        }
-
         public static void DrawCollider(GameObject go, Color color, float width, PaintEventArgs e)
         {
             Pen pen = new Pen(color, width);
@@ -115,24 +134,9 @@ namespace client_graphics
             e.Graphics.DrawRectangle(pen, rect);
         }
 
-        public static void DrawGUI(GUI gui, PaintEventArgs e)
+        public static void DrawGameObject(GameObject go, PaintEventArgs e)
         {
-            e.Graphics.DrawImage(gui.FrameImage, gui.ToRectangle());
-
-            e.Graphics.DrawImage(gui.HealthIcon.Image, gui.HealthIcon.ToRectangle());
-            e.Graphics.DrawImage(gui.SpeedIcon.Image, gui.SpeedIcon.ToRectangle());
-            e.Graphics.DrawImage(gui.CapacityIcon.Image, gui.CapacityIcon.ToRectangle());
-            e.Graphics.DrawImage(gui.RangeIcon.Image, gui.RangeIcon.ToRectangle());
-            e.Graphics.DrawImage(gui.DamageIcon.Image, gui.DamageIcon.ToRectangle());
-
-            StringFormat stringFormat = new StringFormat();
-            stringFormat.Alignment = StringAlignment.Center;
-            stringFormat.LineAlignment = StringAlignment.Center;
-            e.Graphics.DrawString(gui.HealthText.Text, gui.Font, gui.FontColor, gui.HealthText.ToRectangle(), stringFormat);
-            e.Graphics.DrawString(gui.SpeedText.Text, gui.Font, gui.FontColor, gui.SpeedText.ToRectangle(), stringFormat);
-            e.Graphics.DrawString(gui.CapacityText.Text, gui.Font, gui.FontColor, gui.CapacityText.ToRectangle(), stringFormat);
-            e.Graphics.DrawString(gui.RangeText.Text, gui.Font, gui.FontColor, gui.RangeText.ToRectangle(), stringFormat);
-            e.Graphics.DrawString(gui.DamageText.Text, gui.Font, gui.FontColor, gui.DamageText.ToRectangle(), stringFormat);
+            go.Draw(e);
         }
 
     }

@@ -1,25 +1,18 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-using Utils.Math;
+﻿using Utils.Math;
 using Utils.GameLogic;
 using System.Timers;
 using Utils.GameObjects.Explosives;
 using Utils.AbstractFactory;
 using Utils.Observer;
 using Utils.Map;
-using System.Xml.Linq;
-using Utils.Helpers;
-using System.Security.Cryptography.X509Certificates;
+using Utils.Decorator;
 
 namespace Utils.GameObjects.Animates
 {
-    public class Player : TriggerGameObject
+    public class Player : TriggerGameObject, IGraphicsDecorator
     {
+        public IGraphicsDecorator wrappee { get; private set; }
+
         private int _explosivesPlaced;
 
         private System.Timers.Timer _iFramesTimer;
@@ -65,6 +58,7 @@ namespace Utils.GameObjects.Animates
 
         private void Initialize(Explosive explosive, Subject subject)
         {
+            wrappee = null;
             Explosive = explosive;
 
             _explosivesPlaced = 0;

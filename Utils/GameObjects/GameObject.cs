@@ -5,13 +5,13 @@ using System.Drawing;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-
+using Utils.Decorator;
 using Utils.Math;
 using Utils.Prototype;
 
 namespace Utils.GameObjects
 {
-    public abstract class GameObject : ICloneable<GameObject>
+    public abstract class GameObject : ICloneable<GameObject>, IDrawable
     {
         public Vector2 LocalPosition { get; protected set; }
         public Vector2 WorldPosition { get { return LocalPosition + Size / 2; } }
@@ -20,7 +20,13 @@ namespace Utils.GameObjects
 
         public Bitmap Image { get; protected set; }
 
-        public GameObject() { }
+        public GameObject() 
+        {
+            LocalPosition = new Vector2(0, 0);
+            Size = new Vector2(0, 0);
+            Collider = new Vector4(0, 0, 0, 0);
+            Image = new Bitmap(0, 0);
+        }
 
         public GameObject(GameObject go)
         {
@@ -65,12 +71,7 @@ namespace Utils.GameObjects
             int bry = tly + vTLtoBR.Y;
             Collider = new Vector4(tlx, tly, brx, bry);
         }
-
-        public Rectangle ToRectangle()
-        {
-            return new Rectangle(LocalPosition.X, LocalPosition.Y, Size.X, Size.Y);
-        }
-
+        
         public override string ToString()
         {
             return "position: " + LocalPosition.ToString() + "\n" +
@@ -79,5 +80,16 @@ namespace Utils.GameObjects
         }
 
         public abstract GameObject Clone();
+
+        public void Draw(PaintEventArgs e)
+        {
+            e.Graphics.DrawImage(Image, ToRectangle());
+        }
+
+        public Rectangle ToRectangle()
+        {
+            return new Rectangle(LocalPosition.X, LocalPosition.Y, Size.X, Size.Y);
+        }
+
     }
 }

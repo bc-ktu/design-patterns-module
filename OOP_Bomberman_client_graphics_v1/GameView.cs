@@ -79,10 +79,6 @@ namespace client_graphics
             subject = new Subject();
             player = GameInitializer.CreatePlayer(levelFactory, gameMap, GameSettings.PlayerSpritesheetIndex, subject);
 
-            // string filepath = Pather.Create(Pather.FolderAssets, Pather.FolderTextures, Pather.FolderSprites, Pather.FolderPowerups, Pather.SpeedPowerupImage);
-            // Bitmap powerupImage = new Bitmap(filepath);
-            // GameLogic.GeneratePowerups(levelFactory, gameMap, 14, powerupImage);
-
             Vector2 position = gameMap.ViewSize / 2;
             Con.Connection.InvokeAsync("JoinGame", position.X, position.Y);
 
