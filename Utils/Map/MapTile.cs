@@ -1,18 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Drawing;
-using System.Linq;
-using System.Security.Policy;
-using System.Text;
-using System.Threading.Tasks;
-
+﻿using Utils.Decorator;
 using Utils.GameObjects;
 using Utils.GameObjects.Animates;
 using Utils.Math;
 
 namespace Utils.Map
 {
-    public abstract class MapTile
+    public abstract class MapTile : IDrawable
     {
         public Vector2 LocalPosition { get; private set; }
         public Vector2 WorldPosition { get { return LocalPosition + Size / 2; } }
@@ -37,11 +30,16 @@ namespace Utils.Map
             GameObjects = new List<GameObject>();
         }
 
+        public abstract void AffectPlayer(Player player);
+
         public Rectangle ToRectangle()
         {
             return new Rectangle(LocalPosition.X, LocalPosition.Y, Size.X, Size.Y);
         }
 
-        public abstract void AffectPlayer(Player player);
+        public void Draw(PaintEventArgs e)
+        {
+            e.Graphics.DrawImage(Image, ToRectangle());
+        }
     }
 }
