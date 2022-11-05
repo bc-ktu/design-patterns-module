@@ -67,6 +67,11 @@ namespace Utils.GameObjects.Animates
             Initialize(explosive, subject);
         }
 
+        public Player(Explosive explosive, Subject subject)
+        {
+            Initialize(explosive, subject);
+        }
+
         private void Initialize(Explosive explosive, Subject subject)
         {
             wrappee = null;
