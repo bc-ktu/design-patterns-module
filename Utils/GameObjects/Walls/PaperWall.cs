@@ -2,7 +2,7 @@
 
 namespace Utils.GameObjects.Walls
 {
-    internal class PaperWall : DestructableWall
+    public class PaperWall : DestructableWall
     {
         public PaperWall() 
         {

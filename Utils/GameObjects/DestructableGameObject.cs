@@ -6,7 +6,10 @@ namespace Utils.GameObjects
     {
         public int Durability { get; protected set; }
 
-        public DestructableGameObject() { }
+        public DestructableGameObject() 
+        { 
+            Durability = 5;
+        }
 
         public DestructableGameObject(DestructableGameObject dsg) : base(dsg) 
         { 
