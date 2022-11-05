@@ -20,7 +20,11 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 		.editorconfig = .editorconfig
 	EndProjectSection
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Testing", "Testing\Testing.csproj", "{31F3F2B0-78F8-4E01-8F94-8ADF39D40C9D}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Testing", "Testing\Testing.csproj", "{31F3F2B0-78F8-4E01-8F94-8ADF39D40C9D}"
+	ProjectSection(ProjectDependencies) = postProject
+		{054E83EA-DC9E-4870-AD22-314D1A1F5BB7} = {054E83EA-DC9E-4870-AD22-314D1A1F5BB7}
+		{BD3BCB8C-2453-4303-B896-E1C94B75460F} = {BD3BCB8C-2453-4303-B896-E1C94B75460F}
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
