@@ -1,4 +1,7 @@
-﻿using Utils.Math;
+﻿using System;
+using Utils.Factory;
+using Utils.GameObjects;
+using Utils.Math;
 
 namespace Server
 {
@@ -29,6 +32,13 @@ namespace Server
             for (int j = 0; j < (MapSize.X - 2) * (MapSize.Y - 2); j++)
             {
                 Values.Add(random.Next(0, 10));
+            }
+            for (int i = 0; i < 5; i++)
+            {
+                int rx = random.Next(1, MapSize.X - 1);
+                int ry = random.Next(1, MapSize.Y - 1);
+                Values.Add(rx);
+                Values.Add(ry);
             }
         }
 

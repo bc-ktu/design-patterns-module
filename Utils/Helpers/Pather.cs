@@ -36,6 +36,9 @@
         public static readonly string StoneWallImage = "Wall001.png";
 
         public static readonly string OuterWallImage = "Wall006.png";
+        public static readonly string MudTileImage = "MudTile.png";
+        public static readonly string IceTileImage = "IceTile.png";
+        public static readonly string PortalTileImage = "PortalTile.png";
 
         public static readonly string GUIFrameImage = "panel001.png";
         public static readonly string GUIHealthIcon = "6-pixel-heart-4.png";

@@ -1,4 +1,11 @@
-﻿using Utils.GameObjects.Walls;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+using Utils.GameObjects.Walls;
+using Utils.Builder;
 using Utils.GameObjects.Explosives;
 using Utils.GameObjects.Interactables;
 using Utils.Math;
@@ -13,6 +20,17 @@ namespace Utils.AbstractFactory
         public Level3Factory()
         {
 
+        }
+
+        public Bitmap GetSpecialTileImage()
+        {
+            string path = Pather.Create(Pather.FolderAssets, Pather.FolderTextures, Pather.FolderSpritesheets, Pather.IceTileImage);
+            return new Bitmap(path);
+        }
+
+        public MapBuilder CreateBuilder(Vector2 mapSize, Vector2 viewSize, List<int> mapSeed, Bitmap mapTileImage, Bitmap crateImage, Bitmap outerWallImage, Bitmap specTileImage, ILevelFactory levelFactory)
+        {
+            return new L3MapBuilder(mapSize, viewSize, mapSeed, mapTileImage, crateImage, outerWallImage, specTileImage, levelFactory);
         }
 
         public Explosive CreateExplosive(GameMap gameMap, Vector2 index)

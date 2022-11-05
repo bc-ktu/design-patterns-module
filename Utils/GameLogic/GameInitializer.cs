@@ -1,6 +1,7 @@
 ﻿using System.Drawing.Text;
 
 using Utils.AbstractFactory;
+using Utils.Builder;
 using Utils.Factory;
 using Utils.GameObjects;
 using Utils.GameObjects.Animates;
@@ -56,87 +57,21 @@ namespace Utils.GameLogic
 
         public static GameMap CreateMap(ILevelFactory levelFactory, Vector2 mapSize, Vector2 viewSize, List<int> mapSeed, Vector2 groundSpritesheetIndex)
         {
-            GameMap gameMap = new GameMap(mapSize, viewSize);
-            
-            string filepath = Pather.Create(Pather.FolderAssets, Pather.FolderTextures, Pather.FolderSpritesheets, Pather.MapSpritesheet);
+            string filepath;
+
+            filepath = Pather.Create(Pather.FolderAssets, Pather.FolderTextures, Pather.FolderSpritesheets, Pather.MapSpritesheet);
             Bitmap mapSpritesheet = new Bitmap(filepath);
             Bitmap mapTileImage = Spritesheet.ExtractSprite(mapSpritesheet, new Vector2(32, 32), groundSpritesheetIndex);
             filepath = Pather.Create(Pather.FolderAssets, Pather.FolderTextures, Pather.FolderSprites, Pather.FolderExplodables, Pather.CrateImage);
             Bitmap crateImage = new Bitmap(filepath);
             filepath = Pather.Create(Pather.FolderAssets, Pather.FolderTextures, Pather.FolderSprites, Pather.FolderWalls, Pather.OuterWallImage);
             Bitmap outerWallImage = new Bitmap(filepath);
+            Bitmap specTileImage = levelFactory.GetSpecialTileImage();
 
-            int index = 0;
-            for (int y = 1; y < mapSize.Y - 1; y++)
-            {
-                for (int x = 1; x < mapSize.X - 1; x++)
-                {
-                    gameMap.SetTile(x, y, mapTileImage);
-
-                    if (x == 1 && y == 1 || x == 1 && y == 2 || x == 2 && y == 1)
-                        continue;
-
-                    int tile = mapSeed[index];
-                    if (tile == 0)
-                    {
-                        GameObject go = levelFactory.CreateWall(gameMap, new Vector2(x, y));
-                        gameMap[x, y].GameObjects.Add(go);
-                    }
-                    else if (tile == 1 || tile == 2 || tile == 3)
-                    {
-                        var prm = gameMap.CreateScaledGameObjectParameters(x, y, crateImage);
-                        GameObject go = new Crate(prm.Item1, prm.Item2, prm.Item3, prm.Item4);
-                        gameMap[x, y].GameObjects.Add(go);
-                    }
-                    else
-                    {
-                        GameObject go = levelFactory.CreatePowerup(gameMap, new Vector2(x, y));
-                        gameMap[x, y].GameObjects.Add(go);
-                        gameMap.PowerupLookupTable.Add(new Vector2(x, y), go);
-                    }
-
-                    index++;
-                }
-            }
-
-            filepath = Pather.Create(Pather.FolderAssets, Pather.FolderTextures, Pather.FolderSprites, Pather.FolderTiles, Pather.PortalInTile);
-            Bitmap portalInImage = new Bitmap(filepath);
-            filepath = Pather.Create(Pather.FolderAssets, Pather.FolderTextures, Pather.FolderSprites, Pather.FolderTiles, Pather.PortalOutTile);
-            Bitmap portalOutImage = new Bitmap(filepath);
-            filepath = Pather.Create(Pather.FolderAssets, Pather.FolderTextures, Pather.FolderSprites, Pather.FolderTiles, Pather.MudTile);
-            Bitmap mudTileImage = new Bitmap(filepath);
-
-            PortalTile pt1 = new PortalTile(2 * gameMap.TileSize.X, 2 * gameMap.TileSize.Y, gameMap.TileSize.X, gameMap.TileSize.Y, portalInImage);
-            PortalTile pt2 = new PortalTile(6 * gameMap.TileSize.X, 6 * gameMap.TileSize.Y, gameMap.TileSize.X, gameMap.TileSize.Y, portalOutImage);
-            pt1.ExitTile = pt2;
-            // pt2.ExitTile = pt1;
-            gameMap._tiles[2, 2] = pt1;
-            gameMap._tiles[6, 6] = pt2;
-            gameMap._tiles[7, 7] = new MudTile(7 * gameMap.TileSize.X, 7 * gameMap.TileSize.Y, gameMap.TileSize.X, gameMap.TileSize.Y, mudTileImage);
-
-            for (int i = 0; i < mapSize.X; i++)
-            {
-                gameMap.SetTile(i, 0, mapTileImage);
-                var prm = gameMap.CreateScaledGameObjectParameters(i, 0, outerWallImage);
-                gameMap[i, 0].GameObjects.Add(new IndestructableWall(prm.Item1, prm.Item2, prm.Item3, prm.Item4));
-
-                gameMap.SetTile(i, mapSize.Y - 1, mapTileImage);
-                prm = gameMap.CreateScaledGameObjectParameters(i, mapSize.Y - 1, outerWallImage);
-                gameMap[i, mapSize.Y - 1].GameObjects.Add(new IndestructableWall(prm.Item1, prm.Item2, prm.Item3, prm.Item4));
-            }
-
-            for (int i = 1; i < mapSize.Y - 1; i++)
-            {
-                gameMap.SetTile(0, i, mapTileImage);
-                var prm = gameMap.CreateScaledGameObjectParameters(0, i, outerWallImage);
-                gameMap[0, i].GameObjects.Add(new IndestructableWall(prm.Item1, prm.Item2, prm.Item3, prm.Item4));
-
-                gameMap.SetTile(mapSize.X - 1, i, mapTileImage);
-                prm = gameMap.CreateScaledGameObjectParameters(mapSize.X - 1, i, outerWallImage);
-                gameMap[mapSize.X - 1, i].GameObjects.Add(new IndestructableWall(prm.Item1, prm.Item2, prm.Item3, prm.Item4));
-            }
-
-            return gameMap;
+            Director director = new Director();
+            MapBuilder builder = levelFactory.CreateBuilder(mapSize, viewSize, mapSeed, mapTileImage, crateImage, outerWallImage, specTileImage, levelFactory);// = new L2MapBuilder(mapSize, viewSize, mapSeed, mapTileImage, crateImage, outerWallImage, specTileImage, levelFactory);
+            director.Construct(builder);
+            return builder.GetMap();
         }
 
         public static Player CreatePlayer(ILevelFactory levelFactory, GameMap gameMap, Vector2 playerSpritesheetIndex, Subject subject)

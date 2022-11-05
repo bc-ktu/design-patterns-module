@@ -53,7 +53,7 @@ namespace client_graphics
 
         public void GameStartUp(List<int> gameSeed)
         {
-            levelFactory = new Level1Factory();
+            levelFactory = new Level2Factory();
 
             InitializeComponent();
             Startup(gameSeed);
