@@ -41,6 +41,19 @@ namespace Server.Hubs
 
         }
 
+        public async Task Teleport(int localX, int localY, int worldX, int worldY)
+        {
+            Vector2 temp;
+
+            if (Storage.Players.TryGetValue(Context.ConnectionId, out temp))
+            {
+                temp.X = worldX;
+                temp.Y = worldY;
+                Storage.Players[Context.ConnectionId] = temp;
+                await Clients.Others.SendAsync("PlayerTeleport", Context.ConnectionId, localX, localY);
+            };
+        }
+
         public async Task JoinGame(int X, int Y)
         {
             Storage.Players[Context.ConnectionId] = new Vector2(X,Y);

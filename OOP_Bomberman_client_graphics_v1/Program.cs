@@ -51,6 +51,10 @@ namespace client_graphics
             {
                 game.UpdatePosition(uuid, X, Y, speedMod, speed);
             });
+            Con.Connection.On<string, int, int>("PlayerTeleport", (uuid, X, Y) =>
+            {
+                game.TeleportPlayer(uuid, X, Y);
+            });
 
             Application.Run(game);
         }

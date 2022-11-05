@@ -9,12 +9,17 @@ using client_graphics.SignalR;
 using Utils.GameObjects;
 using Utils.Helpers;
 using Utils.GameObjects.Animates;
+using javax.sound.midi;
 
-namespace client_graphics
+namespace client_graphics.Command
 {
-    internal static class InputHandler
+    public class CommandController
     {
-        public static void HandleKey(Keys key, Character character, GameMap gameMap, SignalRConnection Con)
+        public void ExecuteCommand(Command command)
+        {
+            command.Execute();
+        }
+        /*public static void HandleKey(Keys key, Character character, GameMap gameMap, SignalRConnection Con)
         {
             if (key == Input.KeyUp)
             {
@@ -41,6 +46,6 @@ namespace client_graphics
                 character.PlaceExplosive(gameMap);
                 //Con.Connection.InvokeAsync("MapSeed"); place bomb change later
             }
-        }
+        }*/
     }
 }

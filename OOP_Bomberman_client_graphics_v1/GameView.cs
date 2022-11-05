@@ -18,6 +18,7 @@ using Utils.GameObjects.Explosives;
 using java.lang;
 using Character = Utils.GameObjects.Animates.Character;
 using Utils.Observer;
+using client_graphics.Command;
 
 namespace client_graphics
 {
@@ -35,6 +36,7 @@ namespace client_graphics
         private Vector4 collider;
         private InputStack inputStack; 
         private Bitmap characterImage;
+        private CommandController commandController;
         List<Vector2> collisions;
 
         public Subject subject { get; set; }
@@ -82,6 +84,14 @@ namespace client_graphics
             p.Move(new Vector2(X, Y));
         }
 
+        public void TeleportPlayer(string uuid, int localX, int localY)
+        {
+            Character p;
+            if (!players.TryGetValue(uuid, out p))
+                return;
+            p.Teleport(new Vector2(localX, localY));
+        }
+
         private void GameView_Load(object sender, EventArgs e)
         {
             this.KeyPreview = true;
@@ -100,6 +110,8 @@ namespace client_graphics
             gameMap = GameInitializer.CreateMap(levelFactory, GameSettings.MapSize, Vector2.FromSize(ClientSize), GameSeed, GameSettings.GroundSpritesheetIndex);
             subject = new Subject();
             player = GameInitializer.CreatePlayer(levelFactory, gameMap, GameSettings.PlayerSpritesheetIndex, subject);
+
+            commandController = new CommandController();
 
             string filepath = Pather.Create(Pather.FolderAssets, Pather.FolderTextures, Pather.FolderSprites, Pather.FolderPowerups, Pather.SpeedPowerupImage);
             Bitmap powerupImage = new Bitmap(filepath);
@@ -133,15 +145,20 @@ namespace client_graphics
 
         private void OnTick(object sender, EventArgs e)
         {
+            var currentCoordinates = player.WorldPosition;
+
             GameLogic.UpdateExplosives(player, gameMap);
             GameLogic.UpdateFires(gameMap);
             GameLogic.ApplyEffects(player, gameMap, collisions);
             GameLogic.UpdateGUI(player, gui);
 
+            if (currentCoordinates != player.WorldPosition)
+                Con.Connection.InvokeAsync("Teleport", player.LocalPosition.X, player.LocalPosition.Y, player.WorldPosition.X, player.WorldPosition.Y);
+
             collisions = GamePhysics.GetCollisions(player, gameMap);
 
-            InputHandler.HandleKey(inputStack.Peek(), player, gameMap, Con);
-
+            ButtonClick(inputStack.Peek());
+            
             this.Refresh();
         }
 
@@ -168,6 +185,30 @@ namespace client_graphics
         private void Level3Button_Click(object sender, EventArgs e)
         {
 
+        }
+
+        private void ButtonClick(Keys key)
+        {
+            if (key == Input.KeyUp)
+            {
+                commandController.ExecuteCommand(new UpCommand(player, Con));
+            }
+            else if (key == Input.KeyDown)
+            {
+                commandController.ExecuteCommand(new DownCommand(player, Con));
+            }
+            else if (key == Input.KeyRight)
+            {
+                commandController.ExecuteCommand(new RightCommand(player, Con));
+            }
+            else if (key == Input.KeyLeft)
+            {
+                commandController.ExecuteCommand(new LeftCommand(player, Con));
+            }
+            else if (key == Input.KeyBomb)
+            {
+                commandController.ExecuteCommand(new PlaceBombCommand(gameMap, player, Con));
+            }
         }
     }
 }
