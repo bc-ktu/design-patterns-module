@@ -125,7 +125,21 @@ namespace Utils.GameObjects.Animates
 
         public void ChangeSpeed(int amount)
         {
-            MovementSpeed += amount;
+            if (IsSpeedLimit(amount))
+            {
+                MovementSpeed = 10;
+            }
+            else MovementSpeed += amount;
+        }
+
+        public bool IsSpeedLimit(int movementSpeed)
+        {
+            int speedLimit = 10;
+            if (MovementSpeed + movementSpeed > speedLimit)
+            {
+                return true;
+            }
+            else return false;
         }
 
         public void SetMoveSpeed(int amount)

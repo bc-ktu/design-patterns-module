@@ -22,7 +22,7 @@ namespace Testing
 
             player.TakeDamage(1);
 
-            Assert.AreEqual(9, player.Health);
+            Assert.That(player.Health, Is.EqualTo(9));
         }
 
         [Test]
@@ -32,7 +32,7 @@ namespace Testing
 
             player.ChangeHealth(5);
 
-            Assert.AreEqual(15, player.Health);
+            Assert.That(player.Health, Is.EqualTo(15));
         }
 
         [Test]
@@ -42,7 +42,7 @@ namespace Testing
 
             player.ChangeSpeed(-5);
 
-            Assert.AreEqual(5, player.MovementSpeed);
+            Assert.That(player.MovementSpeed, Is.EqualTo(5));
         }
 
         [Test]
@@ -52,7 +52,7 @@ namespace Testing
 
             player.SetMoveSpeed(5);
 
-            Assert.AreEqual(5, player.MovementSpeed);
+            Assert.That(player.MovementSpeed, Is.EqualTo(5));
         }
 
         [Test]
@@ -62,7 +62,7 @@ namespace Testing
 
             player.ChangeExplosivesCapacity(5);
 
-            Assert.AreEqual(15, player.ExplosivesCapacity);
+            Assert.That(player.ExplosivesCapacity, Is.EqualTo(15));
         }
 
         [Test]
@@ -72,7 +72,7 @@ namespace Testing
 
             player.ChangeExplosiveRange(5);
 
-            Assert.AreEqual(7, player.ExplosiveRange);
+            Assert.That(player.ExplosiveRange, Is.EqualTo(7));
         }
 
         [Test]
@@ -82,7 +82,7 @@ namespace Testing
 
             player.ChangeExplosiveDamage(5);
 
-            Assert.AreEqual(6, player.ExplosiveFireDamage);
+            Assert.That(player.ExplosiveFireDamage, Is.EqualTo(6));
         }
 
         [Test]
@@ -92,7 +92,7 @@ namespace Testing
 
             wall.DecreaseDurability();
 
-            Assert.AreEqual(2, wall.Durability);
+            Assert.That(wall.Durability, Is.EqualTo(2));
         }
 
         [Test]
@@ -100,22 +100,8 @@ namespace Testing
         {
             Player player = new Player(10, 0, 10);
 
-            Assert.AreEqual(0, player.GetSpeed());
+            Assert.That(player.GetSpeed(), Is.EqualTo(0));
         }
 
     }
-    //public void ChangeExplosivesCapacity(int amount)
-    //{
-    //    ExplosivesCapacity += amount;
-    //}
-
-    //public void ChangeExplosiveRange(int amount)
-    //{
-    //    Explosive.Range += amount;
-    //}
-
-    //public void ChangeExplosiveDamage(int amount)
-    //{
-    //    Explosive.Fire.Damage += amount;
-    //}
 }
