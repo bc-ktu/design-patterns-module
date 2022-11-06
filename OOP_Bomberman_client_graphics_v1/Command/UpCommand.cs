@@ -13,9 +13,9 @@ namespace client_graphics.Command
 {
     public class UpCommand : Command
     {
-        protected Character character;
+        protected Player character;
         protected SignalRConnection connection;
-        public UpCommand(Character character, SignalRConnection connnection) 
+        public UpCommand(Player character, SignalRConnection connnection) 
         {
             this.character = character;
             this.connection = connnection;

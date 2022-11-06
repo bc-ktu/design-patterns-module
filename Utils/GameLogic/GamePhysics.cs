@@ -1,11 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-using Utils.GameObjects;
+﻿using Utils.GameObjects;
 using Utils.GameObjects.Animates;
+using Utils.Helpers;
+using Utils.Map;
 using Utils.Math;
 
 namespace Utils.GameLogic
@@ -15,26 +11,28 @@ namespace Utils.GameLogic
         /// <summary>
         /// Returns a list of indexes on map where collisions are detected
         /// </summary>
-        public static List<Vector2> GetCollisions(Character character, GameMap gameMap) // fix case where character is on the edge of map
+        public static LookupTable GetCollisions(Player character, GameMap gameMap)
         {
-            List<Vector2> collisions = new List<Vector2>();
+            LookupTable collisions = new LookupTable();
 
             Vector2 characterIndex = character.WorldPosition / gameMap.TileSize;
             for (int y = -1; y <= 1; y++)
             {
                 for (int x = -1; x <= 1; x++)
                 {
-                    if (x < 0 || x > gameMap.Size.X || y < 0 || y > gameMap.Size.Y) // fix it !!!
-                        continue;
-
                     Vector2 index = characterIndex + new Vector2(x, y);
-                    GameObject otherGO = gameMap[index].GameObject;
 
-                    if (otherGO is EmptyGameObject)
+                    if (index.X < 0 || index.X > gameMap.Size.X - 1 || index.Y < 0 || index.Y > gameMap.Size.Y - 1)
                         continue;
 
-                    if (IsColliding(character, otherGO))
-                        collisions.Add(index);
+                    MapTile mapTile = gameMap[index];
+
+                    if (mapTile.IsEmpty)
+                        continue;
+
+                    foreach (GameObject go in mapTile.GameObjects)
+                        if (IsColliding(character, go))
+                            collisions.Add(index, go);
                 }
             }
 
@@ -58,9 +56,9 @@ namespace Utils.GameLogic
 
         public static bool IsColliding(Vector2 v, GameObject go)
         {
-            if (v.X > go.Collider.X && v.Y > go.Collider.Y)
+            if (v.X >= go.Collider.X && v.Y >= go.Collider.Y)
             {
-                if (v.X < go.Collider.Z && v.Y < go.Collider.W)
+                if (v.X <= go.Collider.Z && v.Y <= go.Collider.W)
                 {
                     return true;
                 }

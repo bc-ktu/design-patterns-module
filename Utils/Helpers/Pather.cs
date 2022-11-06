@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace Utils.Helpers
+﻿namespace Utils.Helpers
 {
     public static class Pather
     {
@@ -20,18 +14,31 @@ namespace Utils.Helpers
         public static readonly string FolderFonts = "Fonts/";
         public static readonly string FolderPowerups = "Powerups/";
         public static readonly string FolderSoundEffects = "SoundEffects/";
+        public static readonly string FolderTiles = "Tiles/";
 
         // Files
         public static readonly string MapSpritesheet = "TX_Tileset_Grass.png";
         public static readonly string CharacterSpritesheet = "fnaf_characters.png";
 
+        public static readonly string PortalInTile = "po.png";
+        public static readonly string PortalOutTile = "pb.png";
+        public static readonly string MudTile = "sand.png";
+
         public static readonly string CrateImage = "Explodable000.png";
-        public static readonly string InnerWallImage = "Wall000.png";
-        public static readonly string OuterWallImage = "Wall001.png";
         public static readonly string ExplosiveImage = "bomb32ign.png";
         public static readonly string SpeedPowerupImage = "SpeedPowerup.png";
         public static readonly string CapacityPowerupImage = "CapacityPowerup.png";
         public static readonly string DamagePowerupImage = "DamagePowerup.png";
+        public static readonly string RangePowerupImage = "RangePowerup.png";
+
+        public static readonly string PaperWallImage = "Wall004.png";
+        public static readonly string WoodenWallImage = "Wall005.png";
+        public static readonly string StoneWallImage = "Wall001.png";
+
+        public static readonly string OuterWallImage = "Wall006.png";
+        public static readonly string MudTileImage = "MudTile.png";
+        public static readonly string IceTileImage = "IceTile.png";
+        public static readonly string PortalTileImage = "PortalTile.png";
 
         public static readonly string GUIFrameImage = "panel001.png";
         public static readonly string GUIHealthIcon = "6-pixel-heart-4.png";

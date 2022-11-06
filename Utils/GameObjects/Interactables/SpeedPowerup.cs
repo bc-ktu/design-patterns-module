@@ -1,14 +1,16 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Utils.Math;
+﻿using Utils.Math;
 
 namespace Utils.GameObjects.Interactables
 {
     internal class SpeedPowerup : Powerup
     {
+        public SpeedPowerup()
+        {
+            Initialize();
+        }
+
+        public SpeedPowerup(SpeedPowerup sp) : base(sp) { }
+
         public SpeedPowerup(Vector2 position, Vector2 size, Vector4 collider, Bitmap image) 
             : base(position, size, collider, image)
         {
@@ -26,8 +28,13 @@ namespace Utils.GameObjects.Interactables
             SpeedModifier = 1;
             CapacityModifier = 0;
             DamageModifier = 0;
+            RangeModifier = 0;
         }
 
+        public override GameObject Clone()
+        {
+            return new SpeedPowerup(this);
+        }
 
     }
 }

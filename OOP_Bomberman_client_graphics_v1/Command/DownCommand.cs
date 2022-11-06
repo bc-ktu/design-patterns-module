@@ -13,9 +13,9 @@ namespace client_graphics.Command
 {
     internal class DownCommand : Command
     {
-        protected Character character;
+        protected Player character;
         protected SignalRConnection connection;
-        public DownCommand(Character character, SignalRConnection connnection)
+        public DownCommand(Player character, SignalRConnection connnection)
         {
             this.character = character;
             this.connection = connnection;

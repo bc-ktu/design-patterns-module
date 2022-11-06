@@ -1,15 +1,16 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Utils.GameObjects.Destructables;
-using Utils.Math;
+﻿using Utils.Math;
 
-namespace Utils.GameObjects.Destructables.Walls
+namespace Utils.GameObjects.Walls
 {
     internal class WoodenWall : DestructableWall
     {
+        public WoodenWall()
+        {
+            Durability = 5;
+        }
+
+        public WoodenWall(WoodenWall ww) : base(ww) { }
+
         public WoodenWall(Vector2 position, Vector2 size, Vector4 collider, Bitmap image) 
             : base(position, size, collider, image)
         {
@@ -20,6 +21,11 @@ namespace Utils.GameObjects.Destructables.Walls
             : base(x, y, width, height, cx, cy, cWidth, cHeight, image)
         {
             Durability = 5;
+        }
+
+        public override GameObject Clone()
+        {
+            return new WoodenWall(this);
         }
 
     }

@@ -1,16 +1,17 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-using Utils.Math;
+﻿using Utils.Math;
 
 namespace Utils.GameObjects.Interactables
 {
-    internal class CapacityPowerup : Powerup
+    public class CapacityPowerup : Powerup
     {
-        public CapacityPowerup(Vector2 position, Vector2 size, Vector4 collider, Bitmap image) 
+        public CapacityPowerup()
+        { 
+            Initialize(); 
+        }
+
+        public CapacityPowerup(CapacityPowerup cp) : base(cp) { }
+
+        public CapacityPowerup(Vector2 position, Vector2 size, Vector4 collider, Bitmap image)
             : base(position, size, collider, image)
         {
             Initialize();
@@ -27,6 +28,12 @@ namespace Utils.GameObjects.Interactables
             SpeedModifier = 0;
             CapacityModifier = 1;
             DamageModifier = 0;
+            RangeModifier = 0;
+        }
+
+        public override GameObject Clone()
+        {
+            return new CapacityPowerup(this);
         }
 
     }

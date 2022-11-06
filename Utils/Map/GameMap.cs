@@ -5,11 +5,13 @@ using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
+
 using Utils.Factory;
+using Utils.GameObjects;
 using Utils.Helpers;
 using Utils.Math;
 
-namespace Utils.GameObjects
+namespace Utils.Map
 {
     public class GameMap
     {
@@ -18,7 +20,7 @@ namespace Utils.GameObjects
 
         public MapTile[,] _tiles;
         public Vector2 TileSize { get; private set; }
-        
+
         public LookupTable ExplosivesLookupTable { get; private set; }
         public LookupTable FireLookupTable { get; private set; }
         public LookupTable PowerupLookupTable { get; private set; }
@@ -49,7 +51,7 @@ namespace Utils.GameObjects
             FireLookupTable = new LookupTable();
             PowerupLookupTable = new LookupTable();
         }
-        
+
         public void SetTile(int x, int y, Bitmap image)
         {
             int xWorld = TileSize.X * x;
@@ -57,14 +59,37 @@ namespace Utils.GameObjects
             _tiles[x, y] = new RegularTile(xWorld, yWorld, TileSize.X, TileSize.Y, image);
         }
 
+        public bool Has<T>(Vector2 index) where T : class
+        {
+            foreach (GameObject go in _tiles[index.X, index.Y].GameObjects)
+            {
+                if (go is T)
+                {
+                    return true;
+                }
+            }
+
+            return false;
+        }
+
         /// <param name="x">Index on x axis of the tile to place the new GameObject </param>
         /// <param name="y">Index on y axis of the tile to place the new GameObject </param>
-        public Tuple<Vector2, Vector2, Vector4, Bitmap> CreateScaledGameObjectParameters(int x, int y, Bitmap image)
+        public Tuple<Vector2, Vector2, Vector4, Bitmap> CreateScaledGameObjectParameters(int x, int y, Bitmap image, double colliderScale = 1)
         {
             double heightToWidthRatio = image.Height / (double)image.Width;
             Vector2 position = new Vector2(_tiles[x, y].LocalPosition.X, _tiles[x, y].LocalPosition.Y - ((int)(heightToWidthRatio * TileSize.Y) - TileSize.Y));
             Vector2 size = new Vector2(TileSize.X, (int)(heightToWidthRatio * TileSize.Y));
             Vector4 collider = new Vector4(position.X, _tiles[x, y].LocalPosition.Y, position.X + TileSize.X, _tiles[x, y].LocalPosition.Y + TileSize.Y);
+
+            if (colliderScale != 1)
+            {
+                int tlx = (int)(position.X + (1 - colliderScale) * TileSize.X);
+                int tly = (int)(position.Y + (1 - colliderScale) * TileSize.Y);
+                int brx = (int)(position.X + colliderScale * TileSize.X);
+                int bry = (int)(position.Y + colliderScale * TileSize.Y);
+                collider = new Vector4(tlx, tly, brx, bry);
+            }
+
             return new Tuple<Vector2, Vector2, Vector4, Bitmap>(position, size, collider, image);
         }
 

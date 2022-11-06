@@ -26,7 +26,6 @@ namespace client_graphics
             });
 
 
-            //Wait for result, fix later.
             while (GameSeed.Count == 0)
             {
                 Thread.Sleep(10);

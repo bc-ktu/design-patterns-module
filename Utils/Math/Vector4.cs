@@ -1,12 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using Utils.Prototype;
 
 namespace Utils.Math
 {
-    public class Vector4 : IEquatable<Vector4>
+    public class Vector4 : IEquatable<Vector4>, ICloneable<Vector4>
     {
         public int X { get; set; }
         public int Y { get; set; }
@@ -66,5 +62,17 @@ namespace Utils.Math
             return X + Y + Z + W;
         }
 
+        private Vector4(Vector4 v)
+        {
+            X = v.X;
+            Y = v.Y;
+            Z = v.Z;
+            W = v.W;
+        }
+
+        public Vector4 Clone()
+        {
+            return new Vector4(this);
+        }
     }
 }

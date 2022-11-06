@@ -5,11 +5,13 @@ using System.Drawing;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Utils.Decorator;
 using Utils.Math;
+using Utils.Prototype;
 
 namespace Utils.GameObjects
 {
-    public abstract class GameObject : INullable
+    public abstract class GameObject : ICloneable<GameObject>, IDrawable
     {
         public Vector2 LocalPosition { get; protected set; }
         public Vector2 WorldPosition { get { return LocalPosition + Size / 2; } }
@@ -18,12 +20,20 @@ namespace Utils.GameObjects
 
         public Bitmap Image { get; protected set; }
 
-        // How to implement? Is it neccesary
-        public bool IsNull => throw new NotImplementedException();
-
-        public GameObject()
+        public GameObject() 
         {
+            LocalPosition = new Vector2(0, 0);
+            Size = new Vector2(0, 0);
+            Collider = new Vector4(0, 0, 0, 0);
+            Image = new Bitmap(0, 0);
+        }
 
+        public GameObject(GameObject go)
+        {
+            LocalPosition = go.LocalPosition.Clone();
+            Size = go.Size.Clone();
+            Collider = go.Collider.Clone();
+            Image = (Bitmap)go.Image.Clone();
         }
 
         /// <param name="localPosition">Top left corner coordinates of the sprite</param>
@@ -50,16 +60,35 @@ namespace Utils.GameObjects
             Image = image;
         }
 
-        public Rectangle ToRectangle()
+        public void Teleport(Vector2 position)
         {
-            return new Rectangle(LocalPosition.X, LocalPosition.Y, Size.X, Size.Y);
+            Vector2 vPtoC = new Vector2(Collider.X, Collider.Y) - LocalPosition;
+            Vector2 vTLtoBR = new Vector2(Collider.Z - Collider.X, Collider.W - Collider.Y);
+            LocalPosition = position;
+            int tlx = LocalPosition.X + vPtoC.X;
+            int tly = LocalPosition.Y + vPtoC.Y;
+            int brx = tlx + vTLtoBR.X;
+            int bry = tly + vTLtoBR.Y;
+            Collider = new Vector4(tlx, tly, brx, bry);
         }
-
+        
         public override string ToString()
         {
             return "position: " + LocalPosition.ToString() + "\n" +
                    "size: " + Size.ToString() + "\n" +
                    "collider: " + Collider.ToString();
+        }
+
+        public abstract GameObject Clone();
+
+        public void Draw(PaintEventArgs e)
+        {
+            e.Graphics.DrawImage(Image, ToRectangle());
+        }
+
+        public Rectangle ToRectangle()
+        {
+            return new Rectangle(LocalPosition.X, LocalPosition.Y, Size.X, Size.Y);
         }
 
     }

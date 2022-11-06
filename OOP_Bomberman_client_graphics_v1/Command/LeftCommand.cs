@@ -13,9 +13,9 @@ namespace client_graphics.Command
 {
     internal class LeftCommand : Command
     {
-        protected Character character;
+        protected Player character;
         protected SignalRConnection connection;
-        public LeftCommand (Character character, SignalRConnection connnection)
+        public LeftCommand (Player character, SignalRConnection connnection)
         {
             this.character = character;
             this.connection = connnection; 

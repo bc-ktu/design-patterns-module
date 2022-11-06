@@ -13,9 +13,9 @@ namespace client_graphics.Command
 {
     public class RightCommand : Command
     {
-        protected Character character;
+        protected Player character;
         protected SignalRConnection connection;
-        public RightCommand(Character character, SignalRConnection connnection) 
+        public RightCommand(Player character, SignalRConnection connnection) 
         {
             this.character = character;
             this.connection = connnection;
