@@ -8,13 +8,13 @@ using Utils.Strategy;
 
 namespace Utils.GameObjects.Animates
 {
-    public class EnemySideWays : Enemy
+    public class EnemyDiagonal : Enemy
     {
         public Vector2 direction { get; private set; }
-        public EnemySideWays()
+        public EnemyDiagonal()
         {
-            direction = new Vector2(1, -1);
-            movingType = new MoveDi();
+            direction = new Vector2(-1, 0);
+            movingType = new MoveLeftRigh();
         }
     }
 }
