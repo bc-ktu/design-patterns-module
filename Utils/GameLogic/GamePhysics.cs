@@ -11,7 +11,7 @@ namespace Utils.GameLogic
         /// <summary>
         /// Returns a list of indexes on map where collisions are detected
         /// </summary>
-        public static LookupTable GetCollisions(Player character, GameMap gameMap)
+        public static LookupTable GetCollisions(GameObject character, GameMap gameMap)
         {
             LookupTable collisions = new LookupTable();
 
