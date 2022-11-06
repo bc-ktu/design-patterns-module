@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.SignalR.Client;
 
 using client_graphics.SignalR;
+using Utils.GameObjects.Animates;
 
 namespace client_graphics
 {
@@ -19,6 +20,10 @@ namespace client_graphics
             SignalRConnection Con = new SignalRConnection("http://localhost:5016/GameHub");
             Con.ConnectToServer();
             List<int> GameSeed = new List<int>();
+
+            Con.Connection.InvokeAsync("SendMessage", "player", "message");
+            Con.Connection.On<string, string>("ReceiveMessage", (a1, a2) => { });
+
             Con.Connection.InvokeAsync("MapSeed");
             Con.Connection.On<List<int>>("GenMap", (seed) =>
             {
