@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore.SignalR.Client;
 
 namespace client_graphics.SignalR
-{//singleton
+{
     public class SignalRConnection
     {
         public HubConnection Connection { get; set; }

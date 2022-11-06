@@ -43,6 +43,8 @@ namespace client_graphics
 
         private ILevelFactory levelFactory;
 
+        public Vector2 MapSize;
+
         public GameView()
         {
 
@@ -56,11 +58,12 @@ namespace client_graphics
         public void GameStartUp(List<int> GameSeed)
         {
             levelFactory = new Level2Factory();
+            MapSize = new Vector2(14, 14);
             InitializeComponent();
             Startup(GameSeed);
 
-            Level1Button.Enabled = false;
-            Level2Button.Enabled = true;
+            Level1Button.Enabled = true;
+            Level2Button.Enabled = false;
             Level3Button.Enabled = true;
 
             Debug.Set(ConsoleTextBox);
@@ -74,21 +77,27 @@ namespace client_graphics
             inputStack = new InputStack();
             collisions = new LookupTable();
 
+            Vector2 position;
+
             gui = GameInitializer.CreateGUI(GameSettings.GUIPosition, GameSettings.GUISize, GameSettings.GUIFontColor, GameSettings.GUIFontSize);
-            gameMap = GameInitializer.CreateMap(levelFactory, GameSettings.MapSize, Vector2.FromSize(ClientSize), GameSeed, GameSettings.GroundSpritesheetIndex);
+            gameMap = GameInitializer.CreateMap(levelFactory, MapSize, Vector2.FromSize(ClientSize), GameSeed, GameSettings.GroundSpritesheetIndex);
             subject = new Subject();
-            player = GameInitializer.CreatePlayer(levelFactory, gameMap, GameSettings.PlayerSpritesheetIndex, subject);
+            if (players.Count == 2)
+                position = new Vector2(MapSize.X - 1, MapSize.Y - 1) * gameMap.TileSize;
+            else
+                position = new Vector2(1, 1) * gameMap.TileSize;
+
+            player = GameInitializer.CreatePlayer(levelFactory, gameMap, position, GameSettings.PlayerSpritesheetIndex, subject);
 
             commandController = new CommandController();
 
-            Vector2 position = gameMap.ViewSize / 2;
             Con.Connection.InvokeAsync("JoinGame", position.X, position.Y);
 
             collider = player.Collider;
             characterImage = player.Image;
         }
 
-        public void AddPlayer(string uuid, int x, int y) // use GameInitialize.CreatePlayer() method
+        public void AddPlayer(string uuid, int x, int y) 
         {
             Vector2 index = new Vector2(x, y) / gameMap.TileSize;
             Explosive explosive = levelFactory.CreateExplosive(gameMap, index);
@@ -153,9 +162,6 @@ namespace client_graphics
 
             ButtonClick(inputStack.Peek());
 
-            //INVESTIGATE
-            // InputHandler.HandleKey(inputStack.Peek(), player, gameMap, levelFactory, Con); 
-
             this.Refresh();
         }
 
@@ -171,7 +177,14 @@ namespace client_graphics
 
         private void Level1Button_MouseClick(object sender, MouseEventArgs e)
         {
-            levelFactory = new Level1Factory();
+            levelFactory = new Level1Factory(); 
+            GameSeed.Clear();
+            Con.Connection.InvokeAsync("MapSeed", 10, 10);
+            MapSize = new Vector2(10, 10);
+            Con.Connection.On<List<int>>("GenMap", (seed) =>
+            {
+                GameSeed = seed;
+            });
             Startup(GameSeed);
             Level1Button.Enabled = false;
             Level2Button.Enabled = true;
@@ -180,7 +193,14 @@ namespace client_graphics
 
         private void Level2Button_MouseClick(object sender, MouseEventArgs e)
         {
-            levelFactory = new Level2Factory();
+            levelFactory = new Level2Factory(); 
+            GameSeed.Clear();
+            Con.Connection.InvokeAsync("MapSeed", 14, 14);
+            MapSize = new Vector2(14, 14);
+            Con.Connection.On<List<int>>("GenMap", (seed) =>
+            {
+                GameSeed = seed;
+            });
             Startup(GameSeed);
             Level1Button.Enabled = true;
             Level2Button.Enabled = false;
@@ -190,6 +210,13 @@ namespace client_graphics
         private void Level3Button_MouseClick(object sender, MouseEventArgs e)
         {
             levelFactory = new Level3Factory();
+            GameSeed.Clear();
+            Con.Connection.InvokeAsync("MapSeed", 24, 24);
+            MapSize = new Vector2(24, 24);
+            Con.Connection.On<List<int>>("GenMap", (seed) =>
+            {
+                GameSeed = seed;
+            });
             Startup(GameSeed);
             Level1Button.Enabled = true;
             Level2Button.Enabled = true;

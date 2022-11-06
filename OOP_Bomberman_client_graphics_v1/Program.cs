@@ -19,12 +19,11 @@ namespace client_graphics
             SignalRConnection Con = new SignalRConnection("http://localhost:5016/GameHub");
             Con.ConnectToServer();
             List<int> GameSeed = new List<int>();
-            Con.Connection.InvokeAsync("MapSeed");
+            Con.Connection.InvokeAsync("MapSeed", 14, 14);
             Con.Connection.On<List<int>>("GenMap", (seed) =>
             {
                 GameSeed = seed;
             });
-
 
             while (GameSeed.Count == 0)
             {
