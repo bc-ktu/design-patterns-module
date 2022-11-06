@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Newtonsoft.Json.Linq;
+using System;
 using Utils.Factory;
 using Utils.GameObjects;
 using Utils.Math;
@@ -7,44 +8,47 @@ namespace Server
 {
     public class MapSeedGenerator
     {
-        private Vector2 MapSize { get; set; }
-        private List<int> Values { get; set; }
+        private List<int>? values { get; set; }
+        private Vector2 _mapSize { get; set; }
+        private static MapSeedGenerator _instance = new MapSeedGenerator();
 
-        public MapSeedGenerator(int x, int y)
+        public void GenerateSeed(Vector2 mapSize)
         {
-            MapSize = new Vector2(x, y);
-            Values = new List<int>();
-            GenerateSeed();
-        }
-
-        public void GenerateSeed()
-        {
+            values = new List<int>();
+            _mapSize = mapSize;
             Random random = new Random();
-            for (int i = 0; i < (MapSize.X - 2) * (MapSize.Y - 2); i++)
+            for (int i = 0; i < (mapSize.X - 2) * (mapSize.Y - 2); i++)
             {
                 var randomNumber = random.Next(0, 6);
-                Values.Add(randomNumber);
+                values.Add(randomNumber);
                 if (randomNumber == 0)
                 {
-                    Values.Add(random.Next(0, 4));
+                    values.Add(random.Next(0, 4));
                 }
             }
-            for (int j = 0; j < (MapSize.X - 2) * (MapSize.Y - 2); j++)
+            for (int j = 0; j < (mapSize.X - 2) * (mapSize.Y - 2); j++)
             {
-                Values.Add(random.Next(0, 10));
+                values.Add(random.Next(0, 10));
             }
             for (int i = 0; i < 5; i++)
             {
-                int rx = random.Next(1, MapSize.X - 1);
-                int ry = random.Next(1, MapSize.Y - 1);
-                Values.Add(rx);
-                Values.Add(ry);
+                int rx = random.Next(1, mapSize.X - 1);
+                int ry = random.Next(1, mapSize.Y - 1);
+                values.Add(rx);
+                values.Add(ry);
             }
         }
-
-        public List<int> getValues() // why non-capital method?
+        public List<int> GetValues()
         {
-            return Values;
+            return values;
+        }
+        public static MapSeedGenerator GetInstance()
+        {
+            return _instance;
+        }
+        public Vector2 GetMapSize()
+        {
+            return _mapSize;
         }
     }
 }

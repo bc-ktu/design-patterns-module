@@ -4,13 +4,6 @@ using Utils.Math;
 
 namespace Server.Hubs
 {
-    public static class Storage
-    {
-        public static int UserCount { get; set; } = 0;
-        public static Dictionary<string, Vector2> Players = new();
-        public static MapSeedGenerator generator; //kaip si rysi atvaizduoti?
-    }
-
     public class GameHub : Hub
     {
         public async Task SendMessage(string player, string message)
@@ -18,9 +11,13 @@ namespace Server.Hubs
             await Clients.All.SendAsync("ReceiveMessage", player, message);
         }
 
-        public async Task MapSeed()
+        public async Task MapSeed(int x, int y)
         {
-            await Clients.Client(Context.ConnectionId).SendAsync("GenMap", Storage.generator.getValues());
+            if (Storage.generator.GetValues()?.Any() != true || (Storage.generator.GetMapSize().X != x && Storage.generator.GetMapSize().Y != y && Storage.UserCount == 1))
+            {
+                Storage.generator.GenerateSeed(new Vector2(x, y));
+            }
+            await Clients.Client(Context.ConnectionId).SendAsync("GenMap", Storage.generator.GetValues());
         }
 
         public async Task Move(int x, int y, int speedMod, int speed)
@@ -39,6 +36,19 @@ namespace Server.Hubs
         public async Task PlaceExplosive(int x, int y)
         {
 
+        }
+
+        public async Task Teleport(int localX, int localY, int worldX, int worldY)
+        {
+            Vector2 temp;
+
+            if (Storage.Players.TryGetValue(Context.ConnectionId, out temp))
+            {
+                temp.X = worldX;
+                temp.Y = worldY;
+                Storage.Players[Context.ConnectionId] = temp;
+                await Clients.Others.SendAsync("PlayerTeleport", Context.ConnectionId, localX, localY);
+            };
         }
 
         public async Task JoinGame(int X, int Y)
@@ -61,14 +71,11 @@ namespace Server.Hubs
 
         public override async Task OnConnectedAsync()
         {
-            Storage.Players.Add(Context.ConnectionId, new Vector2(0, 0));
             Storage.UserCount++;
-            //await this.SendMessage($"Player {Storage.UserCount} ", $"Connected {Context.ConnectionId}");
-            if (Storage.generator == null)
-            {
-                Storage.generator = new MapSeedGenerator(GameSettings.MapSize.X, GameSettings.MapSize.Y);
-            }
-            //possible place 
+            Storage.Players.Add(Context.ConnectionId, new Vector2(0, 0));
+            /*if (Storage.UserCount == 2)
+                Storage.Players.Add(Context.ConnectionId, new Vector2(Storage.generator.GetMapSize().X - 1, Storage.generator.GetMapSize().X - 1));
+           */ 
             Console.WriteLine($"Player connected with ID {Context.ConnectionId}");
             await base.OnConnectedAsync();
         }

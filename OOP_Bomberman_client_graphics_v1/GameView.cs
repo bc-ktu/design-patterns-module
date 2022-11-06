@@ -8,8 +8,11 @@ using Utils.GameLogic;
 using Utils.AbstractFactory;
 using Utils.GameObjects.Animates;
 using Utils.Observer;
+using client_graphics.Command;
 using Utils.Map;
 using Utils.GameObjects.Explosives;
+using Utils.GameObjects;
+using Utils.Builder;
 
 namespace client_graphics
 {
@@ -25,8 +28,9 @@ namespace client_graphics
         private GameMap gameMap;
         private Player player;
         private Vector4 collider;
-        private InputStack inputStack; 
+        private InputStack inputStack;
         private Bitmap characterImage;
+        private CommandController commandController;
         private LookupTable collisions;
 
         public Subject subject { get; set; }
@@ -39,34 +43,33 @@ namespace client_graphics
 
         private ILevelFactory levelFactory;
 
+        public Vector2 MapSize;
+
         public GameView()
         {
 
         }
-        
         private void GameView_Load(object sender, EventArgs e)
         {
             this.KeyPreview = true;
             this.DoubleBuffered = true;
             this.Paint += new PaintEventHandler(OnPaint);
         }
-
-        public void GameStartUp(List<int> gameSeed)
+        public void GameStartUp(List<int> GameSeed)
         {
             levelFactory = new Level2Factory();
-
+            MapSize = new Vector2(14, 14);
             InitializeComponent();
-            Startup(gameSeed);
+            Startup(GameSeed);
 
-            Level1Button.Enabled = false;
-            Level2Button.Enabled = true;
+            Level1Button.Enabled = true;
+            Level2Button.Enabled = false;
             Level3Button.Enabled = true;
 
             Debug.Set(ConsoleTextBox);
-            Debug.Enabled(DEBUGGER_ENABLED);
+            Debug.Enabled(false);
             Debug.LogLine("Hello World!");
         }
-
         private void Startup(List<int> gameSeed)
         {
             GameSeed = gameSeed;
@@ -74,19 +77,27 @@ namespace client_graphics
             inputStack = new InputStack();
             collisions = new LookupTable();
 
-            gui = GameInitializer.CreateGUI(GameSettings.GUIPosition, GameSettings.GUISize, GameSettings.GUIFontColor, GameSettings.GUIFontSize);
-            gameMap = GameInitializer.CreateMap(levelFactory, GameSettings.MapSize, Vector2.FromSize(ClientSize), GameSeed, GameSettings.GroundSpritesheetIndex);
-            subject = new Subject();
-            player = GameInitializer.CreatePlayer(levelFactory, gameMap, GameSettings.PlayerSpritesheetIndex, subject);
+            Vector2 position;
 
-            Vector2 position = gameMap.ViewSize / 2;
+            gui = GameInitializer.CreateGUI(GameSettings.GUIPosition, GameSettings.GUISize, GameSettings.GUIFontColor, GameSettings.GUIFontSize);
+            gameMap = GameInitializer.CreateMap(levelFactory, MapSize, Vector2.FromSize(ClientSize), GameSeed, GameSettings.GroundSpritesheetIndex);
+            subject = new Subject();
+            if (players.Count == 2)
+                position = new Vector2(MapSize.X - 1, MapSize.Y - 1) * gameMap.TileSize;
+            else
+                position = new Vector2(1, 1) * gameMap.TileSize;
+
+            player = GameInitializer.CreatePlayer(levelFactory, gameMap, position, GameSettings.PlayerSpritesheetIndex, subject);
+
+            commandController = new CommandController();
+
             Con.Connection.InvokeAsync("JoinGame", position.X, position.Y);
 
             collider = player.Collider;
             characterImage = player.Image;
         }
 
-        public void AddPlayer (string uuid, int x, int y) // use GameInitializer.CreatePlayer() method
+        public void AddPlayer(string uuid, int x, int y) 
         {
             Vector2 index = new Vector2(x, y) / gameMap.TileSize;
             Explosive explosive = levelFactory.CreateExplosive(gameMap, index);
@@ -105,6 +116,14 @@ namespace client_graphics
             p.SpeedModifier = speedMod;
             p.SetMoveSpeed(speed);
             p.Move(new Vector2(X, Y));
+        }
+
+        public void TeleportPlayer(string uuid, int localX, int localY)
+        {
+            Player p;
+            if (!players.TryGetValue(uuid, out p))
+                return;
+            p.Teleport(new Vector2(localX, localY));
         }
 
         private void OnPaint(object sender, PaintEventArgs e)
@@ -128,15 +147,20 @@ namespace client_graphics
 
         private void OnTick(object sender, EventArgs e)
         {
+            var currentCoordinates = player.WorldPosition;
+
             GameLogic.UpdateExplosives(player, gameMap);
             GameLogic.UpdateFires(gameMap, levelFactory);
 
             collisions = GamePhysics.GetCollisions(player, gameMap);
 
+            if (currentCoordinates != player.WorldPosition)
+                Con.Connection.InvokeAsync("Teleport", player.LocalPosition.X, player.LocalPosition.Y, player.WorldPosition.X, player.WorldPosition.Y);
+
             GameLogic.ApplyEffects(player, gameMap, collisions.GameObjects);
             GameLogic.UpdateGUI(player, gui);
 
-            InputHandler.HandleKey(inputStack.Peek(), player, gameMap, levelFactory, Con);
+            ButtonClick(inputStack.Peek());
 
             this.Refresh();
         }
@@ -153,7 +177,14 @@ namespace client_graphics
 
         private void Level1Button_MouseClick(object sender, MouseEventArgs e)
         {
-            levelFactory = new Level1Factory();
+            levelFactory = new Level1Factory(); 
+            GameSeed.Clear();
+            Con.Connection.InvokeAsync("MapSeed", 10, 10);
+            MapSize = new Vector2(10, 10);
+            Con.Connection.On<List<int>>("GenMap", (seed) =>
+            {
+                GameSeed = seed;
+            });
             Startup(GameSeed);
             Level1Button.Enabled = false;
             Level2Button.Enabled = true;
@@ -162,7 +193,14 @@ namespace client_graphics
 
         private void Level2Button_MouseClick(object sender, MouseEventArgs e)
         {
-            levelFactory = new Level2Factory();
+            levelFactory = new Level2Factory(); 
+            GameSeed.Clear();
+            Con.Connection.InvokeAsync("MapSeed", 14, 14);
+            MapSize = new Vector2(14, 14);
+            Con.Connection.On<List<int>>("GenMap", (seed) =>
+            {
+                GameSeed = seed;
+            });
             Startup(GameSeed);
             Level1Button.Enabled = true;
             Level2Button.Enabled = false;
@@ -172,10 +210,65 @@ namespace client_graphics
         private void Level3Button_MouseClick(object sender, MouseEventArgs e)
         {
             levelFactory = new Level3Factory();
+            GameSeed.Clear();
+            Con.Connection.InvokeAsync("MapSeed", 24, 24);
+            MapSize = new Vector2(24, 24);
+            Con.Connection.On<List<int>>("GenMap", (seed) =>
+            {
+                GameSeed = seed;
+            });
             Startup(GameSeed);
             Level1Button.Enabled = true;
             Level2Button.Enabled = true;
             Level3Button.Enabled = false;
+        }
+
+        private void ButtonClick(Keys key)
+        {
+            if (key == Input.KeyUp)
+            {
+                if (IsDummyColliding(Direction.Up, player, gameMap))
+                    return;
+                commandController.ExecuteCommand(new UpCommand(player, Con));
+            }
+            else if (key == Input.KeyDown)
+            {
+                if (IsDummyColliding(Direction.Down, player, gameMap))
+                    return;
+                commandController.ExecuteCommand(new DownCommand(player, Con));
+            }
+            else if (key == Input.KeyRight)
+            {
+                if (IsDummyColliding(Direction.Right, player, gameMap))
+                    return;
+                commandController.ExecuteCommand(new RightCommand(player, Con));
+            }
+            else if (key == Input.KeyLeft)
+            {
+                if (IsDummyColliding(Direction.Left, player, gameMap))
+                    return;
+                commandController.ExecuteCommand(new LeftCommand(player, Con));
+            }
+            else if (key == Input.KeyBomb)
+            {
+                commandController.ExecuteCommand(new PlaceBombCommand(gameMap, player, Con, levelFactory));
+            }
+        }
+
+        private static bool IsDummyColliding(Vector2 direction, Player player, GameMap gameMap)
+        {
+            LookupTable playerCollisions = GamePhysics.GetCollisions(player, gameMap);
+            bool playerIsOnExplosive = playerCollisions.Has<Explosive>();
+
+            Player dummy = (Player)player.Clone();
+            dummy.Move(direction);
+            LookupTable dummyCollisions = GamePhysics.GetCollisions(dummy, gameMap);
+            int dummyCollisionCount = dummyCollisions.Get<SolidGameObject>().Count;
+
+            if (playerIsOnExplosive && dummyCollisionCount >= 2 || !playerIsOnExplosive && dummyCollisionCount >= 1)
+                return true;
+
+            return false;
         }
     }
 }
