@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.SignalR;
+using Microsoft.AspNetCore.SignalR.Protocol;
 using Utils.GameLogic;
 using Utils.Math;
 
@@ -11,11 +12,21 @@ namespace Server.Hubs
         public static MapSeedGenerator generator; //kaip si rysi atvaizduoti?
     }
 
+    public class HubMessage
+    {
+
+    }
+
     public class GameHub : Hub
     {
         public async Task SendMessage(string player, string message)
         {
             await Clients.All.SendAsync("ReceiveMessage", player, message);
+        }
+        public async Task Welcome()
+        {
+            await Clients.All.SendAsync("welcome", new[]
+                      { new HubMessage(), new HubMessage(), new HubMessage() });
         }
 
         public async Task MapSeed()

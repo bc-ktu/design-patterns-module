@@ -2,6 +2,7 @@ using Microsoft.AspNetCore.SignalR.Client;
 
 using client_graphics.SignalR;
 using Utils.GameObjects.Animates;
+using Microsoft.AspNetCore.SignalR.Protocol;
 
 namespace client_graphics
 {
@@ -23,6 +24,10 @@ namespace client_graphics
 
             Con.Connection.InvokeAsync("SendMessage", "player", "message");
             Con.Connection.On<string, string>("ReceiveMessage", (a1, a2) => { });
+            Con.Connection.On<HubMessage[]>("welcome", (messages) => {
+                return;
+            });
+
 
             Con.Connection.InvokeAsync("MapSeed");
             Con.Connection.On<List<int>>("GenMap", (seed) =>
