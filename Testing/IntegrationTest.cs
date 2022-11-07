@@ -1,4 +1,4 @@
-﻿using Microsoft.AspNet.SignalR.Hubs;
+using Microsoft.AspNet.SignalR.Hubs;
 using Microsoft.AspNetCore.SignalR;
 using Moq;
 using Server.Hubs;
@@ -9,6 +9,16 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using IClientProxy = Microsoft.AspNetCore.SignalR.IClientProxy;
+using Utils.Math;
+using Utils.Helpers;
+using Utils.GUIElements;
+using Utils.GameLogic;
+using Utils.AbstractFactory;
+using Utils.GameObjects.Animates;
+using Utils.Observer;
+using Utils.Map;
+using Utils.GameObjects.Explosives;
+using System.Drawing;
 
 namespace Testing
 {
@@ -37,6 +47,27 @@ namespace Testing
                     It.Is<object[]>(o => o != null && o.Length == 1 && ((object[])o[0]).Length == 3),
                     default(CancellationToken)),
                 Times.Once);
+        }
+
+        [Test]
+        public async Task IntegrationTest_CheckIfExplosiveKillsPlayer()
+        {
+            Player player;
+            ExplosiveDi ex = new ExplosiveDi();
+
+            Subject subject = new Subject();
+
+            ILevelFactory levelFactory;
+            levelFactory = new Level2Factory();
+
+            player = GameInitializer.CreatePlayer(levelFactory, null, GameSettings.PlayerSpritesheetIndex, subject);
+
+            while (!player.IsPlayerDead(player.Health))
+            {
+                player.TakeDamage(ex.ExplosiveDamage(1));
+            }
+
+            Assert.IsTrue(player.IsPlayerDead(player.Health));
         }
     }
 }

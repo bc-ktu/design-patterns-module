@@ -77,22 +77,18 @@ namespace Utils.GameLogic
         public static Player CreatePlayer(ILevelFactory levelFactory, GameMap gameMap, Vector2 playerSpritesheetIndex, Subject subject)
         {
             string filepath = Pather.Create(Pather.FolderAssets, Pather.FolderTextures, Pather.FolderSpritesheets, Pather.CharacterSpritesheet);
-            Bitmap charactersSpritesheet = new Bitmap(filepath);
-            Bitmap[,] characterImages = Spritesheet.ExtractAll(charactersSpritesheet, new Vector2(32, 32));
-            Bitmap characterImage = characterImages[playerSpritesheetIndex.X, playerSpritesheetIndex.Y];
-
-            Vector2 position = new Vector2(1, 1) * gameMap.TileSize;
+            
+            Vector2 position = new Vector2(1, 1);
             double colliderSize = GameSettings.PlayerColliderScale;
-            int tlx = (int)(position.X + (1 - colliderSize) * gameMap.TileSize.X);
-            int tly = (int)(position.Y + (1 - colliderSize) * gameMap.TileSize.Y);
-            int brx = (int)(position.X + colliderSize * gameMap.TileSize.X);
-            int bry = (int)(position.Y + colliderSize * gameMap.TileSize.Y);
+            int tlx = (int)(position.X + (1 - colliderSize));
+            int tly = (int)(position.Y + (1 - colliderSize));
+            int brx = (int)(position.X + colliderSize);
+            int bry = (int)(position.Y + colliderSize);
             Vector4 collider = new Vector4(tlx, tly, brx, bry);
 
-            Vector2 index = position / gameMap.TileSize;
-            Explosive explosive = levelFactory.CreateExplosive(gameMap, index);
+            Vector2 index = position;
 
-            return new Player(position, gameMap.TileSize, collider, characterImage, explosive, subject);
+            return new Player(position, null, collider, null, null, subject);
         }
     }
 }

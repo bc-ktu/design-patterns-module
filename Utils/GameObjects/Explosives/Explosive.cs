@@ -79,6 +79,11 @@ namespace Utils.GameObjects.Explosives
             }
         }
 
+        public int ExplosiveDamage(int damageAmount)
+        {
+            return damageAmount;
+        }
+
         private void Explode(GameMap gameMap, Player player)
         {
             CountdownEnded = true;

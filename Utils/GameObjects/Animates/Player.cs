@@ -72,6 +72,12 @@ namespace Utils.GameObjects.Animates
             Initialize(explosive, subject);
         }
 
+        public bool IsPlayerDead(int health)
+        {
+            if (health <= 0) return true;
+            else return false;
+        }
+
         private void Initialize(Explosive explosive, Subject subject)
         {
             wrappee = null;
@@ -84,8 +90,8 @@ namespace Utils.GameObjects.Animates
             Health = GameSettings.InitialPlayerHealth;
             _movementSpeed = GameSettings.InitialPlayerSpeed;
             ExplosivesCapacity = GameSettings.InitialPlayerCapacity;
-            Explosive.Range = GameSettings.InitialExplosionRange;
-            Explosive.Fire.Damage = GameSettings.InitialExplosionDamage;
+            //Explosive.Range = GameSettings.InitialExplosionRange;
+            //Explosive.Fire.Damage = GameSettings.InitialExplosionDamage;
             
             _iFramesTimer = new System.Timers.Timer();
             _iFramesTimer.Elapsed += new ElapsedEventHandler(OnIFramesEnd);
