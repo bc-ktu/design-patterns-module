@@ -52,21 +52,20 @@ namespace Testing
         [Test]
         public async Task IntegrationTest_CheckIfExplosiveKillsPlayer()
         {
+            //Arrange
             Player player;
             ExplosiveDi ex = new ExplosiveDi();
-
             Subject subject = new Subject();
 
-            ILevelFactory levelFactory;
-            levelFactory = new Level2Factory();
-
-            player = GameInitializer.CreatePlayer(levelFactory, null, GameSettings.PlayerSpritesheetIndex, subject);
+            //Act
+            player = GameInitializer.CreatePlayer(subject);
 
             while (!player.IsPlayerDead(player.Health))
             {
                 player.TakeDamage(ex.ExplosiveDamage(1));
             }
 
+            //Assert
             Assert.IsTrue(player.IsPlayerDead(player.Health));
         }
     }
