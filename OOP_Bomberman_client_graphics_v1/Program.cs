@@ -28,8 +28,6 @@ namespace client_graphics
                 return;
             });
 
-
-            Con.Connection.InvokeAsync("MapSeed");
             Con.Connection.InvokeAsync("MapSeed", 14, 14);
             Con.Connection.On<List<int>>("GenMap", (seed) =>
             {
