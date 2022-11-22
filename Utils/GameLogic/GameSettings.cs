@@ -24,8 +24,6 @@ namespace Utils.GameLogic
         public static int InitialFireBurnTime = 1500;       // ms
         public static int InitialIFramesTime = 1000;        // ms
 
-        public static Vector2 MapSize = new Vector2(14, 14);
-
         // ******************** GUI SETTINGS **********************
 
         public static Vector2 GUIPosition = new Vector2(0, 0);

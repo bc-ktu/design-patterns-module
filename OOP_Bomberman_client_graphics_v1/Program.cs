@@ -30,13 +30,12 @@ namespace client_graphics
 
 
             Con.Connection.InvokeAsync("MapSeed");
+            Con.Connection.InvokeAsync("MapSeed", 14, 14);
             Con.Connection.On<List<int>>("GenMap", (seed) =>
             {
                 GameSeed = seed;
             });
 
-
-            //Wait for result, fix later.
             while (GameSeed.Count == 0)
             {
                 Thread.Sleep(10);
@@ -60,6 +59,10 @@ namespace client_graphics
             Con.Connection.On<string, int, int, int, int>("PlayerMove", (uuid, X, Y, speedMod, speed) =>
             {
                 game.UpdatePosition(uuid, X, Y, speedMod, speed);
+            });
+            Con.Connection.On<string, int, int>("PlayerTeleport", (uuid, X, Y) =>
+            {
+                game.TeleportPlayer(uuid, X, Y);
             });
 
             Application.Run(game);

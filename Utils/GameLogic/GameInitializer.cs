@@ -87,14 +87,13 @@ namespace Utils.GameLogic
             return new Player(position, null, collider, null, null, subject);
         }
 
-        public static Player CreatePlayer(ILevelFactory levelFactory, GameMap gameMap, Vector2 playerSpritesheetIndex, Subject subject)
+        public static Player CreatePlayer(ILevelFactory levelFactory, GameMap gameMap, Vector2 position, Vector2 playerSpritesheetIndex, Subject subject)
         {
             string filepath = Pather.Create(Pather.FolderAssets, Pather.FolderTextures, Pather.FolderSpritesheets, Pather.CharacterSpritesheet);
             Bitmap charactersSpritesheet = new Bitmap(filepath);
             Bitmap[,] characterImages = Spritesheet.ExtractAll(charactersSpritesheet, new Vector2(32, 32));
             Bitmap characterImage = characterImages[playerSpritesheetIndex.X, playerSpritesheetIndex.Y];
 
-            Vector2 position = new Vector2(1, 1) * gameMap.TileSize;
             double colliderSize = GameSettings.PlayerColliderScale;
             int tlx = (int)(position.X + (1 - colliderSize) * gameMap.TileSize.X);
             int tly = (int)(position.Y + (1 - colliderSize) * gameMap.TileSize.Y);
