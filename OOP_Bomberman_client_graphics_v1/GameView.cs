@@ -223,6 +223,7 @@ namespace client_graphics
             Level3Button.Enabled = false;
         }
 
+        //TODO: convert to commands from the design pattern
         private void ButtonClick(Keys key)
         {
             if (key == Input.KeyUp)

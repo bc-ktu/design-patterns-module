@@ -24,7 +24,7 @@ namespace Utils.GameObjects.Animates
         public int SpeedModifier { get; set; }
         public int MovementSpeed { get; set; }
         public int ExplosivesCapacity { get; private set; }
-        public int ExplosiveRange { get; private set; }
+        public int Explosiverange { get; private set; }
         public int ExplosiveFireDamage { get; private set; }
         public Explosive Explosive { get; private set; }
         
@@ -57,7 +57,7 @@ namespace Utils.GameObjects.Animates
             Health = Heatlh;
             MovementSpeed = Speed;
             ExplosivesCapacity = ExplosivesCapacit;
-            ExplosiveRange = GameSettings.InitialExplosionRange; //2
+            Explosiverange = GameSettings.InitialExplosionRange; //2
             ExplosiveFireDamage = GameSettings.InitialExplosionDamage; //1
         }
 
@@ -74,8 +74,8 @@ namespace Utils.GameObjects.Animates
 
         public bool IsPlayerDead(int health)
         {
-            if (health <= 0) return true;
-            else return false;
+            bool res = health <= 0 ? true : false;
+            return res;
         }
 
         private void Initialize(Explosive explosive, Subject subject)
@@ -170,7 +170,7 @@ namespace Utils.GameObjects.Animates
 
         public void ChangeExplosiveRange(int amount)
         {
-            ExplosiveRange += amount;
+            Explosiverange += amount;
         }
 
         public void ChangeExplosiveDamage(int amount)

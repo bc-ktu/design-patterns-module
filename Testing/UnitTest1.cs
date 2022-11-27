@@ -72,7 +72,7 @@ namespace Testing
 
             player.ChangeExplosiveRange(5);
 
-            Assert.That(player.ExplosiveRange, Is.EqualTo(7));
+            Assert.That(player.Explosiverange, Is.EqualTo(7));
         }
 
         [Test]
