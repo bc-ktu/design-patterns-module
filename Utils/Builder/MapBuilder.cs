@@ -7,6 +7,7 @@ using Utils.AbstractFactory;
 using Utils.GameObjects;
 using Utils.GameObjects.Crates;
 using Utils.GameObjects.Walls;
+using Utils.Iterator;
 using Utils.Map;
 using Utils.Math;
 
@@ -72,26 +73,12 @@ namespace Utils.Builder
 
         public void AddOuterRing()
         {
-            for (int i = 0; i < mapSize.X; i++)
+            MapIterator iterator = new OuterRingIterator(gameMap);
+            for (Tuple<int, int> tile = iterator.First(); !iterator.IsDone(); tile = iterator.Next())
             {
-                gameMap.SetTile(i, 0, mapTileImage);
-                var prm = gameMap.CreateScaledGameObjectParameters(i, 0, outerWallImage);
-                gameMap[i, 0].GameObjects.Add(new IndestructableWall(prm.Item1, prm.Item2, prm.Item3, prm.Item4));
-
-                gameMap.SetTile(i, mapSize.Y - 1, mapTileImage);
-                prm = gameMap.CreateScaledGameObjectParameters(i, mapSize.Y - 1, outerWallImage);
-                gameMap[i, mapSize.Y - 1].GameObjects.Add(new IndestructableWall(prm.Item1, prm.Item2, prm.Item3, prm.Item4));
-            }
-
-            for (int i = 1; i < mapSize.Y - 1; i++)
-            {
-                gameMap.SetTile(0, i, mapTileImage);
-                var prm = gameMap.CreateScaledGameObjectParameters(0, i, outerWallImage);
-                gameMap[0, i].GameObjects.Add(new IndestructableWall(prm.Item1, prm.Item2, prm.Item3, prm.Item4));
-
-                gameMap.SetTile(mapSize.X - 1, i, mapTileImage);
-                prm = gameMap.CreateScaledGameObjectParameters(mapSize.X - 1, i, outerWallImage);
-                gameMap[mapSize.X - 1, i].GameObjects.Add(new IndestructableWall(prm.Item1, prm.Item2, prm.Item3, prm.Item4));
+                gameMap.SetTile(tile.Item1, tile.Item2, mapTileImage);
+                var prm = gameMap.CreateScaledGameObjectParameters(tile.Item1, tile.Item2, outerWallImage);
+                gameMap._tiles[tile.Item1, tile.Item2].GameObjects.Add(new IndestructableWall(prm.Item1, prm.Item2, prm.Item3, prm.Item4));
             }
         }
 

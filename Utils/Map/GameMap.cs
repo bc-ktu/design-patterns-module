@@ -9,17 +9,19 @@ using System.Threading.Tasks;
 using Utils.Factory;
 using Utils.GameObjects;
 using Utils.Helpers;
+using Utils.Iterator;
 using Utils.Math;
 
 namespace Utils.Map
 {
-    public class GameMap
+    public class GameMap : IAggregate
     {
         public Vector2 Size { get; private set; }
         public Vector2 ViewSize { get; private set; }
 
         public MapTile[,] _tiles;
         public Vector2 TileSize { get; private set; }
+        public bool OuterIterator = false;
 
         public LookupTable ExplosivesLookupTable { get; private set; }
         public LookupTable FireLookupTable { get; private set; }
@@ -93,5 +95,10 @@ namespace Utils.Map
             return new Tuple<Vector2, Vector2, Vector4, Bitmap>(position, size, collider, image);
         }
 
+        IAbstractIterator IAggregate.CreateIterator()
+        {
+            if (OuterIterator) return new OuterRingIterator(this);
+            else return new InnerMapIterator(this);
+        }
     }
 }
