@@ -38,36 +38,36 @@ namespace Utils.Builder
         public void AddCrates()
         {
             int index = 0;
-            for (int y = 1; y < mapSize.Y - 1; y++)
+            MapIterator iterator = new InnerMapIterator(gameMap);
+            for (Tuple<int, int> t = iterator.First(); !iterator.IsDone(); t = iterator.Next())
             {
-                for (int x = 1; x < mapSize.X - 1; x++)
+                int x = t.Item1;
+                int y = t.Item2;
+                gameMap.SetTile(x, y, mapTileImage);
+
+                if (x == 1 && y == 1 || x == 1 && y == 2 || x == 2 && y == 1)
+                    continue;
+
+                int tile = mapSeed[index];
+                if (tile == 0)
                 {
-                    gameMap.SetTile(x, y, mapTileImage);
-
-                    if (x == 1 && y == 1 || x == 1 && y == 2 || x == 2 && y == 1)
-                        continue;
-
-                    int tile = mapSeed[index];
-                    if (tile == 0)
-                    {
-                        GameObject go = levelFactory.CreateWall(gameMap, new Vector2(x, y));
-                        gameMap[x, y].GameObjects.Add(go);
-                    }
-                    else if (tile == 1 || tile == 2 || tile == 3)
-                    {
-                        var prm = gameMap.CreateScaledGameObjectParameters(x, y, crateImage);
-                        GameObject go = new Crate(prm.Item1, prm.Item2, prm.Item3, prm.Item4);
-                        gameMap[x, y].GameObjects.Add(go);
-                    }
-                    else
-                    {
-                        GameObject go = levelFactory.CreatePowerup(gameMap, new Vector2(x, y));
-                        gameMap[x, y].GameObjects.Add(go);
-                        gameMap.PowerupLookupTable.Add(new Vector2(x, y), go);
-                    }
-
-                    index++;
+                    GameObject go = levelFactory.CreateWall(gameMap, new Vector2(x, y));
+                    gameMap[x, y].GameObjects.Add(go);
                 }
+                else if (tile == 1 || tile == 2 || tile == 3)
+                {
+                    var prm = gameMap.CreateScaledGameObjectParameters(x, y, crateImage);
+                    GameObject go = new Crate(prm.Item1, prm.Item2, prm.Item3, prm.Item4);
+                    gameMap[x, y].GameObjects.Add(go);
+                }
+                else
+                {
+                    GameObject go = levelFactory.CreatePowerup(gameMap, new Vector2(x, y));
+                    gameMap[x, y].GameObjects.Add(go);
+                    gameMap.PowerupLookupTable.Add(new Vector2(x, y), go);
+                }
+
+                index++;
             }
         }
 

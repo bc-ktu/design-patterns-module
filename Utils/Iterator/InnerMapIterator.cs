@@ -26,14 +26,15 @@ namespace Utils.Iterator
 
         public override bool IsDone()
         {
-            if (xIndex == gameMap.Size.X - 2 && yIndex == gameMap.Size.Y - 2) return true;
+            if (xIndex == gameMap.Size.X - 2 && yIndex == gameMap.Size.Y - 1) return true;
             return false;
         }
 
         public override Tuple<int, int> Next()
         {
-            if (xIndex < gameMap.Size.X - 2) xIndex++;
-            if (yIndex < gameMap.Size.Y - 2 && xIndex == gameMap.Size.X - 2)
+            bool done = false;
+            if (xIndex < gameMap.Size.X - 2) { xIndex++; done = true; }
+            if (yIndex <= gameMap.Size.Y - 2 && xIndex == gameMap.Size.X - 2 && !done)
             {
                 yIndex++;
                 xIndex = 1;
