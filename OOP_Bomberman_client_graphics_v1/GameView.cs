@@ -13,6 +13,7 @@ using Utils.Map;
 using Utils.GameObjects.Explosives;
 using Utils.GameObjects;
 using Utils.Builder;
+using client_graphics.Interpreter;
 
 namespace client_graphics
 {
@@ -67,8 +68,7 @@ namespace client_graphics
             Level3Button.Enabled = true;
 
             Debug.Set(ConsoleTextBox);
-            Debug.Enabled(false);
-            Debug.LogLine("Hello World!");
+            Debug.Enable(false);
         }
         private void Startup(List<int> gameSeed)
         {
@@ -148,6 +148,31 @@ namespace client_graphics
         private void OnTick(object sender, EventArgs e)
         {
             var currentCoordinates = player.WorldPosition;
+            bool consoleCommand = false;
+            Keys commandKey = Input.KeyInteract;
+            Debug.Enable(ConsoleCheck.Checked);
+            if (Debug.Enabled)
+            {
+                ConsoleTextBox.ReadOnly = !CursorOnTextBox() ? true : false;
+                if (ConsoleTextBox.Text.EndsWith("\n"))
+                {
+                    string command = ConsoleTextBox.Text.TrimEnd('\n');
+                    Context context = new Context(command);
+                    List<Expression> tree = new List<Expression>();
+                    tree.Add(new MoveUpExpression());
+                    tree.Add(new MoveDownExpression());
+                    tree.Add(new MoveRightExpression());
+                    tree.Add(new MoveLeftExpression());
+                    tree.Add(new PlaceBombExpression());
+                    foreach (Expression exp in tree)
+                    {
+                        consoleCommand = exp.Interpret(context, inputStack);
+                        commandKey = exp.Key();
+                        if (consoleCommand) break;
+                    }
+                    ConsoleTextBox.Clear();
+                }
+            }
 
             GameLogic.UpdateExplosives(player, gameMap);
             GameLogic.UpdateFires(gameMap, levelFactory);
@@ -160,7 +185,8 @@ namespace client_graphics
             GameLogic.ApplyEffects(player, gameMap, collisions.GameObjects);
             GameLogic.UpdateGUI(player, gui);
 
-            ButtonClick(inputStack.Peek());
+            ButtonClick(inputStack.Peek(), consoleCommand);
+            if (consoleCommand) inputStack.Remove(commandKey);
 
             this.Refresh();
         }
@@ -223,35 +249,39 @@ namespace client_graphics
             Level3Button.Enabled = false;
         }
 
-        private void ButtonClick(Keys key)
+        private void ButtonClick(Keys key, bool ignoreCursor)
         {
-            if (key == Input.KeyUp)
+            bool cursorOnTextBox = ignoreCursor ? false : CursorOnTextBox();
+            if (!cursorOnTextBox)
             {
-                if (IsDummyColliding(Direction.Up, player, gameMap))
-                    return;
-                commandController.ExecuteCommand(new UpCommand(player, Con));
-            }
-            else if (key == Input.KeyDown)
-            {
-                if (IsDummyColliding(Direction.Down, player, gameMap))
-                    return;
-                commandController.ExecuteCommand(new DownCommand(player, Con));
-            }
-            else if (key == Input.KeyRight)
-            {
-                if (IsDummyColliding(Direction.Right, player, gameMap))
-                    return;
-                commandController.ExecuteCommand(new RightCommand(player, Con));
-            }
-            else if (key == Input.KeyLeft)
-            {
-                if (IsDummyColliding(Direction.Left, player, gameMap))
-                    return;
-                commandController.ExecuteCommand(new LeftCommand(player, Con));
-            }
-            else if (key == Input.KeyBomb)
-            {
-                commandController.ExecuteCommand(new PlaceBombCommand(gameMap, player, Con, levelFactory));
+                if (key == Input.KeyUp)
+                {
+                    if (IsDummyColliding(Direction.Up, player, gameMap))
+                        return;
+                    commandController.ExecuteCommand(new UpCommand(player, Con));
+                }
+                else if (key == Input.KeyDown)
+                {
+                    if (IsDummyColliding(Direction.Down, player, gameMap))
+                        return;
+                    commandController.ExecuteCommand(new DownCommand(player, Con));
+                }
+                else if (key == Input.KeyRight)
+                {
+                    if (IsDummyColliding(Direction.Right, player, gameMap))
+                        return;
+                    commandController.ExecuteCommand(new RightCommand(player, Con));
+                }
+                else if (key == Input.KeyLeft)
+                {
+                    if (IsDummyColliding(Direction.Left, player, gameMap))
+                        return;
+                    commandController.ExecuteCommand(new LeftCommand(player, Con));
+                }
+                else if (key == Input.KeyBomb)
+                {
+                    commandController.ExecuteCommand(new PlaceBombCommand(gameMap, player, Con, levelFactory));
+                }
             }
         }
 
@@ -268,6 +298,19 @@ namespace client_graphics
             if (playerIsOnExplosive && dummyCollisionCount >= 2 || !playerIsOnExplosive && dummyCollisionCount >= 1)
                 return true;
 
+            return false;
+        }
+
+        private bool CursorOnTextBox()
+        {
+            var cursor = this.PointToClient(Cursor.Position);
+            int topLeftX = ConsoleTextBox.Location.X;
+            int topLeftY = ConsoleTextBox.Location.Y;
+            //Point topLeft = new Point(topLeftX, topLeftY);
+            int bottomRightX = ConsoleTextBox.Location.X + ConsoleTextBox.Width;
+            int bottomRightY = ConsoleTextBox.Location.Y + ConsoleTextBox.Height;
+            //Point bottomRight = new Point(bottomRightX, bottomRightY);
+            if (cursor.X >= topLeftX && cursor.X <= bottomRightX && cursor.Y >= topLeftY && cursor.Y <= bottomRightY && Debug.Enabled) return true;
             return false;
         }
     }
