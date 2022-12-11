@@ -10,6 +10,7 @@ using Utils.GameObjects.Interactables;
 using Utils.Helpers;
 using Utils.Math;
 using Utils.Map;
+using Utils.Flyweight;
 
 namespace Utils.AbstractFactory
 {
@@ -18,7 +19,7 @@ namespace Utils.AbstractFactory
         public Explosive CreateExplosive(GameMap gameMap, Vector2 index);
         public Powerup CreatePowerup(GameMap gameMap, Vector2 index);
         public DestructableWall CreateWall(GameMap gameMap, Vector2 index);
-        public MapBuilder CreateBuilder(Vector2 mapSize, Vector2 viewSize, List<int> mapSeed, Bitmap mapTileImage, Bitmap crateImage, Bitmap outerWallImage, Bitmap specTileImage, ILevelFactory levelFactory);
+        public MapBuilder CreateBuilder(Vector2 mapSize, Vector2 viewSize, List<int> mapSeed, Bitmap mapTileImage, Bitmap specTileImage, ILevelFactory levelFactory);
         public Bitmap GetSpecialTileImage();
     }
 }

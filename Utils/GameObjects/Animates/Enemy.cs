@@ -7,6 +7,7 @@ using Utils.Observer;
 using Utils.Map;
 using Utils.Decorator;
 using Utils.Strategy;
+using Utils.Flyweight;
 
 namespace Utils.GameObjects.Animates
 {
@@ -33,7 +34,7 @@ namespace Utils.GameObjects.Animates
             MovementSpeed = p.MovementSpeed;
         }
 
-        public Enemy(Vector2 position, Vector2 size, Vector4 collider, Bitmap image, Explosive explosive, Subject subject)
+        public Enemy(Vector2 position, Vector2 size, Vector4 collider, ImageFlyweight image, Explosive explosive, Subject subject)
             : base(position, size, collider, image)
         {
             Initialize();

@@ -74,7 +74,7 @@ namespace Utils.Map
 
         /// <param name="x">Index on x axis of the tile to place the new GameObject </param>
         /// <param name="y">Index on y axis of the tile to place the new GameObject </param>
-        public Tuple<Vector2, Vector2, Vector4, Bitmap> CreateScaledGameObjectParameters(int x, int y, Bitmap image, double colliderScale = 1)
+        public Tuple<Vector2, Vector2, Vector4> CreateScaledGameObjectParameters(int x, int y, Bitmap image, double colliderScale = 1)
         {
             double heightToWidthRatio = image.Height / (double)image.Width;
             Vector2 position = new Vector2(_tiles[x, y].LocalPosition.X, _tiles[x, y].LocalPosition.Y - ((int)(heightToWidthRatio * TileSize.Y) - TileSize.Y));
@@ -90,7 +90,7 @@ namespace Utils.Map
                 collider = new Vector4(tlx, tly, brx, bry);
             }
 
-            return new Tuple<Vector2, Vector2, Vector4, Bitmap>(position, size, collider, image);
+            return new Tuple<Vector2, Vector2, Vector4>(position, size, collider);
         }
 
     }

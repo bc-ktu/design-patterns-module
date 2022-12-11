@@ -1,5 +1,6 @@
 ﻿using Utils.Math;
 using Utils.Helpers;
+using Utils.Flyweight;
 
 namespace Utils.GameObjects.Explosives
 {
@@ -9,13 +10,13 @@ namespace Utils.GameObjects.Explosives
 
         public ExplosiveHVDi(ExplosiveHVDi ehvdi) : base(ehvdi) { }
 
-        public ExplosiveHVDi(Vector2 position, Vector2 size, Vector4 collider, Bitmap image, Fire fire)
+        public ExplosiveHVDi(Vector2 position, Vector2 size, Vector4 collider, ImageFlyweight image, Fire fire)
             : base(position, size, collider, image, fire)
         {
             Initialize();
         }
 
-        public ExplosiveHVDi(int x, int y, int width, int height, int cx, int cy, int cWidth, int cHeight, Bitmap image, Fire fire)
+        public ExplosiveHVDi(int x, int y, int width, int height, int cx, int cy, int cWidth, int cHeight, ImageFlyweight image, Fire fire)
             : base(x, y, width, height, cx, cy, cWidth, cHeight, image, fire)
         {
             Initialize();

@@ -1,4 +1,5 @@
-﻿using Utils.GameObjects.Animates;
+﻿using Utils.Flyweight;
+using Utils.GameObjects.Animates;
 using Utils.Map;
 using Utils.Math;
 
@@ -21,11 +22,11 @@ namespace Utils.GameObjects.Interactables
             RangeModifier = p.RangeModifier;
         }
 
-        public Powerup(Vector2 position, Vector2 size, Vector4 collider, Bitmap image) 
+        public Powerup(Vector2 position, Vector2 size, Vector4 collider, ImageFlyweight image) 
             : base(position, size, collider, image)
         { }
 
-        public Powerup(int x, int y, int width, int height, int cx, int cy, int cWidth, int cHeight, Bitmap image)
+        public Powerup(int x, int y, int width, int height, int cx, int cy, int cWidth, int cHeight, ImageFlyweight image)
             : base(x, y, width, height, cx, cy, cWidth, cHeight, image)
         { }
         

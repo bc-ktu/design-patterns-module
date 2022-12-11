@@ -3,6 +3,7 @@
 using Utils.AbstractFactory;
 using Utils.Builder;
 using Utils.Factory;
+using Utils.Flyweight;
 using Utils.GameObjects;
 using Utils.GameObjects.Animates;
 using Utils.GameObjects.Crates;
@@ -62,14 +63,10 @@ namespace Utils.GameLogic
             filepath = Pather.Create(Pather.FolderAssets, Pather.FolderTextures, Pather.FolderSpritesheets, Pather.MapSpritesheet);
             Bitmap mapSpritesheet = new Bitmap(filepath);
             Bitmap mapTileImage = Spritesheet.ExtractSprite(mapSpritesheet, new Vector2(32, 32), groundSpritesheetIndex);
-            filepath = Pather.Create(Pather.FolderAssets, Pather.FolderTextures, Pather.FolderSprites, Pather.FolderExplodables, Pather.CrateImage);
-            Bitmap crateImage = new Bitmap(filepath);
-            filepath = Pather.Create(Pather.FolderAssets, Pather.FolderTextures, Pather.FolderSprites, Pather.FolderWalls, Pather.OuterWallImage);
-            Bitmap outerWallImage = new Bitmap(filepath);
             Bitmap specTileImage = levelFactory.GetSpecialTileImage();
 
             Director director = new Director();
-            MapBuilder builder = levelFactory.CreateBuilder(mapSize, viewSize, mapSeed, mapTileImage, crateImage, outerWallImage, specTileImage, levelFactory);// = new L2MapBuilder(mapSize, viewSize, mapSeed, mapTileImage, crateImage, outerWallImage, specTileImage, levelFactory);
+            MapBuilder builder = levelFactory.CreateBuilder(mapSize, viewSize, mapSeed, mapTileImage, specTileImage, levelFactory);// = new L2MapBuilder(mapSize, viewSize, mapSeed, mapTileImage, crateImage, outerWallImage, specTileImage, levelFactory);
             director.Construct(builder);
             return builder.GetMap();
         }
@@ -80,6 +77,7 @@ namespace Utils.GameLogic
             Bitmap charactersSpritesheet = new Bitmap(filepath);
             Bitmap[,] characterImages = Spritesheet.ExtractAll(charactersSpritesheet, new Vector2(32, 32));
             Bitmap characterImage = characterImages[playerSpritesheetIndex.X, playerSpritesheetIndex.Y];
+            ImageFlyweight imageFlyweight = new ImageFlyweight(characterImage);
 
             double colliderSize = GameSettings.PlayerColliderScale;
             int tlx = (int)(position.X + (1 - colliderSize) * gameMap.TileSize.X);
@@ -91,7 +89,7 @@ namespace Utils.GameLogic
             Vector2 index = position / gameMap.TileSize;
             Explosive explosive = levelFactory.CreateExplosive(gameMap, index);
 
-            return new Player(position, gameMap.TileSize, collider, characterImage, explosive, subject);
+            return new Player(position, gameMap.TileSize, collider, imageFlyweight, explosive, subject);
         }
     }
 }

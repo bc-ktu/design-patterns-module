@@ -14,6 +14,7 @@ using Utils.GameObjects.Explosives;
 using Utils.GameObjects;
 using Utils.Builder;
 using client_graphics.Interpreter;
+using Utils.Flyweight;
 
 namespace client_graphics
 {
@@ -30,7 +31,7 @@ namespace client_graphics
         private Player player;
         private Vector4 collider;
         private InputStack inputStack;
-        private Bitmap characterImage;
+        private ImageFlyweight characterImage;
         private CommandController commandController;
         private LookupTable collisions;
 
@@ -68,7 +69,7 @@ namespace client_graphics
             Level3Button.Enabled = true;
 
             Debug.Set(ConsoleTextBox);
-            Debug.Enable(false);
+            Debug.Enable(DEBUGGER_ENABLED);
         }
         private void Startup(List<int> gameSeed)
         {
@@ -150,7 +151,7 @@ namespace client_graphics
             var currentCoordinates = player.WorldPosition;
             bool consoleCommand = false;
             Keys commandKey = Input.KeyInteract;
-            Debug.Enable(ConsoleCheck.Checked);
+            // Debug.Enable(ConsoleCheck.Checked);
             if (Debug.Enabled)
             {
                 ConsoleTextBox.ReadOnly = !CursorOnTextBox() ? true : false;

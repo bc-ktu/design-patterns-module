@@ -1,6 +1,7 @@
 ﻿using System.Timers;
 
 using Utils.AbstractFactory;
+using Utils.Flyweight;
 using Utils.GameLogic;
 using Utils.GameObjects.Crates;
 using Utils.Map;
@@ -29,13 +30,13 @@ namespace Utils.GameObjects.Explosives
             Damage = f.Damage;
         }
 
-        public Fire(Vector2 position, Vector2 size, Vector4 collider, Bitmap image) 
+        public Fire(Vector2 position, Vector2 size, Vector4 collider, ImageFlyweight image) 
             : base(position, size, collider, image)
         {
             Initialize();
         }
 
-        public Fire(int x, int y, int width, int height, int cx, int cy, int cWidth, int cHeight, Bitmap image)
+        public Fire(int x, int y, int width, int height, int cx, int cy, int cWidth, int cHeight, ImageFlyweight image)
             : base(x, y, width, height, cx, cy, cWidth, cHeight, image)
         {
             Initialize();

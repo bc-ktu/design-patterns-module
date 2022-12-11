@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Utils.AbstractFactory;
+using Utils.Flyweight;
 using Utils.GameObjects;
 using Utils.GameObjects.Crates;
 using Utils.GameObjects.Walls;
@@ -18,12 +19,12 @@ namespace Utils.Builder
         protected Vector2 mapSize { get; set; }
         protected List<int> mapSeed { get; set; }
         protected Bitmap mapTileImage { get; set; }
-        protected Bitmap crateImage { get; set; }
-        protected Bitmap outerWallImage { get; set; }
+        protected ImageFlyweight crateImage { get; set; }
+        protected ImageFlyweight outerWallImage { get; set; }
         protected Bitmap specTileImage { get; set; }
         protected ILevelFactory levelFactory { get; set; }
 
-        public MapBuilder(Vector2 mapSize, Vector2 viewSize, List<int> mapSeed, Bitmap mapTileImage, Bitmap crateImage, Bitmap outerWallImage, ILevelFactory levelFactory)
+        public MapBuilder(Vector2 mapSize, Vector2 viewSize, List<int> mapSeed, Bitmap mapTileImage, ImageFlyweight crateImage, ImageFlyweight outerWallImage, ILevelFactory levelFactory)
         {
             this.mapSize = mapSize;
             this.mapSeed = mapSeed;
@@ -54,8 +55,8 @@ namespace Utils.Builder
                     }
                     else if (tile == 1 || tile == 2 || tile == 3)
                     {
-                        var prm = gameMap.CreateScaledGameObjectParameters(x, y, crateImage);
-                        GameObject go = new Crate(prm.Item1, prm.Item2, prm.Item3, prm.Item4);
+                        var prm = gameMap.CreateScaledGameObjectParameters(x, y, crateImage.Image);
+                        GameObject go = new Crate(prm.Item1, prm.Item2, prm.Item3, crateImage);
                         gameMap[x, y].GameObjects.Add(go);
                     }
                     else
@@ -75,23 +76,23 @@ namespace Utils.Builder
             for (int i = 0; i < mapSize.X; i++)
             {
                 gameMap.SetTile(i, 0, mapTileImage);
-                var prm = gameMap.CreateScaledGameObjectParameters(i, 0, outerWallImage);
-                gameMap[i, 0].GameObjects.Add(new IndestructableWall(prm.Item1, prm.Item2, prm.Item3, prm.Item4));
+                var prm = gameMap.CreateScaledGameObjectParameters(i, 0, outerWallImage.Image);
+                gameMap[i, 0].GameObjects.Add(new IndestructableWall(prm.Item1, prm.Item2, prm.Item3, outerWallImage));
 
                 gameMap.SetTile(i, mapSize.Y - 1, mapTileImage);
-                prm = gameMap.CreateScaledGameObjectParameters(i, mapSize.Y - 1, outerWallImage);
-                gameMap[i, mapSize.Y - 1].GameObjects.Add(new IndestructableWall(prm.Item1, prm.Item2, prm.Item3, prm.Item4));
+                prm = gameMap.CreateScaledGameObjectParameters(i, mapSize.Y - 1, outerWallImage.Image);
+                gameMap[i, mapSize.Y - 1].GameObjects.Add(new IndestructableWall(prm.Item1, prm.Item2, prm.Item3, outerWallImage));
             }
 
             for (int i = 1; i < mapSize.Y - 1; i++)
             {
                 gameMap.SetTile(0, i, mapTileImage);
-                var prm = gameMap.CreateScaledGameObjectParameters(0, i, outerWallImage);
-                gameMap[0, i].GameObjects.Add(new IndestructableWall(prm.Item1, prm.Item2, prm.Item3, prm.Item4));
+                var prm = gameMap.CreateScaledGameObjectParameters(0, i, outerWallImage.Image);
+                gameMap[0, i].GameObjects.Add(new IndestructableWall(prm.Item1, prm.Item2, prm.Item3, outerWallImage));
 
                 gameMap.SetTile(mapSize.X - 1, i, mapTileImage);
-                prm = gameMap.CreateScaledGameObjectParameters(mapSize.X - 1, i, outerWallImage);
-                gameMap[mapSize.X - 1, i].GameObjects.Add(new IndestructableWall(prm.Item1, prm.Item2, prm.Item3, prm.Item4));
+                prm = gameMap.CreateScaledGameObjectParameters(mapSize.X - 1, i, outerWallImage.Image);
+                gameMap[mapSize.X - 1, i].GameObjects.Add(new IndestructableWall(prm.Item1, prm.Item2, prm.Item3, outerWallImage));
             }
         }
 

@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Utils.AbstractFactory;
 using Utils.Factory;
+using Utils.Flyweight;
 using Utils.GameObjects;
 using Utils.Math;
 
@@ -12,7 +13,7 @@ namespace Utils.Builder
 {
     public class L3MapBuilder : MapBuilder
     {
-        public L3MapBuilder(Vector2 mapSize, Vector2 viewSize, List<int> mapSeed, Bitmap mapTileImage, Bitmap crateImage, Bitmap outerWallImage, Bitmap specTileImage, ILevelFactory levelFactory) : base(mapSize, viewSize, mapSeed, mapTileImage, crateImage, outerWallImage, levelFactory)
+        public L3MapBuilder(Vector2 mapSize, Vector2 viewSize, List<int> mapSeed, Bitmap mapTileImage, ImageFlyweight crateImage, ImageFlyweight outerWallImage, Bitmap specTileImage, ILevelFactory levelFactory) : base(mapSize, viewSize, mapSeed, mapTileImage, crateImage, outerWallImage, levelFactory)
         {
             this.specTileImage = specTileImage;
         }

@@ -1,4 +1,5 @@
-﻿using Utils.Math;
+﻿using Utils.Flyweight;
+using Utils.Math;
 
 namespace Utils.GameObjects
 {
@@ -8,11 +9,11 @@ namespace Utils.GameObjects
 
         public SolidGameObject(SolidGameObject sgo) : base(sgo) { }
 
-        public SolidGameObject(Vector2 position, Vector2 size, Vector4 collider, Bitmap image)
+        public SolidGameObject(Vector2 position, Vector2 size, Vector4 collider, ImageFlyweight image)
            : base(position, size, collider, image)
         { }
 
-        public SolidGameObject(int x, int y, int width, int height, int cx, int cy, int cWidth, int cHeight, Bitmap image)
+        public SolidGameObject(int x, int y, int width, int height, int cx, int cy, int cWidth, int cHeight, ImageFlyweight image)
             : base(x, y, width, height, cx, cy, cWidth, cHeight, image)
         { }
     }

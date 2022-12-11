@@ -6,6 +6,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Utils.Decorator;
+using Utils.Flyweight;
 using Utils.Math;
 using Utils.Prototype;
 
@@ -18,14 +19,14 @@ namespace Utils.GameObjects
         public Vector2 Size { get; protected set; }
         public Vector4 Collider { get; protected set; }
 
-        public Bitmap Image { get; protected set; }
+        public ImageFlyweight Image { get; protected set; }
 
         public GameObject() 
         {
             LocalPosition = new Vector2(0, 0);
             Size = new Vector2(0, 0);
             Collider = new Vector4(0, 0, 0, 0);
-            Image = new Bitmap(0, 0);
+            Image = new ImageFlyweight(new Bitmap(0, 0));
         }
 
         public GameObject(GameObject go)
@@ -33,31 +34,37 @@ namespace Utils.GameObjects
             LocalPosition = go.LocalPosition.Clone();
             Size = go.Size.Clone();
             Collider = go.Collider.Clone();
-            Image = (Bitmap)go.Image.Clone();
+            Image = go.Image;
         }
 
+        /// <summary>
+        /// ...
+        /// </summary>
         /// <param name="localPosition">Top left corner coordinates of the sprite</param>
         /// <param name="collider">Top left corner (X, Y), bottom right corner (Z, W)</param>
-        public GameObject(Vector2 localPosition, Vector2 size, Vector4 collider, Bitmap image)
+        public GameObject(Vector2 localPosition, Vector2 size, Vector4 collider, ImageFlyweight imageFlyweight)
         {
             LocalPosition = localPosition;
             Size = size;
             Collider = collider;
-            Image = image;
+            Image = imageFlyweight;
         }
 
+        /// <summary>
+        /// ...
+        /// </summary>
         /// <param name="x">Top left x coordinate corner of the sprite</param>
         /// <param name="y">Top left y coordinate corner of the sprite</param>
         /// <param name="cx">Top left x coordinate corner of the collider</param>
         /// <param name="cy">Top left y coordinate corner of the collider</param>
         /// <param name="cWidth">Width of the collider</param>
         /// <param name="cHeight">Height of the collider</param>
-        public GameObject(int x, int y, int width, int height, int cx, int cy, int cWidth, int cHeight, Bitmap image)
+        public GameObject(int x, int y, int width, int height, int cx, int cy, int cWidth, int cHeight, ImageFlyweight imageFlyweight)
         {
             LocalPosition = new Vector2(x, y);
             Size = new Vector2(width, height);
             Collider = new Vector4(cx, cy, cx + cWidth, cy + cHeight);
-            Image = image;
+            Image = imageFlyweight;
         }
 
         public void Teleport(Vector2 position)
@@ -83,7 +90,7 @@ namespace Utils.GameObjects
 
         public void Draw(PaintEventArgs e)
         {
-            e.Graphics.DrawImage(Image, ToRectangle());
+            Image.Draw(e, ToRectangle());
         }
 
         public Rectangle ToRectangle()
