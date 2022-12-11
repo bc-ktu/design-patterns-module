@@ -8,11 +8,13 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="System.Drawing.Common" Version="6.0.0" />
+    <Compile Remove="Command\**" />
+    <EmbeddedResource Remove="Command\**" />
+    <None Remove="Command\**" />
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Command\" />
+    <PackageReference Include="System.Drawing.Common" Version="6.0.0" />
   </ItemGroup>
 
 </Project>
