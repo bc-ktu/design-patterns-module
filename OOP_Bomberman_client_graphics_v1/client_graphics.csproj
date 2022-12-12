@@ -48,6 +48,9 @@
     <None Update="Assets\Icons\vecteezy_pixel-art-bomb-dynamite-grenade-vector-illustration_8081698.ico">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
+    <None Update="Assets\TextFiles\MemoryUsageDiagnostics.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
     <None Update="Assets\Textures\GUI\6-pixel-heart-4.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>

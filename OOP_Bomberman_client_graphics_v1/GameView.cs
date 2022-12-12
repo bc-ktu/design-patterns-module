@@ -14,6 +14,7 @@ using Utils.GameObjects.Explosives;
 using Utils.GameObjects;
 using Utils.Builder;
 using client_graphics.Interpreter;
+using System.Diagnostics;
 
 namespace client_graphics
 {
@@ -46,6 +47,8 @@ namespace client_graphics
 
         public Vector2 MapSize;
 
+        private Process currentProcess;
+
         public GameView()
         {
 
@@ -72,6 +75,9 @@ namespace client_graphics
         }
         private void Startup(List<int> gameSeed)
         {
+            currentProcess = Process.GetCurrentProcess();
+            IO.ClearFile(Pather.Create(Pather.FolderAssets, Pather.FolderTextFiles, Pather.MemoryUsageDiagnostics));
+
             GameSeed = gameSeed;
 
             inputStack = new InputStack();
@@ -187,6 +193,9 @@ namespace client_graphics
 
             ButtonClick(inputStack.Peek(), consoleCommand);
             if (consoleCommand) inputStack.Remove(commandKey);
+
+            long usedMemory = currentProcess.PrivateMemorySize64;
+            IO.WriteToFile(Pather.Create(Pather.FolderAssets, Pather.FolderTextFiles, Pather.MemoryUsageDiagnostics), (usedMemory >> 20).ToString());
 
             this.Refresh();
         }
