@@ -1,0 +1,11 @@
+﻿
+With Flyweight:
+Level1: 33 MB
+Level2: 29 MB
+Level3: 34 MB
+
+Without Flyweight:
+Level1: 
+Level2: 
+Level3: 
+

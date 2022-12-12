@@ -1,6 +1,9 @@
 using Microsoft.AspNetCore.SignalR.Client;
+using System.Diagnostics;
 
 using client_graphics.SignalR;
+using client_graphics.Command;
+using client_graphics.Interpreter;
 using Utils.Math;
 using Utils.Helpers;
 using Utils.GUIElements;
@@ -8,12 +11,9 @@ using Utils.GameLogic;
 using Utils.AbstractFactory;
 using Utils.GameObjects.Animates;
 using Utils.Observer;
-using client_graphics.Command;
 using Utils.Map;
 using Utils.GameObjects.Explosives;
 using Utils.GameObjects;
-using Utils.Builder;
-using client_graphics.Interpreter;
 using Utils.Flyweight;
 
 namespace client_graphics
@@ -47,16 +47,20 @@ namespace client_graphics
 
         public Vector2 MapSize;
 
+        private Process currentProcess;
+
         public GameView()
         {
 
         }
+
         private void GameView_Load(object sender, EventArgs e)
         {
             this.KeyPreview = true;
             this.DoubleBuffered = true;
             this.Paint += new PaintEventHandler(OnPaint);
         }
+
         public void GameStartUp(List<int> GameSeed)
         {
             levelFactory = new Level2Factory();
@@ -71,8 +75,12 @@ namespace client_graphics
             Debug.Set(ConsoleTextBox);
             Debug.Enable(DEBUGGER_ENABLED);
         }
+
         private void Startup(List<int> gameSeed)
         {
+            currentProcess = Process.GetCurrentProcess();
+            IO.ClearFile(Pather.Create(Pather.FolderAssets, Pather.FolderTextFiles, Pather.MemoryUsageDiagnostics));
+
             GameSeed = gameSeed;
 
             inputStack = new InputStack();
@@ -151,7 +159,7 @@ namespace client_graphics
             var currentCoordinates = player.WorldPosition;
             bool consoleCommand = false;
             Keys commandKey = Input.KeyInteract;
-            // Debug.Enable(ConsoleCheck.Checked);
+            Debug.Enable(ConsoleCheck.Checked);
             if (Debug.Enabled)
             {
                 ConsoleTextBox.ReadOnly = !CursorOnTextBox() ? true : false;
@@ -188,6 +196,10 @@ namespace client_graphics
 
             ButtonClick(inputStack.Peek(), consoleCommand);
             if (consoleCommand) inputStack.Remove(commandKey);
+
+            long usedMemory = currentProcess.PrivateMemorySize64;
+            // Debug.LogLine(usedMemory >> 20);
+            IO.WriteToFile(Pather.Create(Pather.FolderAssets, Pather.FolderTextFiles, Pather.MemoryUsageDiagnostics), (usedMemory >> 20).ToString());
 
             this.Refresh();
         }
