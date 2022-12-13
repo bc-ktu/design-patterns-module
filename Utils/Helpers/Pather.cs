@@ -52,6 +52,7 @@
         public static readonly string GuiFontFile = "Minecraft.ttf";
 
         public static readonly string MemoryUsageDiagnostics = "MemoryUsageDiagnostics.txt";
+        public static readonly string TimeDiagnostics = "TimeDiagnostics.txt";
 
         public static string Create(params string[] args)
         {
