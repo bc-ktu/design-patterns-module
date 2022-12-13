@@ -14,8 +14,8 @@ namespace client_graphics.Interpreter
         {
             if (context.Input.Length == 0)
                 return false;
-            string input = context.Input.ToLower().Trim();
-            if (Action().Equals(input))
+            string input = context.Input.ToLower();
+            if (input.StartsWith(Action()))
             {
                 stack.Push(Key());
                 return true;
@@ -23,6 +23,7 @@ namespace client_graphics.Interpreter
             return false;
         }
         public abstract string Action();
+        public abstract int Limit();
         public abstract Keys Key();
     }
 }

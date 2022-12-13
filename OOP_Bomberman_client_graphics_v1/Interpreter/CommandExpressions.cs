@@ -17,6 +17,11 @@ namespace client_graphics.Interpreter
         {
             return Input.KeyUp;
         }
+
+        public override int Limit()
+        {
+            return int.MaxValue;
+        }
     }
     internal class MoveDownExpression : Expression
     {
@@ -28,6 +33,11 @@ namespace client_graphics.Interpreter
         public override Keys Key()
         {
             return Input.KeyDown;
+        }
+
+        public override int Limit()
+        {
+            return int.MaxValue;
         }
     }
     internal class MoveRightExpression : Expression
@@ -41,6 +51,11 @@ namespace client_graphics.Interpreter
         {
             return Input.KeyRight;
         }
+
+        public override int Limit()
+        {
+            return int.MaxValue;
+        }
     }
     internal class MoveLeftExpression : Expression
     {
@@ -53,6 +68,11 @@ namespace client_graphics.Interpreter
         {
             return Input.KeyLeft;
         }
+
+        public override int Limit()
+        {
+            return int.MaxValue;
+        }
     }
     internal class PlaceBombExpression : Expression
     {
@@ -64,6 +84,11 @@ namespace client_graphics.Interpreter
         public override Keys Key()
         {
             return Input.KeyBomb;
+        }
+
+        public override int Limit()
+        {
+            return 1;
         }
     }
 }
