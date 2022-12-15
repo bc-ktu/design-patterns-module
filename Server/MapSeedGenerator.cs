@@ -1,7 +1,4 @@
-﻿using Newtonsoft.Json.Linq;
-using System;
-using Utils.Factory;
-using Utils.GameObjects;
+﻿
 using Utils.Math;
 
 namespace Server
@@ -12,9 +9,10 @@ namespace Server
         private Vector2 _mapSize { get; set; }
         private static MapSeedGenerator _instance = new MapSeedGenerator();
 
-        public void GenerateSeed(Vector2 mapSize)
+        public void GenerateSeed(Vector2 mapSize, int level)
         {
             values = new List<int>();
+            values.Add(level);
             _mapSize = mapSize;
             Random random = new Random();
             for (int i = 0; i < (mapSize.X - 2) * (mapSize.Y - 2); i++)

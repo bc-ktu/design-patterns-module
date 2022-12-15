@@ -4,10 +4,10 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using Utils.AbstractFactory;
-using Utils.GameObjects.Animates;
+using client_graphics.AbstractFactory;
+using client_graphics.GameObjects.Animates;
 using Utils.Helpers;
-using Utils.Map;
+using client_graphics.Map;
 using Utils.Math;
 
 namespace client_graphics.Interpreter

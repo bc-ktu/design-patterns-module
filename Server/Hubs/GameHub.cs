@@ -1,5 +1,4 @@
 ﻿using Microsoft.AspNetCore.SignalR;
-using Utils.GameLogic;
 using Utils.Math;
 
 namespace Server.Hubs
@@ -11,13 +10,25 @@ namespace Server.Hubs
             await Clients.All.SendAsync("ReceiveMessage", player, message);
         }
 
-        public async Task MapSeed(int x, int y)
+        public async Task MapSeed(int x, int y, int level)
         {
-            if (Storage.generator.GetValues()?.Any() != true || (Storage.generator.GetMapSize().X != x && Storage.generator.GetMapSize().Y != y && Storage.UserCount == 1))
+            if (Storage.generator.GetValues()?.Any() != true || Storage.UserCount == 0)
             {
-                Storage.generator.GenerateSeed(new Vector2(x, y));
+                Storage.generator.GenerateSeed(new Vector2(x, y), level);
+                Console.WriteLine("Any value");
+                await Clients.Client(Context.ConnectionId).SendAsync("GenMap", Storage.generator.GetValues());
             }
-            await Clients.Client(Context.ConnectionId).SendAsync("GenMap", Storage.generator.GetValues());
+            else
+            if (Storage.generator.GetMapSize().X != x && Storage.generator.GetMapSize().Y != y && Storage.UserCount == 1)
+            {
+                Storage.generator.GenerateSeed(new Vector2(x, y), level);
+                Console.WriteLine("1st player");
+                await Clients.Client(Context.ConnectionId).SendAsync("RegenMap", Storage.generator.GetValues());
+            } else if (Storage.UserCount == 2)
+            {
+                await Clients.Client(Context.ConnectionId).SendAsync("GenMap", Storage.generator.GetValues());
+            }
+            Console.WriteLine("ELSE");
         }
 
         public async Task Move(int x, int y, int speedMod, int speed)
@@ -33,10 +44,6 @@ namespace Server.Hubs
             };         
         }
 
-        public async Task PlaceExplosive(int x, int y)
-        {
-
-        }
 
         public async Task Teleport(int localX, int localY, int worldX, int worldY)
         {
@@ -66,6 +73,28 @@ namespace Server.Hubs
                     continue;
                 }
                 await Clients.Client(Context.ConnectionId).SendAsync("NewPlayer", player.Key, player.Value.X, player.Value.Y);
+            }
+        }
+        public async Task PlaceBomb(int fireDamage, int positionX, int positionY)
+        {
+            foreach (var player in Storage.Players)
+            {
+                if (player.Key == Context.ConnectionId)
+                {
+                    continue;
+                }
+                await Clients.Others.SendAsync("BombPlaced", fireDamage, positionX, positionY);
+            }
+        }
+        public async Task ChangeStats(int health, int damage)
+        {
+            foreach (var player in Storage.Players)
+            {
+                if (player.Key == Context.ConnectionId)
+                {
+                    continue;
+                }
+                await Clients.Others.SendAsync("UpdateStats", player.Key, health, damage);
             }
         }
 

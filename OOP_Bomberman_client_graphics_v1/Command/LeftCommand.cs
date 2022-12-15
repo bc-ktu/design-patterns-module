@@ -5,8 +5,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using Utils.GameObjects;
-using Utils.GameObjects.Animates;
+using client_graphics.GameObjects;
+using client_graphics.GameObjects.Animates;
 using Utils.Helpers;
 
 namespace client_graphics.Command
