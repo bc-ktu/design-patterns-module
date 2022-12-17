@@ -48,6 +48,8 @@ namespace client_graphics
         public Vector2 MapSize;
 
         private Process currentProcess;
+        int repeats = 0;
+        Keys commandKey = Input.KeyInteract;
 
         public GameView()
         {
@@ -159,7 +161,7 @@ namespace client_graphics
         {
             var currentCoordinates = player.WorldPosition;
             bool consoleCommand = false;
-            Keys commandKey = Input.KeyInteract;
+            bool inputZero = false;
             Debug.Enable(ConsoleCheck.Checked);
             if (Debug.Enabled)
             {
@@ -167,7 +169,7 @@ namespace client_graphics
                 if (ConsoleTextBox.Text.EndsWith("\n"))
                 {
                     string command = ConsoleTextBox.Text.TrimEnd('\n');
-                    Context context = new Context(command);
+                    Context context = new Context(command.Trim());
                     List<Expression> tree = new List<Expression>();
                     tree.Add(new MoveUpExpression());
                     tree.Add(new MoveDownExpression());
@@ -177,8 +179,15 @@ namespace client_graphics
                     foreach (Expression exp in tree)
                     {
                         consoleCommand = exp.Interpret(context, inputStack);
-                        commandKey = exp.Key();
-                        if (consoleCommand) break;
+                        if (consoleCommand)
+                        {
+                            commandKey = exp.Key();
+                            string[] splits = context.Input.Split(' ');
+                            repeats = splits.Length > 2 ? Int32.Parse(splits[2]) : 1;
+                            if (repeats > exp.Limit()) repeats = 0;
+                            if (repeats < 0) repeats = 0;
+                            break;
+                        }
                     }
                     ConsoleTextBox.Clear();
                 }
@@ -195,8 +204,15 @@ namespace client_graphics
             GameLogic.ApplyEffects(player, gameMap, collisions.GameObjects);
             GameLogic.UpdateGUI(player, gui);
 
-            ButtonClick(inputStack.Peek(), consoleCommand);
-            if (consoleCommand) inputStack.Remove(commandKey);
+            if (repeats == 0) inputZero = true;
+            else if (repeats > 0)
+            {
+                consoleCommand = true;
+                repeats--;
+            }
+            if(!inputZero && consoleCommand || !consoleCommand) ButtonClick(inputStack.Peek(), consoleCommand);
+            inputZero = false;
+            if (consoleCommand && repeats == 0) inputStack.Remove(commandKey);
 
             if (GameSettings.CalculateMemoryDiagnostics)
             {
