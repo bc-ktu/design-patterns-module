@@ -16,6 +16,8 @@
         public static readonly string FolderSoundEffects = "SoundEffects/";
         public static readonly string FolderTiles = "Tiles/";
 
+        public static readonly string FolderTextFiles = "TextFiles/";
+
         // Files
         public static readonly string MapSpritesheet = "TX_Tileset_Grass.png";
         public static readonly string CharacterSpritesheet = "fnaf_characters.png";
@@ -48,6 +50,9 @@
         public static readonly string GuiDamageIcon = "fire_skull.png";
 
         public static readonly string GuiFontFile = "Minecraft.ttf";
+
+        public static readonly string MemoryUsageDiagnostics = "MemoryUsageDiagnostics.txt";
+        public static readonly string TimeDiagnostics = "TimeDiagnostics.txt";
 
         public static string Create(params string[] args)
         {

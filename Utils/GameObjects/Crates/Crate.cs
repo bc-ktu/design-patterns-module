@@ -1,4 +1,5 @@
 ﻿using Utils.AbstractFactory;
+using Utils.Flyweight;
 using Utils.GameLogic;
 using Utils.GameObjects.Interactables;
 using Utils.Map;
@@ -15,13 +16,13 @@ namespace Utils.GameObjects.Crates
 
         public Crate(Crate c) : base(c) { }
 
-        public Crate(Vector2 position, Vector2 size, Vector4 collider, Bitmap image)
+        public Crate(Vector2 position, Vector2 size, Vector4 collider, ImageFlyweight image)
             : base(position, size, collider, image)
         {
             Durability = 1;
         }
 
-        public Crate(int x, int y, int width, int height, int cx, int cy, int cWidth, int cHeight, Bitmap image)
+        public Crate(int x, int y, int width, int height, int cx, int cy, int cWidth, int cHeight, ImageFlyweight image)
             : base(x, y, width, height, cx, cy, cWidth, cHeight, image)
         {
 

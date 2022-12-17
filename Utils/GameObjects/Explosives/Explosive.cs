@@ -4,6 +4,7 @@ using System.Timers;
 using Utils.GameObjects.Animates;
 using Utils.Map;
 using Utils.GameObjects.Walls;
+using Utils.Flyweight;
 
 namespace Utils.GameObjects.Explosives
 {
@@ -35,13 +36,13 @@ namespace Utils.GameObjects.Explosives
             Fire = (Fire)e.Fire.Clone();
         }
 
-        public Explosive(Vector2 position, Vector2 size, Vector4 collider, Bitmap image, Fire fire) 
+        public Explosive(Vector2 position, Vector2 size, Vector4 collider, ImageFlyweight image, Fire fire) 
             : base(position, size, collider, image)
         {
             Initialize(fire);
         }
 
-        public Explosive(int x, int y, int width, int height, int cx, int cy, int cWidth, int cHeight, Bitmap image, Fire fire)
+        public Explosive(int x, int y, int width, int height, int cx, int cy, int cWidth, int cHeight, ImageFlyweight image, Fire fire)
             : base(x, y, width, height, cx, cy, cWidth, cHeight, image)
         {
             Initialize(fire);

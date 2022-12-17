@@ -6,6 +6,7 @@ using Utils.AbstractFactory;
 using Utils.Observer;
 using Utils.Map;
 using Utils.Decorator;
+using Utils.Flyweight;
 
 namespace Utils.GameObjects.Animates
 {
@@ -44,13 +45,13 @@ namespace Utils.GameObjects.Animates
             Explosive = (Explosive)p.Explosive.Clone();
         }
 
-        public Player(Vector2 position, Vector2 size, Vector4 collider, Bitmap image, Explosive explosive, Subject subject)
+        public Player(Vector2 position, Vector2 size, Vector4 collider, ImageFlyweight image, Explosive explosive, Subject subject)
             : base(position, size, collider, image)
         {
             Initialize(explosive, subject);
         }
 
-        public Player(int x, int y, int width, int height, int cx, int cy, int cWidth, int cHeight, Bitmap image, Explosive explosive, Subject subject)
+        public Player(int x, int y, int width, int height, int cx, int cy, int cWidth, int cHeight, ImageFlyweight image, Explosive explosive, Subject subject)
             : base(x, y, width, height, cx, cy, cWidth, cHeight, image)
         {
             Initialize(explosive, subject);

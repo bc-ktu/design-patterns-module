@@ -43,13 +43,18 @@ namespace Utils.GameLogic
         public static double PowerupColliderScale = 0.8;
         public static double PlayerColliderScale = 0.7;
 
-        // ******************** PHYSICS SETTINGS **********************
+        // ******************** LEVEL GENERATION SETTINGS **********************
 
         public static double Level1RangePowerupChance = 0.14;
         public static double Level2RangePowerupChance = 0.07;
         public static double Level3RangePowerupChance = 0.03;
 
         public static double CrateDropRate = 0.75;
+
+        // ******************** DIAGNOSTICS **********************
+
+        public static bool CalculateTimeDiagnostics = false;
+        public static bool CalculateMemoryDiagnostics = false;
 
     }
 }

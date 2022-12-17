@@ -11,11 +11,21 @@ using Utils.Math;
 using Utils.Map;
 using Utils.Helpers;
 using Utils.GameLogic;
+using Utils.Flyweight;
+using System.Diagnostics;
 
 namespace Utils.AbstractFactory
 {
     public class Level2Factory : ILevelFactory
     {
+        private ImageFlyweight _explosiveImage;
+        private ImageFlyweight _fireImage;
+        private ImageFlyweight _powerupImage;
+        private ImageFlyweight _rangePowerupImage;
+        private ImageFlyweight _wallImage;
+        private ImageFlyweight _crateImage;
+        private ImageFlyweight _outerWallImage;
+
         public Level2Factory()
         {
 
@@ -27,49 +37,98 @@ namespace Utils.AbstractFactory
             return new Bitmap(path);
         }
 
-        public MapBuilder CreateBuilder(Vector2 mapSize, Vector2 viewSize, List<int> mapSeed, Bitmap mapTileImage, Bitmap crateImage, Bitmap outerWallImage, Bitmap specTileImage, ILevelFactory levelFactory)
+        public MapBuilder CreateBuilder(Vector2 mapSize, Vector2 viewSize, List<int> mapSeed, Bitmap mapTileImage, Bitmap specTileImage, ILevelFactory levelFactory)
         {
-            return new L2MapBuilder(mapSize, viewSize, mapSeed, mapTileImage, crateImage, outerWallImage, specTileImage, levelFactory);
+            Stopwatch watch = Stopwatch.StartNew();
+
+            if (_crateImage == null || _outerWallImage == null)
+            {
+                string filepath = Pather.Create(Pather.FolderAssets, Pather.FolderTextures, Pather.FolderSprites, Pather.FolderExplodables, Pather.CrateImage);
+                Bitmap crateImage = new Bitmap(filepath);
+                _crateImage = new ImageFlyweight(crateImage);
+                filepath = Pather.Create(Pather.FolderAssets, Pather.FolderTextures, Pather.FolderSprites, Pather.FolderWalls, Pather.OuterWallImage);
+                Bitmap outerWallImage = new Bitmap(filepath);
+                _outerWallImage = new ImageFlyweight(outerWallImage);
+            }
+
+            watch.Stop();
+            if (GameSettings.CalculateTimeDiagnostics)
+                IO.WriteToFile(Pather.Create(Pather.FolderAssets, Pather.FolderTextFiles, Pather.TimeDiagnostics), watch.Elapsed.ToString());
+
+            return new L2MapBuilder(mapSize, viewSize, mapSeed, mapTileImage, _crateImage, _outerWallImage, specTileImage, levelFactory);
         }
 
         public Explosive CreateExplosive(GameMap gameMap, Vector2 index)
         {
-            string filepath = Pather.Create(Pather.FolderAssets, Pather.FolderTextures, Pather.FolderGUI, Pather.GuiDamageIcon);
-            Bitmap fireImage = new Bitmap(filepath);
-            filepath = Pather.Create(Pather.FolderAssets, Pather.FolderTextures, Pather.FolderSprites, Pather.FolderExplosives, Pather.ExplosiveImage);
-            Bitmap explosiveImage = new Bitmap(filepath);
+            Stopwatch watch = Stopwatch.StartNew();
 
-            var prmf = gameMap.CreateScaledGameObjectParameters(index.X, index.Y, fireImage, GameSettings.ExplosiveColliderScale);
-            Fire fire = new Fire(prmf.Item1, prmf.Item2, prmf.Item3, prmf.Item4);
+            if (_explosiveImage == null)
+            {
+                string filepath = Pather.Create(Pather.FolderAssets, Pather.FolderTextures, Pather.FolderGUI, Pather.GuiDamageIcon);
+                Bitmap fireImage = new Bitmap(filepath);
+                _fireImage = new ImageFlyweight(fireImage);
+                filepath = Pather.Create(Pather.FolderAssets, Pather.FolderTextures, Pather.FolderSprites, Pather.FolderExplosives, Pather.ExplosiveImage);
+                Bitmap explosiveImage = new Bitmap(filepath);
+                _explosiveImage = new ImageFlyweight(explosiveImage);
+            }
 
-            var prm = gameMap.CreateScaledGameObjectParameters(index.X, index.Y, explosiveImage, GameSettings.ExplosiveColliderScale);
-            return new ExplosiveDi(prm.Item1, prm.Item2, prm.Item3, prm.Item4, fire);
+            var prmf = gameMap.CreateScaledGameObjectParameters(index.X, index.Y, _fireImage.Image, GameSettings.ExplosiveColliderScale);
+            Fire fire = new Fire(prmf.Item1, prmf.Item2, prmf.Item3, _fireImage);
+            var prm = gameMap.CreateScaledGameObjectParameters(index.X, index.Y, _explosiveImage.Image, GameSettings.ExplosiveColliderScale);
+
+            watch.Stop();
+            if (GameSettings.CalculateTimeDiagnostics)
+                IO.WriteToFile(Pather.Create(Pather.FolderAssets, Pather.FolderTextFiles, Pather.TimeDiagnostics), watch.Elapsed.ToString());
+
+            return new ExplosiveDi(prm.Item1, prm.Item2, prm.Item3, _explosiveImage, fire);
         }
 
         public Powerup CreatePowerup(GameMap gameMap, Vector2 index)
         {
-            string filepath = Pather.Create(Pather.FolderAssets, Pather.FolderTextures, Pather.FolderSprites, Pather.FolderPowerups, Pather.RangePowerupImage);
-            Bitmap rangeImage = new Bitmap(filepath);
-            filepath = Pather.Create(Pather.FolderAssets, Pather.FolderTextures, Pather.FolderSprites, Pather.FolderPowerups, Pather.CapacityPowerupImage);
-            Bitmap image = new Bitmap(filepath);
-            var prm = gameMap.CreateScaledGameObjectParameters(index.X, index.Y, image, GameSettings.PowerupColliderScale);
+            Stopwatch watch = Stopwatch.StartNew();
+
+            if (_powerupImage == null)
+            {
+                string filepath = Pather.Create(Pather.FolderAssets, Pather.FolderTextures, Pather.FolderSprites, Pather.FolderPowerups, Pather.RangePowerupImage);
+                Bitmap rangeImage = new Bitmap(filepath);
+                _rangePowerupImage = new ImageFlyweight(rangeImage);
+                filepath = Pather.Create(Pather.FolderAssets, Pather.FolderTextures, Pather.FolderSprites, Pather.FolderPowerups, Pather.CapacityPowerupImage);
+                Bitmap image = new Bitmap(filepath);
+                _powerupImage = new ImageFlyweight(image);
+            }
+            var prm = gameMap.CreateScaledGameObjectParameters(index.X, index.Y, _powerupImage.Image, GameSettings.PowerupColliderScale);
 
             Random rnd = new Random();
             double chance = rnd.NextDouble();
 
-            if (chance <= GameSettings.Level2RangePowerupChance)
-                return new RangePowerup(prm.Item1, prm.Item2, prm.Item3, rangeImage);
+            watch.Stop();
+            if (GameSettings.CalculateTimeDiagnostics)
+                IO.WriteToFile(Pather.Create(Pather.FolderAssets, Pather.FolderTextFiles, Pather.TimeDiagnostics), watch.Elapsed.ToString());
 
-            return new CapacityPowerup(prm.Item1, prm.Item2, prm.Item3, prm.Item4);
+            if (chance <= GameSettings.Level2RangePowerupChance)
+                return new RangePowerup(prm.Item1, prm.Item2, prm.Item3, _rangePowerupImage);
+
+            return new CapacityPowerup(prm.Item1, prm.Item2, prm.Item3, _powerupImage);
         }
 
         public DestructableWall CreateWall(GameMap gameMap, Vector2 index)
         {
-            string filepath = Pather.Create(Pather.FolderAssets, Pather.FolderTextures, Pather.FolderSprites, Pather.FolderWalls, Pather.WoodenWallImage);
-            Bitmap image = new Bitmap(filepath);
+            Stopwatch watch = Stopwatch.StartNew();
 
-            var prm = gameMap.CreateScaledGameObjectParameters(index.X, index.Y, image);
-            return new WoodenWall(prm.Item1, prm.Item2, prm.Item3, prm.Item4);
+            if (_wallImage == null)
+            {
+                string filepath = Pather.Create(Pather.FolderAssets, Pather.FolderTextures, Pather.FolderSprites, Pather.FolderWalls, Pather.WoodenWallImage);
+                Bitmap image = new Bitmap(filepath);
+                _wallImage = new ImageFlyweight(image);
+            }
+
+            var prm = gameMap.CreateScaledGameObjectParameters(index.X, index.Y, _wallImage.Image);
+
+            watch.Stop();
+            if (GameSettings.CalculateTimeDiagnostics)
+                IO.WriteToFile(Pather.Create(Pather.FolderAssets, Pather.FolderTextFiles, Pather.TimeDiagnostics), watch.Elapsed.ToString());
+
+            return new WoodenWall(prm.Item1, prm.Item2, prm.Item3, _wallImage);
         }
 
     }

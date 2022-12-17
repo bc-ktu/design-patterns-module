@@ -1,6 +1,9 @@
 using Microsoft.AspNetCore.SignalR.Client;
+using System.Diagnostics;
 
 using client_graphics.SignalR;
+using client_graphics.Command;
+using client_graphics.Interpreter;
 using Utils.Math;
 using Utils.Helpers;
 using Utils.GUIElements;
@@ -8,12 +11,10 @@ using Utils.GameLogic;
 using Utils.AbstractFactory;
 using Utils.GameObjects.Animates;
 using Utils.Observer;
-using client_graphics.Command;
 using Utils.Map;
 using Utils.GameObjects.Explosives;
 using Utils.GameObjects;
-using Utils.Builder;
-using client_graphics.Interpreter;
+using Utils.Flyweight;
 
 namespace client_graphics
 {
@@ -30,7 +31,7 @@ namespace client_graphics
         private Player player;
         private Vector4 collider;
         private InputStack inputStack;
-        private Bitmap characterImage;
+        private ImageFlyweight characterImage;
         private CommandController commandController;
         private LookupTable collisions;
 
@@ -46,6 +47,7 @@ namespace client_graphics
 
         public Vector2 MapSize;
 
+        private Process currentProcess;
         int repeats = 0;
         Keys commandKey = Input.KeyInteract;
 
@@ -53,12 +55,14 @@ namespace client_graphics
         {
 
         }
+
         private void GameView_Load(object sender, EventArgs e)
         {
             this.KeyPreview = true;
             this.DoubleBuffered = true;
             this.Paint += new PaintEventHandler(OnPaint);
         }
+
         public void GameStartUp(List<int> GameSeed)
         {
             levelFactory = new Level2Factory();
@@ -71,10 +75,15 @@ namespace client_graphics
             Level3Button.Enabled = true;
 
             Debug.Set(ConsoleTextBox);
-            Debug.Enable(false);
+            Debug.Enable(DEBUGGER_ENABLED);
         }
+
         private void Startup(List<int> gameSeed)
         {
+            currentProcess = Process.GetCurrentProcess();
+            IO.ClearFile(Pather.Create(Pather.FolderAssets, Pather.FolderTextFiles, Pather.MemoryUsageDiagnostics));
+            IO.ClearFile(Pather.Create(Pather.FolderAssets, Pather.FolderTextFiles, Pather.TimeDiagnostics));
+
             GameSeed = gameSeed;
 
             inputStack = new InputStack();
@@ -205,6 +214,12 @@ namespace client_graphics
             inputZero = false;
             if (consoleCommand && repeats == 0) inputStack.Remove(commandKey);
 
+            if (GameSettings.CalculateMemoryDiagnostics)
+            {
+                long usedMemory = currentProcess.PrivateMemorySize64;
+                IO.WriteToFile(Pather.Create(Pather.FolderAssets, Pather.FolderTextFiles, Pather.MemoryUsageDiagnostics), (usedMemory >> 20).ToString());
+            }
+
             this.Refresh();
         }
 
@@ -220,6 +235,9 @@ namespace client_graphics
 
         private void Level1Button_MouseClick(object sender, MouseEventArgs e)
         {
+            if (GameSettings.CalculateTimeDiagnostics)
+                IO.ClearFile(Pather.Create(Pather.FolderAssets, Pather.FolderTextFiles, Pather.TimeDiagnostics));
+
             levelFactory = new Level1Factory(); 
             GameSeed.Clear();
             Con.Connection.InvokeAsync("MapSeed", 10, 10);
@@ -236,6 +254,9 @@ namespace client_graphics
 
         private void Level2Button_MouseClick(object sender, MouseEventArgs e)
         {
+            if (GameSettings.CalculateTimeDiagnostics)
+                IO.ClearFile(Pather.Create(Pather.FolderAssets, Pather.FolderTextFiles, Pather.TimeDiagnostics));
+
             levelFactory = new Level2Factory(); 
             GameSeed.Clear();
             Con.Connection.InvokeAsync("MapSeed", 14, 14);
@@ -252,6 +273,9 @@ namespace client_graphics
 
         private void Level3Button_MouseClick(object sender, MouseEventArgs e)
         {
+            if (GameSettings.CalculateTimeDiagnostics)
+                IO.ClearFile(Pather.Create(Pather.FolderAssets, Pather.FolderTextFiles, Pather.TimeDiagnostics));
+
             levelFactory = new Level3Factory();
             GameSeed.Clear();
             Con.Connection.InvokeAsync("MapSeed", 24, 24);
