@@ -1,0 +1,11 @@
+﻿
+With Flyweight:
+Level1: 33 MB 529.254 ns
+Level2: 29 MB 442.678 ns
+Level3: 34 MB 498.525 ns
+
+Without Flyweight:
+Level1: 36 MB 360.845 ns
+Level2: 31 MB 134.364 ns
+Level3: 41 MB 94.363 ns
+

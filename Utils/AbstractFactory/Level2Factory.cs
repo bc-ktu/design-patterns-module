@@ -12,6 +12,7 @@ using Utils.Map;
 using Utils.Helpers;
 using Utils.GameLogic;
 using Utils.Flyweight;
+using System.Diagnostics;
 
 namespace Utils.AbstractFactory
 {
@@ -38,6 +39,8 @@ namespace Utils.AbstractFactory
 
         public MapBuilder CreateBuilder(Vector2 mapSize, Vector2 viewSize, List<int> mapSeed, Bitmap mapTileImage, Bitmap specTileImage, ILevelFactory levelFactory)
         {
+            Stopwatch watch = Stopwatch.StartNew();
+
             if (_crateImage == null || _outerWallImage == null)
             {
                 string filepath = Pather.Create(Pather.FolderAssets, Pather.FolderTextures, Pather.FolderSprites, Pather.FolderExplodables, Pather.CrateImage);
@@ -47,11 +50,18 @@ namespace Utils.AbstractFactory
                 Bitmap outerWallImage = new Bitmap(filepath);
                 _outerWallImage = new ImageFlyweight(outerWallImage);
             }
+
+            watch.Stop();
+            if (GameSettings.CalculateTimeDiagnostics)
+                IO.WriteToFile(Pather.Create(Pather.FolderAssets, Pather.FolderTextFiles, Pather.TimeDiagnostics), watch.Elapsed.ToString());
+
             return new L2MapBuilder(mapSize, viewSize, mapSeed, mapTileImage, _crateImage, _outerWallImage, specTileImage, levelFactory);
         }
 
         public Explosive CreateExplosive(GameMap gameMap, Vector2 index)
         {
+            Stopwatch watch = Stopwatch.StartNew();
+
             if (_explosiveImage == null)
             {
                 string filepath = Pather.Create(Pather.FolderAssets, Pather.FolderTextures, Pather.FolderGUI, Pather.GuiDamageIcon);
@@ -64,13 +74,19 @@ namespace Utils.AbstractFactory
 
             var prmf = gameMap.CreateScaledGameObjectParameters(index.X, index.Y, _fireImage.Image, GameSettings.ExplosiveColliderScale);
             Fire fire = new Fire(prmf.Item1, prmf.Item2, prmf.Item3, _fireImage);
-
             var prm = gameMap.CreateScaledGameObjectParameters(index.X, index.Y, _explosiveImage.Image, GameSettings.ExplosiveColliderScale);
+
+            watch.Stop();
+            if (GameSettings.CalculateTimeDiagnostics)
+                IO.WriteToFile(Pather.Create(Pather.FolderAssets, Pather.FolderTextFiles, Pather.TimeDiagnostics), watch.Elapsed.ToString());
+
             return new ExplosiveDi(prm.Item1, prm.Item2, prm.Item3, _explosiveImage, fire);
         }
 
         public Powerup CreatePowerup(GameMap gameMap, Vector2 index)
         {
+            Stopwatch watch = Stopwatch.StartNew();
+
             if (_powerupImage == null)
             {
                 string filepath = Pather.Create(Pather.FolderAssets, Pather.FolderTextures, Pather.FolderSprites, Pather.FolderPowerups, Pather.RangePowerupImage);
@@ -85,6 +101,10 @@ namespace Utils.AbstractFactory
             Random rnd = new Random();
             double chance = rnd.NextDouble();
 
+            watch.Stop();
+            if (GameSettings.CalculateTimeDiagnostics)
+                IO.WriteToFile(Pather.Create(Pather.FolderAssets, Pather.FolderTextFiles, Pather.TimeDiagnostics), watch.Elapsed.ToString());
+
             if (chance <= GameSettings.Level2RangePowerupChance)
                 return new RangePowerup(prm.Item1, prm.Item2, prm.Item3, _rangePowerupImage);
 
@@ -93,6 +113,8 @@ namespace Utils.AbstractFactory
 
         public DestructableWall CreateWall(GameMap gameMap, Vector2 index)
         {
+            Stopwatch watch = Stopwatch.StartNew();
+
             if (_wallImage == null)
             {
                 string filepath = Pather.Create(Pather.FolderAssets, Pather.FolderTextures, Pather.FolderSprites, Pather.FolderWalls, Pather.WoodenWallImage);
@@ -101,6 +123,11 @@ namespace Utils.AbstractFactory
             }
 
             var prm = gameMap.CreateScaledGameObjectParameters(index.X, index.Y, _wallImage.Image);
+
+            watch.Stop();
+            if (GameSettings.CalculateTimeDiagnostics)
+                IO.WriteToFile(Pather.Create(Pather.FolderAssets, Pather.FolderTextFiles, Pather.TimeDiagnostics), watch.Elapsed.ToString());
+
             return new WoodenWall(prm.Item1, prm.Item2, prm.Item3, _wallImage);
         }
 

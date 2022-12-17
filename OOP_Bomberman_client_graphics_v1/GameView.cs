@@ -80,6 +80,7 @@ namespace client_graphics
         {
             currentProcess = Process.GetCurrentProcess();
             IO.ClearFile(Pather.Create(Pather.FolderAssets, Pather.FolderTextFiles, Pather.MemoryUsageDiagnostics));
+            IO.ClearFile(Pather.Create(Pather.FolderAssets, Pather.FolderTextFiles, Pather.TimeDiagnostics));
 
             GameSeed = gameSeed;
 
@@ -197,9 +198,11 @@ namespace client_graphics
             ButtonClick(inputStack.Peek(), consoleCommand);
             if (consoleCommand) inputStack.Remove(commandKey);
 
-            long usedMemory = currentProcess.PrivateMemorySize64;
-            // Debug.LogLine(usedMemory >> 20);
-            IO.WriteToFile(Pather.Create(Pather.FolderAssets, Pather.FolderTextFiles, Pather.MemoryUsageDiagnostics), (usedMemory >> 20).ToString());
+            if (GameSettings.CalculateMemoryDiagnostics)
+            {
+                long usedMemory = currentProcess.PrivateMemorySize64;
+                IO.WriteToFile(Pather.Create(Pather.FolderAssets, Pather.FolderTextFiles, Pather.MemoryUsageDiagnostics), (usedMemory >> 20).ToString());
+            }
 
             this.Refresh();
         }
@@ -216,6 +219,9 @@ namespace client_graphics
 
         private void Level1Button_MouseClick(object sender, MouseEventArgs e)
         {
+            if (GameSettings.CalculateTimeDiagnostics)
+                IO.ClearFile(Pather.Create(Pather.FolderAssets, Pather.FolderTextFiles, Pather.TimeDiagnostics));
+
             levelFactory = new Level1Factory(); 
             GameSeed.Clear();
             Con.Connection.InvokeAsync("MapSeed", 10, 10);
@@ -232,6 +238,9 @@ namespace client_graphics
 
         private void Level2Button_MouseClick(object sender, MouseEventArgs e)
         {
+            if (GameSettings.CalculateTimeDiagnostics)
+                IO.ClearFile(Pather.Create(Pather.FolderAssets, Pather.FolderTextFiles, Pather.TimeDiagnostics));
+
             levelFactory = new Level2Factory(); 
             GameSeed.Clear();
             Con.Connection.InvokeAsync("MapSeed", 14, 14);
@@ -248,6 +257,9 @@ namespace client_graphics
 
         private void Level3Button_MouseClick(object sender, MouseEventArgs e)
         {
+            if (GameSettings.CalculateTimeDiagnostics)
+                IO.ClearFile(Pather.Create(Pather.FolderAssets, Pather.FolderTextFiles, Pather.TimeDiagnostics));
+
             levelFactory = new Level3Factory();
             GameSeed.Clear();
             Con.Connection.InvokeAsync("MapSeed", 24, 24);
