@@ -49,18 +49,10 @@ namespace client_graphics.AbstractFactory
 
         public Powerup CreatePowerup(GameMap gameMap, Vector2 index)
         {
-            string filepath = Pather.Create(Pather.FolderAssets, Pather.FolderTextures, Pather.FolderSprites, Pather.FolderPowerups, Pather.RangePowerupImage);
-            Bitmap rangeImage = new Bitmap(filepath);
-            filepath = Pather.Create(Pather.FolderAssets, Pather.FolderTextures, Pather.FolderSprites, Pather.FolderPowerups, Pather.DamagePowerupImage);
+            string filepath = Pather.Create(Pather.FolderAssets, Pather.FolderTextures, Pather.FolderSprites, Pather.FolderPowerups, Pather.DamagePowerupImage);
             Bitmap image = new Bitmap(filepath);
             var prm = gameMap.CreateScaledGameObjectParameters(index.X, index.Y, image, GameSettings.PowerupColliderScale);
-
-            Random rnd = new Random();
-            double chance = rnd.NextDouble();
-
-            if (chance <= GameSettings.Level3RangePowerupChance)
-                return new RangePowerup(prm.Item1, prm.Item2, prm.Item3, rangeImage);
-
+            
             return new DamagePowerup(prm.Item1, prm.Item2, prm.Item3, prm.Item4);
         }
 

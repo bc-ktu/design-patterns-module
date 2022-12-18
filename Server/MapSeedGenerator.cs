@@ -30,6 +30,13 @@ namespace Server
             }
             for (int i = 0; i < 5; i++)
             {
+                int rx = random.Next(3, mapSize.X - 3);
+                int ry = random.Next(3, mapSize.Y - 3);
+                values.Add(rx);
+                values.Add(ry);
+            }
+            for (int i = 0; i < 5; i++)
+            {
                 int rx = random.Next(1, mapSize.X - 1);
                 int ry = random.Next(1, mapSize.Y - 1);
                 values.Add(rx);

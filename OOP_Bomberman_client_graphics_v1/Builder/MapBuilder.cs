@@ -34,8 +34,19 @@ namespace client_graphics.Builder
             this.levelFactory = levelFactory;
         }
 
+        private List<Vector2> GetRangePowerupSpawnPoints()
+        {
+            List<Vector2> spawnPoints = new List<Vector2>();
+            for (int i = mapSeed.Count - 20; i < mapSeed.Count - 10; i+=2)
+            {
+                spawnPoints.Add(new Vector2(mapSeed[i], mapSeed[i + 1]));
+            }
+            return spawnPoints;
+        }
+
         public void AddCrates()
         {
+            List<Vector2> rangePowerups = GetRangePowerupSpawnPoints();
             int index = 0;
             for (int y = 1; y < mapSize.Y - 1; y++)
             {
@@ -43,7 +54,10 @@ namespace client_graphics.Builder
                 {
                     gameMap.SetTile(x, y, mapTileImage);
 
-                    if (x == 1 && y == 1 || x == 1 && y == 2 || x == 2 && y == 1)
+                    if (x == 1 && y == 1 || x == 1 && y == 2 || x == 2 && y == 1 ||
+                        x == mapSize.X - 2 && y == mapSize.X - 2 ||
+                        x == mapSize.X - 2 && y == mapSize.X - 3 ||
+                        x == mapSize.X - 3 && y == mapSize.X - 2)
                         continue;
 
                     int tile = mapSeed[index];
@@ -52,17 +66,18 @@ namespace client_graphics.Builder
                         GameObject go = levelFactory.CreateWall(gameMap, new Vector2(x, y));
                         gameMap[x, y].GameObjects.Add(go);
                     }
-                    else if (tile == 1 || tile == 2 || tile == 3)
-                    {
-                        var prm = gameMap.CreateScaledGameObjectParameters(x, y, crateImage);
-                        GameObject go = new Crate(prm.Item1, prm.Item2, prm.Item3, prm.Item4);
-                        gameMap[x, y].GameObjects.Add(go);
-                    }
                     else
                     {
                         GameObject go = levelFactory.CreatePowerup(gameMap, new Vector2(x, y));
+                        if (rangePowerups.Contains(new Vector2(x, y))) go = levelFactory.CreateRangePowerup(gameMap, new Vector2(x, y));
                         gameMap[x, y].GameObjects.Add(go);
                         gameMap.PowerupLookupTable.Add(new Vector2(x, y), go);
+                        if (tile == 1 || tile == 2 || tile == 3)
+                        {
+                            var prm = gameMap.CreateScaledGameObjectParameters(x, y, crateImage);
+                            go = new Crate(prm.Item1, prm.Item2, prm.Item3, prm.Item4);
+                            gameMap[x, y].GameObjects.Add(go);
+                        }
                     }
 
                     index++;

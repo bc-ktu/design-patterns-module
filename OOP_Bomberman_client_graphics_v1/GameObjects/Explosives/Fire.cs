@@ -79,7 +79,7 @@ namespace client_graphics.GameObjects.Explosives
         {
             Vector2 thisIndex = WorldPosition / gameMap.TileSize;
             
-            for (int i = 0; i < gameMap[thisIndex].GameObjects.Count; i++)
+            for (int i = gameMap[thisIndex].GameObjects.Count - 1; i >= 0; i--)
             {
                 if (gameMap[thisIndex].GameObjects[i] is not DestructableGameObject)
                     return;
@@ -93,11 +93,11 @@ namespace client_graphics.GameObjects.Explosives
                 gameMap[thisIndex].GameObjects.Remove(dgo);
                 i--;
                         
-                if (dgo is not Crate)
+                /*if (dgo is not Crate)
                     return;
 
                 Crate crate = (Crate)dgo;
-                crate.CreatePowerup(gameMap, levelFactory);
+                crate.CreatePowerup(gameMap, levelFactory);*/
             }
         }
 
