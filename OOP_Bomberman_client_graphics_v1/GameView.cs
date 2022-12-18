@@ -13,6 +13,8 @@ using Utils.Map;
 using Utils.GameObjects.Explosives;
 using Utils.GameObjects;
 using Utils.Builder;
+using System.Diagnostics;
+using java.util;
 
 namespace client_graphics
 {
@@ -68,7 +70,6 @@ namespace client_graphics
 
             Debug.Set(ConsoleTextBox);
             Debug.Enabled(false);
-            Debug.LogLine("Hello World!");
         }
         private void Startup(List<int> gameSeed)
         {
@@ -145,6 +146,10 @@ namespace client_graphics
             Graphics.DrawGUI(gui, e);
         }
 
+        int repeats = 0;
+        Keys commandKey = Input.KeyInteract;
+        Stopwatch timer = new Stopwatch();
+        bool drawTest = false;
         private void OnTick(object sender, EventArgs e)
         {
             var currentCoordinates = player.WorldPosition;
@@ -161,6 +166,15 @@ namespace client_graphics
             GameLogic.UpdateGUI(player, gui);
 
             ButtonClick(inputStack.Peek());
+            if (repeats == 0 && drawTest)
+            {
+                timer.Stop();
+                inputStack.Remove(commandKey);
+                Debug.Enabled(true);
+                Debug.LogLine(timer.Elapsed.ToString());
+                drawTest = false;
+            }
+            if (repeats > 0) repeats--;
 
             this.Refresh();
         }
@@ -270,6 +284,30 @@ namespace client_graphics
                 return true;
 
             return false;
+        }
+
+        int test = 1;
+        private void button1_Click(object sender, EventArgs e)
+        {
+            Debug.Enabled(true);
+            int num = 0;
+            DateTime end = DateTime.Now.AddSeconds(5);
+            while(DateTime.Now < end)
+            {
+                ButtonClick(Input.KeyRight);
+                num++;
+            }
+            Debug.LogLine(test, "Operations:", num);
+            test++;
+        }
+
+        private void DrawTest_Click(object sender, EventArgs e)
+        {
+            commandKey = Input.KeyRight;
+            inputStack.Push(commandKey);
+            repeats = 10;
+            drawTest = true;
+            timer.Start();
         }
     }
 }
