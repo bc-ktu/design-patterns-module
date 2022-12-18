@@ -112,7 +112,7 @@ namespace client_graphics
             gui = GameInitializer.CreateGUI(GameSettings.GUIPosition, GameSettings.GUISize, GameSettings.GUIFontColor, GameSettings.GUIFontSize);
             gameMap = GameInitializer.CreateMap(levelFactory, MapSize, Vector2.FromSize(ClientSize), GameSeed, GameSettings.GroundSpritesheetIndex);
             subject = new Subject();
-            if (players.Count == 0)
+            if (players.Count == 2)
                 position = new Vector2(MapSize.X - 2, MapSize.Y - 2) * gameMap.TileSize;
             else
                 position = new Vector2(1, 1) * gameMap.TileSize;
