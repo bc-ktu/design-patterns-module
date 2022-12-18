@@ -15,6 +15,8 @@ using Utils.Map;
 using Utils.GameObjects.Explosives;
 using Utils.GameObjects;
 using Utils.Flyweight;
+using client_graphics.Chain_of_responsibility;
+using client_graphics.Manager;
 
 namespace client_graphics
 {
@@ -34,6 +36,8 @@ namespace client_graphics
         private ImageFlyweight characterImage;
         private CommandController commandController;
         private LookupTable collisions;
+
+        public GameState GameState { get; private set; }
 
         public Subject subject { get; set; }
         private GUI gui;
@@ -65,6 +69,7 @@ namespace client_graphics
 
         public void GameStartUp(List<int> GameSeed)
         {
+            GameState = GameState.Instance;
             levelFactory = new Level2Factory();
             MapSize = new Vector2(14, 14);
             InitializeComponent();
@@ -76,6 +81,8 @@ namespace client_graphics
 
             Debug.Set(ConsoleTextBox);
             Debug.Enable(DEBUGGER_ENABLED);
+
+            GameState.Logger.Log(MessageType.Network, "Gameloop started!");
         }
 
         private void Startup(List<int> gameSeed)
