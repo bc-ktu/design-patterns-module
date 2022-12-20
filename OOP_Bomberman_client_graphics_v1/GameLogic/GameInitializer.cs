@@ -93,5 +93,22 @@ namespace client_graphics.GameLogic
 
             return new Player(position, gameMap.TileSize, collider, characterImage, explosive, subject);
         }
+
+        public static Enemy CreateEnemy(GameMap gameMap, Vector2 position, Vector2 playerSpritesheetIndex)
+        {
+            string filepath = Pather.Create(Pather.FolderAssets, Pather.FolderTextures, Pather.FolderSpritesheets, Pather.CharacterSpritesheet);
+            Bitmap charactersSpritesheet = new Bitmap(filepath);
+            Bitmap[,] characterImages = Spritesheet.ExtractAll(charactersSpritesheet, new Vector2(32, 32));
+            Bitmap characterImage = characterImages[playerSpritesheetIndex.X, playerSpritesheetIndex.Y];
+
+            double colliderSize = GameSettings.PlayerColliderScale;
+            int tlx = (int)(position.X + (1 - colliderSize) * gameMap.TileSize.X);
+            int tly = (int)(position.Y + (1 - colliderSize) * gameMap.TileSize.Y);
+            int brx = (int)(position.X + colliderSize * gameMap.TileSize.X);
+            int bry = (int)(position.Y + colliderSize * gameMap.TileSize.Y);
+            Vector4 collider = new Vector4(tlx, tly, brx, bry);
+
+            return new EnemyVertical(position, GameSettings.InitialPlayerSpeed, gameMap.TileSize, collider, characterImage);
+        }
     }
 }

@@ -22,7 +22,7 @@ namespace client_graphics
     {
         private readonly bool DEBUGGER_ENABLED = false;
 
-        private readonly bool DRAW_COLLIDERS = false;
+        private readonly bool DRAW_COLLIDERS = true;
         private readonly Color DEFAULT_COLLIDERS_COLOR = Color.LimeGreen;
         private readonly Color COLLIDING_COLLIDERS_COLOR = Color.Red;
         private readonly float COLLIDERS_WIDTH = 2;
@@ -51,6 +51,7 @@ namespace client_graphics
 
         int repeats = 0;
         Keys commandKey = Input.KeyInteract;
+        Enemy enemy;
 
         public GameView()
         {
@@ -118,6 +119,7 @@ namespace client_graphics
                 position = new Vector2(1, 1) * gameMap.TileSize;
 
             player = GameInitializer.CreatePlayer(levelFactory, gameMap, position, GameSettings.PlayerSpritesheetIndex, subject);
+            enemy = GameInitializer.CreateEnemy(gameMap, new Vector2(MapSize.X - 2, MapSize.Y - 2) * gameMap.TileSize, GameSettings.PlayerSpritesheetIndex);
 
             commandController = new CommandController();
 
@@ -161,16 +163,17 @@ namespace client_graphics
 
         private void OnPaint(object sender, PaintEventArgs e)
         {
-            Graphics.DrawMap(gameMap, player, players.Values.ToList(), e);
+            Graphics.DrawMap(gameMap, player, enemy, players.Values.ToList(), e);
             // Graphics.DrawGameObject(player, e);
 
-            foreach (KeyValuePair<string, Player> p in players)
-                Graphics.DrawGameObject(p.Value, e);
+            /*foreach (KeyValuePair<string, Player> p in players)
+                Graphics.DrawGameObject(p.Value, e);*/
 
             if (DRAW_COLLIDERS)
             {
                 Graphics.DrawColliders(gameMap, collisions, DEFAULT_COLLIDERS_COLOR, COLLIDING_COLLIDERS_COLOR, COLLIDERS_WIDTH, e);
                 Graphics.DrawCollider(player, DEFAULT_COLLIDERS_COLOR, COLLIDERS_WIDTH, e);
+                Graphics.DrawCollider(enemy, DEFAULT_COLLIDERS_COLOR, COLLIDERS_WIDTH, e);
                 foreach (KeyValuePair<string, Player> p in players)
                     Graphics.DrawCollider(p.Value, DEFAULT_COLLIDERS_COLOR, COLLIDERS_WIDTH, e);
             }
@@ -186,7 +189,7 @@ namespace client_graphics
             Debug.Enable(ConsoleCheck.Checked);
             if (Debug.Enabled)
             {
-                ConsoleTextBox.ReadOnly = !CursorOnTextBox();
+                /*ConsoleTextBox.ReadOnly = !CursorOnTextBox();
                 if (ConsoleTextBox.Text.EndsWith("\n"))
                 {
                     string command = ConsoleTextBox.Text.TrimEnd('\n');
@@ -211,7 +214,7 @@ namespace client_graphics
                         }
                     }
                     ConsoleTextBox.Clear();
-                }
+                }*/
             }
 
             GameLogic.GameLogic.UpdateExplosives(player, gameMap);
@@ -231,6 +234,7 @@ namespace client_graphics
                 Con.Connection.InvokeAsync("ChangeStats", player.Health, player.Explosive.Fire.Damage);
             }
             GameLogic.GameLogic.UpdateGUI(player, gui);
+            enemy.Move(gameMap);
 
             if (repeats == 0) inputZero = true;
             else if (repeats > 0)

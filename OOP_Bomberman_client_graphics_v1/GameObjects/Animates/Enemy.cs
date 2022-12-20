@@ -7,22 +7,22 @@ using Utils.Observer;
 using client_graphics.Map;
 using client_graphics.Strategy;
 using Utils.Decorator;
-using client_graphics.GameLogic;
 
 namespace client_graphics.GameObjects.Animates
 {
-    public class Enemy : TriggerGameObject, IGraphicsDecorator
+    public abstract class Enemy : TriggerGameObject, IGraphicsDecorator
     {
         public IGraphicsDecorator wrappee { get; private set; }
 
-        private System.Timers.Timer _iFramesTimer;
-        private bool _isInIFrames;
-        private int _movementSpeed;
+        protected System.Timers.Timer _iFramesTimer;
+        protected bool _isInIFrames;
+        protected int _movementSpeed;
 
         public Moves movingType;
 
         public int Health { get; private set; }
         public int MovementSpeed { get; set; }
+        public Vector2 direction { get; protected set; }
 
         public Enemy() { }
 
@@ -34,13 +34,13 @@ namespace client_graphics.GameObjects.Animates
             MovementSpeed = p.MovementSpeed;
         }
 
-        public Enemy(Vector2 position, Vector2 size, Vector4 collider, Bitmap image, Explosive explosive, Subject subject)
+        public Enemy(Vector2 position, Vector2 size, Vector4 collider, Bitmap image)
             : base(position, size, collider, image)
         {
             Initialize();
         }
 
-        private void Initialize()
+        protected void Initialize()
         {
             wrappee = null;
 
@@ -52,15 +52,27 @@ namespace client_graphics.GameObjects.Animates
             _isInIFrames = false;
         }
 
-        private void OnIFramesEnd(object sender, ElapsedEventArgs e)
+        protected void OnIFramesEnd(object sender, ElapsedEventArgs e)
         {
             _iFramesTimer.Enabled = false;
             _isInIFrames = false;
         }
 
-        public void Moving(Vector2 direction, int speed, Vector4 Collider, Vector2 LocalPosition, GameMap gameMap, Enemy player)
+        public void Move(Vector2 direction)
         {
-            movingType.Move(direction, speed, Collider, LocalPosition, gameMap, player);
+            Vector2 vPtoC = new Vector2(Collider.X, Collider.Y) - LocalPosition;
+            Vector2 vTLtoBR = new Vector2(Collider.Z - Collider.X, Collider.W - Collider.Y);
+            LocalPosition += GetSpeed() * direction;
+            int tlx = LocalPosition.X + vPtoC.X;
+            int tly = LocalPosition.Y + vPtoC.Y;
+            int brx = tlx + vTLtoBR.X;
+            int bry = tly + vTLtoBR.Y;
+            Collider = new Vector4(tlx, tly, brx, bry);
+        }
+
+        public void Move(GameMap gameMap)
+        {
+            movingType.Move(direction, MovementSpeed, Collider, LocalPosition, gameMap, this);
         }
 
         public void SetMovingAbility(Moves newMovingType)
@@ -73,9 +85,8 @@ namespace client_graphics.GameObjects.Animates
             return _movementSpeed;
         }
 
-        public override GameObject Clone()
-        {
-            return new Enemy(this);
-        }
+        public abstract void Add(Enemy d);
+        public abstract void Remove(Enemy d);
+        public abstract void Action();
     }
 }

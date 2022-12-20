@@ -14,34 +14,25 @@ namespace client_graphics.Strategy
 {
     public class MoveLeftRigh : Moves
     {
-        public void Move(Vector2 direction, int speed, Vector4 Collider, Vector2 LocalPosition, GameMap gameMap, Enemy player)
+        public void Move(Vector2 direction, int speed, Vector4 Collider, Vector2 LocalPosition, GameMap gameMap, Enemy enemy)
         {
             Vector2 left = new Vector2(-1, 0);
             Vector2 right = new Vector2(1, 0);
 
-            Enemy dummy = (Enemy)player.Clone();
+            Enemy dummy = (Enemy)enemy.Clone();
+            dummy.Move(direction);
             LookupTable dummyCollisions = GamePhysics.GetCollisions(dummy, gameMap);
-
             int dummyCollisionCount = dummyCollisions.Get<SolidGameObject>().Count;
 
             if (dummyCollisionCount >= 1 && direction == left)
             {
                 direction = right;
             }
-
-            if(dummyCollisionCount >= 1 && direction == right)
+            else if(dummyCollisionCount >= 1 && direction == right)
             {
                 direction = left;
             }
-
-            Vector2 vPtoC = new Vector2(Collider.X, Collider.Y) - LocalPosition;
-            Vector2 vTLtoBR = new Vector2(Collider.Z - Collider.X, Collider.W - Collider.Y);
-            LocalPosition += speed * direction;
-            int tlx = LocalPosition.X + vPtoC.X;
-            int tly = LocalPosition.Y + vPtoC.Y;
-            int brx = tlx + vTLtoBR.X;
-            int bry = tly + vTLtoBR.Y;
-            Collider = new Vector4(tlx, tly, brx, bry);
+            enemy.Move(direction);
         }
     }
 }

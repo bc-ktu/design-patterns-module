@@ -10,11 +10,8 @@
 
   <ItemGroup>
     <Compile Remove="NewFolder2\**" />
-    <Compile Remove="NewFolder\**" />
     <EmbeddedResource Remove="NewFolder2\**" />
-    <EmbeddedResource Remove="NewFolder\**" />
     <None Remove="NewFolder2\**" />
-    <None Remove="NewFolder\**" />
   </ItemGroup>
 
   <ItemGroup>
@@ -23,6 +20,7 @@
 
   <ItemGroup>
     <Folder Include="Assets\Icons\" />
+    <Folder Include="Composite\" />
   </ItemGroup>
 
   <ItemGroup>
