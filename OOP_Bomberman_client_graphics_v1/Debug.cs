@@ -5,6 +5,7 @@
         private static readonly int _maxLines = 100;
 
         private static RichTextBox _debugTextBox = new RichTextBox();
+        public static bool Enabled { get; private set; }
 
         private static void Clear()
         {
@@ -17,9 +18,10 @@
             _debugTextBox = richTextBox;
         }
 
-        public static void Enabled(bool arg)
+        public static void Enable(bool arg)
         {
             _debugTextBox.Visible = arg;
+            Enabled = arg;
         }
 
         public static void Log(params object[] args)

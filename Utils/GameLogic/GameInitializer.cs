@@ -3,7 +3,7 @@
 using Utils.AbstractFactory;
 using Utils.Builder;
 using Utils.Factory;
-using Utils.GameObjects;
+using client_graphics.GameObjects;
 using Utils.GameObjects.Animates;
 using Utils.GameObjects.Crates;
 using Utils.GameObjects.Explosives;

@@ -28,7 +28,7 @@
         public void MakeSound(string sound)
         {
             this.sound = sound;
-            observers.ForEach(observers => observers.Update(sound));
+            NotifyObservers();
         }
     }
 }

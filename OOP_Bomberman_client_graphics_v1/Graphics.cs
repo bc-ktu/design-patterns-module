@@ -1,12 +1,14 @@
-﻿using com.sun.org.apache.xml.@internal.resolver.helpers;
+﻿using client_graphics.Helpers;
+using com.sun.org.apache.xml.@internal.resolver.helpers;
 using Utils.Decorator;
-using Utils.GameLogic;
-using Utils.GameObjects;
-using Utils.GameObjects.Animates;
+using client_graphics.GameLogic;
+using client_graphics.GameObjects;
+using client_graphics.GameObjects.Animates;
 using Utils.GUIElements;
 using Utils.Helpers;
-using Utils.Map;
+using client_graphics.Map;
 using Utils.Math;
+using client_graphics.Decorator;
 
 namespace client_graphics
 {
