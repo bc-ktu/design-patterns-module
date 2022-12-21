@@ -1,4 +1,6 @@
-﻿using System;
+﻿using client_graphics.Map;
+using java.lang;
+using System;
 using System.Collections.Generic;
 using System.Data.SqlTypes;
 using System.Drawing;
@@ -46,6 +48,9 @@ namespace client_graphics.GameObjects
             Image = image;
         }
 
+        /// <summary>
+        /// .
+        /// </summary>
         /// <param name="x">Top left x coordinate corner of the sprite</param>
         /// <param name="y">Top left y coordinate corner of the sprite</param>
         /// <param name="cx">Top left x coordinate corner of the collider</param>
@@ -72,6 +77,11 @@ namespace client_graphics.GameObjects
             Collider = new Vector4(tlx, tly, brx, bry);
         }
         
+        public Vector2 GetPositionOnMap(GameMap gameMap)
+        {
+            return WorldPosition / gameMap.TileSize;
+        }
+
         public override string ToString()
         {
             return "position: " + LocalPosition.ToString() + "\n" +

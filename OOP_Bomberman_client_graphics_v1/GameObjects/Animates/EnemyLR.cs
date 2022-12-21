@@ -4,26 +4,26 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Utils.Math;
-using client_graphics.Strategy;
+using client_graphics.Template;
+using Utils.Helpers;
 
 namespace client_graphics.GameObjects.Animates
 {
-    public class EnemyHorizontal : Enemy
+    public class EnemyLR : Enemy
     {
-        public EnemyHorizontal()
+        public EnemyLR()
         {
-            direction = new Vector2(1, -1);
+            Facing = Direction.Left;
             movingType = new MoveDi();
         }
 
-        public EnemyHorizontal(Vector2 position, Vector2 size, Vector4 collider, Bitmap image) : base(position, size, collider, image)
+        public EnemyLR(Vector2 position, Vector2 size, Vector4 collider, Bitmap image, int speed) : base(position, size, collider, image, speed)
         {
-            direction = new Vector2(0, -1);
-            movingType = new MoveUpDown();
-            Initialize();
+            Facing = Direction.Left;
+            movingType = new MoveLR();
         }
 
-        public EnemyHorizontal(Enemy p) : base(p)
+        public EnemyLR(Enemy p) : base(p)
         {
         }
 
@@ -39,7 +39,7 @@ namespace client_graphics.GameObjects.Animates
 
         public override GameObject Clone()
         {
-            return new EnemyHorizontal(this);
+            return new EnemyLR(this);
         }
 
         public override void Action()

@@ -37,6 +37,7 @@ namespace client_graphics.GameLogic
 
         public static Vector2 GroundSpritesheetIndex = new Vector2(0, 0);
         public static Vector2 PlayerSpritesheetIndex = new Vector2(11, 4);
+        public static Vector2 EnemySpritesheetIndex = new Vector2(11, 0);
 
         // ******************** PHYSICS SETTINGS **********************
 

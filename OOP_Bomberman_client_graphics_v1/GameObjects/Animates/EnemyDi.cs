@@ -6,26 +6,26 @@ using System.Threading.Tasks;
 using System.Timers;
 using client_graphics.GameLogic;
 using Utils.Math;
-using client_graphics.Strategy;
+using client_graphics.Template;
+using client_graphics.Map;
+using Utils.Helpers;
 
 namespace client_graphics.GameObjects.Animates
 {
-    public class EnemyDiagonal : Enemy
+    public class EnemyDi : Enemy
     {
-        public EnemyDiagonal()
+        public EnemyDi()
         {
-            direction = new Vector2(-1, 0);
-            movingType = new MoveLeftRigh();
+            Facing = Direction.UpRight;
+            movingType = new MoveLR();
+        }
+        public EnemyDi(Vector2 position, Vector2 size, Vector4 collider, Bitmap image, int speed) : base(position, size, collider, image, speed)
+        {
+            Facing = Direction.UpRight;
+            movingType = new MoveDi();
         }
 
-        public EnemyDiagonal(Vector2 position, Vector2 size, Vector4 collider, Bitmap image) : base(position, size, collider, image)
-        {
-            direction = new Vector2(-1, 0);
-            movingType = new MoveLeftRigh();
-            Initialize();
-        }
-
-        public EnemyDiagonal(Enemy p) : base(p)
+        public EnemyDi(Enemy p) : base(p)
         {
         }
 
@@ -41,7 +41,7 @@ namespace client_graphics.GameObjects.Animates
 
         public override GameObject Clone()
         {
-            return new EnemyDiagonal(this);
+            return new EnemyDi(this);
         }
 
         public override void Action()

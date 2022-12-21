@@ -5,7 +5,7 @@ using client_graphics.GameObjects.Explosives;
 using client_graphics.AbstractFactory;
 using Utils.Observer;
 using client_graphics.Map;
-using client_graphics.Strategy;
+using client_graphics.Template;
 using Utils.Decorator;
 
 namespace client_graphics.GameObjects.Animates
@@ -18,11 +18,11 @@ namespace client_graphics.GameObjects.Animates
         protected bool _isInIFrames;
         protected int _movementSpeed;
 
-        public Moves movingType;
+        public MoveAlgorithm movingType;
 
         public int Health { get; private set; }
         public int MovementSpeed { get; set; }
-        public Vector2 direction { get; protected set; }
+        public Vector2 Facing { get; protected set; }
 
         public Enemy() { }
 
@@ -34,13 +34,13 @@ namespace client_graphics.GameObjects.Animates
             MovementSpeed = p.MovementSpeed;
         }
 
-        public Enemy(Vector2 position, Vector2 size, Vector4 collider, Bitmap image)
+        public Enemy(Vector2 position, Vector2 size, Vector4 collider, Bitmap image, int speed)
             : base(position, size, collider, image)
         {
-            Initialize();
+            Initialize(speed);
         }
 
-        protected void Initialize()
+        protected void Initialize(int speed)
         {
             wrappee = null;
 
@@ -50,6 +50,8 @@ namespace client_graphics.GameObjects.Animates
             _iFramesTimer.Elapsed += new ElapsedEventHandler(OnIFramesEnd);
             _iFramesTimer.Interval = GameSettings.InitialIFramesTime;
             _isInIFrames = false;
+
+            MovementSpeed = speed;
         }
 
         protected void OnIFramesEnd(object sender, ElapsedEventArgs e)
@@ -62,7 +64,8 @@ namespace client_graphics.GameObjects.Animates
         {
             Vector2 vPtoC = new Vector2(Collider.X, Collider.Y) - LocalPosition;
             Vector2 vTLtoBR = new Vector2(Collider.Z - Collider.X, Collider.W - Collider.Y);
-            LocalPosition += GetSpeed() * direction;
+            Facing = direction;
+            LocalPosition += GetSpeed() * Facing;
             int tlx = LocalPosition.X + vPtoC.X;
             int tly = LocalPosition.Y + vPtoC.Y;
             int brx = tlx + vTLtoBR.X;
@@ -72,10 +75,10 @@ namespace client_graphics.GameObjects.Animates
 
         public void Move(GameMap gameMap)
         {
-            movingType.Move(direction, MovementSpeed, Collider, LocalPosition, gameMap, this);
+            movingType.Move(Facing, this, gameMap);
         }
 
-        public void SetMovingAbility(Moves newMovingType)
+        public void SetMovingAbility(MoveAlgorithm newMovingType)
         {
             movingType = newMovingType;
         }
