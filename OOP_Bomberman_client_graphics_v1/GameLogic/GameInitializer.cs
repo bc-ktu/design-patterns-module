@@ -74,12 +74,12 @@ namespace client_graphics.GameLogic
             return builder.GetMap();
         }
 
-        public static Player CreatePlayer(ILevelFactory levelFactory, GameMap gameMap, Vector2 position, Vector2 playerSpritesheetIndex, Subject subject)
+        public static Player CreatePlayer(ILevelFactory levelFactory, GameMap gameMap, Vector2 position, Vector2 spritesheetIndex, Subject subject)
         {
             string filepath = Pather.Create(Pather.FolderAssets, Pather.FolderTextures, Pather.FolderSpritesheets, Pather.CharacterSpritesheet);
             Bitmap charactersSpritesheet = new Bitmap(filepath);
             Bitmap[,] characterImages = Spritesheet.ExtractAll(charactersSpritesheet, new Vector2(32, 32));
-            Bitmap characterImage = characterImages[playerSpritesheetIndex.X, playerSpritesheetIndex.Y];
+            Bitmap characterImage = characterImages[spritesheetIndex.X, spritesheetIndex.Y];
 
             double colliderSize = GameSettings.PlayerColliderScale;
             int tlx = (int)(position.X + (1 - colliderSize) * gameMap.TileSize.X);
@@ -94,12 +94,12 @@ namespace client_graphics.GameLogic
             return new Player(position, gameMap.TileSize, collider, characterImage, explosive, subject);
         }
 
-        public static Enemy CreateEnemy(GameMap gameMap, Vector2 position, Vector2 playerSpritesheetIndex)
+        public static EnemyUD CreateEnemy(GameMap gameMap, Vector2 position, Vector2 spritesheetIndex)
         {
             string filepath = Pather.Create(Pather.FolderAssets, Pather.FolderTextures, Pather.FolderSpritesheets, Pather.CharacterSpritesheet);
             Bitmap charactersSpritesheet = new Bitmap(filepath);
             Bitmap[,] characterImages = Spritesheet.ExtractAll(charactersSpritesheet, new Vector2(32, 32));
-            Bitmap characterImage = characterImages[playerSpritesheetIndex.X, playerSpritesheetIndex.Y];
+            Bitmap characterImage = characterImages[spritesheetIndex.X, spritesheetIndex.Y];
 
             double colliderSize = GameSettings.PlayerColliderScale;
             int tlx = (int)(position.X + (1 - colliderSize) * gameMap.TileSize.X);
@@ -108,7 +108,7 @@ namespace client_graphics.GameLogic
             int bry = (int)(position.Y + colliderSize * gameMap.TileSize.Y);
             Vector4 collider = new Vector4(tlx, tly, brx, bry);
 
-            return new EnemyVertical(position, GameSettings.InitialPlayerSpeed, gameMap.TileSize, collider, characterImage);
+            return new EnemyUD(position, gameMap.TileSize, collider, characterImage, GameSettings.InitialPlayerSpeed);
         }
     }
 }

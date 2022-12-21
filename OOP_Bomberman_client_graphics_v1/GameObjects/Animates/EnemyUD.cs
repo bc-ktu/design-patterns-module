@@ -6,27 +6,26 @@ using client_graphics.AbstractFactory;
 using Utils.Observer;
 using client_graphics.Map;
 using Utils.Decorator;
-using client_graphics.Strategy;
+using client_graphics.Template;
+using Utils.Helpers;
 
 namespace client_graphics.GameObjects.Animates
 {
-    public class EnemyVertical : Enemy
+    public class EnemyUD : Enemy
     {
-        public EnemyVertical()
+        public EnemyUD()
         {
-            direction = new Vector2(0, -1);
-            movingType = new MoveUpDown();
+            Facing = Direction.Up;
+            movingType = new MoveUD();
         }
 
-        public EnemyVertical(Vector2 position, int speed, Vector2 size, Vector4 collider, Bitmap image) : base(position, size, collider, image)
+        public EnemyUD(Vector2 position, Vector2 size, Vector4 collider, Bitmap image, int speed) : base(position, size, collider, image, speed)
         {
-            MovementSpeed = speed;
-            direction = new Vector2(0, -1);
-            movingType = new MoveUpDown();
-            Initialize();
+            Facing = Direction.Up;
+            movingType = new MoveUD();
         }
 
-        public EnemyVertical(EnemyVertical p) : base(p)
+        public EnemyUD(EnemyUD p) : base(p)
         {
         }
 
@@ -42,7 +41,7 @@ namespace client_graphics.GameObjects.Animates
 
         public override GameObject Clone()
         {
-            return new EnemyVertical(this);
+            return new EnemyUD(this);
         }
 
         public override void Action()

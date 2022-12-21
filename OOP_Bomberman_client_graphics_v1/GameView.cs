@@ -20,8 +20,6 @@ namespace client_graphics
 {
     public partial class GameView : Form
     {
-        private readonly bool DEBUGGER_ENABLED = false;
-
         private readonly bool DRAW_COLLIDERS = true;
         private readonly Color DEFAULT_COLLIDERS_COLOR = Color.LimeGreen;
         private readonly Color COLLIDING_COLLIDERS_COLOR = Color.Red;
@@ -119,7 +117,7 @@ namespace client_graphics
                 position = new Vector2(1, 1) * gameMap.TileSize;
 
             player = GameInitializer.CreatePlayer(levelFactory, gameMap, position, GameSettings.PlayerSpritesheetIndex, subject);
-            enemy = GameInitializer.CreateEnemy(gameMap, new Vector2(MapSize.X - 2, MapSize.Y - 2) * gameMap.TileSize, GameSettings.PlayerSpritesheetIndex);
+            enemy = GameInitializer.CreateEnemy(gameMap, new Vector2(MapSize.X - 2, MapSize.Y - 2) * gameMap.TileSize, GameSettings.EnemySpritesheetIndex);
 
             commandController = new CommandController();
 
@@ -221,6 +219,8 @@ namespace client_graphics
             GameLogic.GameLogic.UpdateFires(gameMap, levelFactory);
 
             collisions = GamePhysics.GetCollisions(player, gameMap);
+            if (GamePhysics.IsColliding(player, enemy))
+                collisions.Add(enemy.GetPositionOnMap(gameMap), enemy);
 
             if (currentCoordinates != player.WorldPosition)
                 Con.Connection.InvokeAsync("Teleport", player.LocalPosition.X, player.LocalPosition.Y, player.WorldPosition.X, player.WorldPosition.Y);
