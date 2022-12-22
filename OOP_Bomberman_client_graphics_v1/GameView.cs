@@ -1,4 +1,5 @@
 using client_graphics.AbstractFactory;
+using client_graphics.Chain_of_responsibility;
 using client_graphics.Command;
 using client_graphics.GameLogic;
 using client_graphics.GameObjects;
@@ -6,6 +7,7 @@ using client_graphics.GameObjects.Animates;
 using client_graphics.GameObjects.Explosives;
 using client_graphics.Helpers;
 using client_graphics.Interpreter;
+using client_graphics.Manager;
 using client_graphics.Map;
 using client_graphics.SignalR;
 using client_graphics.State;
@@ -39,6 +41,8 @@ namespace client_graphics
         private GUI gui;
 
         private GameState gameState;
+
+        public LoggerManager Logger { get; set; }
 
         public List<int> Maps { get; set; }
         public SignalRConnection Con { get; set; }
@@ -130,6 +134,9 @@ namespace client_graphics
 
         public void AddPlayer(string uuid, int x, int y)
         {
+            Logger = new(uuid);
+            Logger.Logger.Log(MessageType.Default, "Gameloop started!");
+
             Vector2 index = new Vector2(x, y) / gameMap.TileSize;
             Explosive explosive = levelFactory.CreateExplosive(gameMap, index);
             players.Add(uuid, new Player(new Vector2(x, y), gameMap.TileSize, collider, characterImage, explosive, subject));
@@ -143,12 +150,14 @@ namespace client_graphics
 
         public void UpdatePosition(string uuid, int X, int Y, int speedMod, int speed)
         {
+            
             Player p;
             if (!players.TryGetValue(uuid, out p))
                 return;
             p.SpeedModifier = speedMod;
             p.SetMoveSpeed(speed);
             p.Move(new Vector2(X, Y));
+            Logger.Logger.Log(MessageType.Default, $"UPDATE_POSITION Player:{uuid} moved cords {p.LocalPosition}");
         }
 
         public void TeleportPlayer(string uuid, int localX, int localY)
@@ -157,6 +166,7 @@ namespace client_graphics
             if (!players.TryGetValue(uuid, out p))
                 return;
             p.Teleport(new Vector2(localX, localY));
+            Logger.Logger.Log(MessageType.Default, $"TELEPORT: Player:{uuid} moved cords {p.LocalPosition}");
         }
 
         private void OnPaint(object sender, PaintEventArgs e)
@@ -365,8 +375,10 @@ namespace client_graphics
             return false;
         }
         // TODO: get other p
-        public void BombPlaced(int fireDamage, int x, int y)
+        public void BombPlaced(string uuid, int fireDamage, int x, int y)
         {
+            Console.WriteLine("tetfwefwef");
+            Logger.Logger.Log(MessageType.Default, $"BOMB PLACED Player:{uuid} placed bomb with {fireDamage} damage at {x};{y}");
             Vector2 position = new Vector2(x, y);
             Vector2 index = position / gameMap.TileSize;
             Explosive explosive = (Explosive)this.player.Explosive.Clone();
@@ -379,6 +391,7 @@ namespace client_graphics
         }
         public void UpdateOtherPlayerStats(string uuid, int health, int damage)
         {
+            Logger.Logger.Log(MessageType.Default, $"Player:{uuid} Health Changed from {players[uuid].Health} to {health}");
             players[uuid].Health = health;
             players[uuid].Explosive.Fire.Damage = damage;
         }

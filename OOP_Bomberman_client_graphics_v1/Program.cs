@@ -53,9 +53,9 @@ namespace client_graphics
             {
                 game.TeleportPlayer(uuid, X, Y);
             });
-            Con.Connection.On<int, int, int>("BombPlaced", (fireDamage, X, Y) =>
+            Con.Connection.On<string, int, int, int>("BombPlaced", (uuid, fireDamage, X, Y) =>
             {
-                game.BombPlaced(fireDamage, X, Y);
+                game.BombPlaced(uuid, fireDamage, X, Y);
             });
             Con.Connection.On<string, int, int>("UpdateStats", (uuid, health, damage) =>
             {

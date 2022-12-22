@@ -7,6 +7,8 @@ using client_graphics.Map;
 using Utils.Decorator;
 using client_graphics.GameLogic;
 using client_graphics.GameLogic;
+using client_graphics.Chain_of_responsibility;
+using client_graphics.Manager;
 
 namespace client_graphics.GameObjects.Animates
 {
