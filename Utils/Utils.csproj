@@ -8,11 +8,19 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="System.Drawing.Common" Version="6.0.0" />
+    <Compile Remove="Command\**" />
+    <Compile Remove="GameLogic\**" />
+    <Compile Remove="Strategy\**" />
+    <EmbeddedResource Remove="Command\**" />
+    <EmbeddedResource Remove="GameLogic\**" />
+    <EmbeddedResource Remove="Strategy\**" />
+    <None Remove="Command\**" />
+    <None Remove="GameLogic\**" />
+    <None Remove="Strategy\**" />
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Command\" />
+    <PackageReference Include="System.Drawing.Common" Version="6.0.0" />
   </ItemGroup>
 
 </Project>

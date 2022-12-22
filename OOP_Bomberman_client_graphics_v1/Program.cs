@@ -19,7 +19,7 @@ namespace client_graphics
             SignalRConnection Con = new SignalRConnection("http://localhost:5016/GameHub");
             Con.ConnectToServer();
             List<int> GameSeed = new List<int>();
-            Con.Connection.InvokeAsync("MapSeed", 14, 14);
+            Con.Connection.InvokeAsync("MapSeed", 14, 14, 2);
             Con.Connection.On<List<int>>("GenMap", (seed) =>
             {
                 GameSeed = seed;
@@ -52,6 +52,14 @@ namespace client_graphics
             Con.Connection.On<string, int, int>("PlayerTeleport", (uuid, X, Y) =>
             {
                 game.TeleportPlayer(uuid, X, Y);
+            });
+            Con.Connection.On<int, int, int>("BombPlaced", (fireDamage, X, Y) =>
+            {
+                game.BombPlaced(fireDamage, X, Y);
+            });
+            Con.Connection.On<string, int, int>("UpdateStats", (uuid, health, damage) =>
+            {
+                game.UpdateOtherPlayerStats(uuid, health, damage);
             });
 
             Application.Run(game);

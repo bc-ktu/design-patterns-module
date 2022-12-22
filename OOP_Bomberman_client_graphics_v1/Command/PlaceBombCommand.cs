@@ -4,11 +4,12 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using Utils.AbstractFactory;
-using Utils.GameObjects;
-using Utils.GameObjects.Animates;
+using client_graphics.AbstractFactory;
+using client_graphics.GameObjects;
+using client_graphics.GameObjects.Animates;
 using Utils.Helpers;
-using Utils.Map;
+using client_graphics.Map;
+using Microsoft.AspNetCore.SignalR.Client;
 
 namespace client_graphics.Command
 {
@@ -29,7 +30,11 @@ namespace client_graphics.Command
 
         public override void Execute()
         {
-            character.PlaceExplosive(gameMap, levelFactory);
+            var position = character.PlaceExplosive(gameMap, levelFactory);
+            if (position.X != 0 && position.Y != 0)
+            {
+                connection.Connection.InvokeAsync("PlaceBomb", character.Explosive.Fire.Damage, position.X, position.Y);
+            }
         }
 
         public override void Undo()

@@ -6,9 +6,9 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.SignalR.Client;
 
 using client_graphics.SignalR;
-using Utils.GameObjects;
+using client_graphics.GameObjects;
 using Utils.Helpers;
-using Utils.GameObjects.Animates;
+using client_graphics.GameObjects.Animates;
 using javax.sound.midi;
 
 namespace client_graphics.Command

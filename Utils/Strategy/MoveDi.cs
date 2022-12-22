@@ -3,11 +3,11 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using Utils.GameLogic;
-using Utils.GameObjects;
-using Utils.GameObjects.Animates;
+using client_graphics.GameLogic;
+using client_graphics.GameObjects;
+using client_graphics.GameObjects.Animates;
 using Utils.Helpers;
-using Utils.Map;
+using client_graphics.Map;
 using Utils.Math;
 
 namespace Utils.Strategy
