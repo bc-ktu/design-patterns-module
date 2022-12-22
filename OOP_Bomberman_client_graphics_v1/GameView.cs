@@ -117,7 +117,7 @@ namespace client_graphics
             gameMap = GameInitializer.CreateMap(levelFactory, MapSize, Vector2.FromSize(ClientSize), GameSeed, GameSettings.GroundSpritesheetIndex);
             subject = new Subject();
             if (players.Count == 2)
-                position = new Vector2(MapSize.X - 1, MapSize.Y - 1) * gameMap.TileSize;
+                position = new Vector2(MapSize.X - 2, MapSize.Y - 2) * gameMap.TileSize;
             else
                 position = new Vector2(1, 1) * gameMap.TileSize;
 
