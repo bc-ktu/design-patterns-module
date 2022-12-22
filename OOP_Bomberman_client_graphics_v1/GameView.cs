@@ -22,6 +22,7 @@ using Utils.Helpers;
 using Utils.Math;
 using Utils.Observer;
 using java.util;
+using java.rmi.server;
 
 namespace client_graphics
 {
@@ -247,14 +248,20 @@ namespace client_graphics
             if (GamePhysics.IsColliding(player, enemy))
                 collisions.Add(enemy.GetPositionOnMap(gameMap), enemy);
 
-            if (currentCoordinates != player.WorldPosition)
-                Con.Connection.InvokeAsync("PlayerTeleport", player.LocalPosition.X, player.LocalPosition.Y, player.WorldPosition.X, player.WorldPosition.Y);
-
 
             string damageValue = player.Explosive.Fire.Damage.ToString();
             string healthValue = player.Health.ToString();
             GameLogic.GameLogic.ApplyEffects(player, gameMap, collisions.GameObjects);
-            if(player.Health.ToString() != healthValue || player.Explosive.Fire.Damage.ToString() != damageValue)
+
+            if (currentCoordinates != player.WorldPosition)
+            {
+                Con.Connection.InvokeAsync("Teleport", player.LocalPosition.X, player.LocalPosition.Y, player.WorldPosition.X, player.WorldPosition.Y);
+            }
+            if(player.Health == 0)
+            {
+                Con.Connection.InvokeAsync("PlayerDied");
+            }    
+            if (player.Health.ToString() != healthValue || player.Explosive.Fire.Damage.ToString() != damageValue)
             {
                 Con.Connection.InvokeAsync("ChangeStats", player.Health, player.Explosive.Fire.Damage);
             }
@@ -415,6 +422,12 @@ namespace client_graphics
             players[uuid].Health = health;
             players[uuid].Explosive.Fire.Damage = damage;
         }
-
+        public void PlayerDied(string uuid)
+        {
+           /* Player p;
+            if (!players.TryGetValue(uuid, out p))
+                return;*/
+            gameState.UpdateGameState();
+        }
     }
 }

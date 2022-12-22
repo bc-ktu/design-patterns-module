@@ -77,6 +77,10 @@ namespace client_graphics
             {
                 game.UpdateOtherPlayerStats(uuid, health, damage);
             });
+            Con.Connection.On<string>("Death", (uuid) =>
+            {
+                game.PlayerDied(uuid);
+            });
 
             Application.Run(game);
         }

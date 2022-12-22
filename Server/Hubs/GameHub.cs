@@ -48,9 +48,11 @@ namespace Server.Hubs
         public async Task Teleport(int localX, int localY, int worldX, int worldY)
         {
             Vector2 temp;
+            Console.WriteLine("out tel");
 
             if (Storage.Players.TryGetValue(Context.ConnectionId, out temp))
             {
+                Console.WriteLine("tel");
                 temp.X = worldX;
                 temp.Y = worldY;
                 Storage.Players[Context.ConnectionId] = temp;
@@ -100,7 +102,12 @@ namespace Server.Hubs
         public async Task GetPlayerCount()
         {
             await Clients.Client(Context.ConnectionId).SendAsync("PlayerCount", Storage.UserCount);
-            
+
+        }
+        public async Task PlayerDied()
+        {
+            await Clients.All.SendAsync("Death", Context.ConnectionId);
+
         }
 
         public override async Task OnConnectedAsync()
