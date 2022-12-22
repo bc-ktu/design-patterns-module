@@ -13,6 +13,7 @@ using client_graphics.Map;
 using client_graphics.GameLogic;
 using client_graphics.Mediator;
 using client_graphics.GameObjects.Animates;
+using Utils.Enum;
 
 namespace client_graphics.AbstractFactory
 {
@@ -51,7 +52,7 @@ namespace client_graphics.AbstractFactory
 
         public Powerup CreatePowerup(GameMap gameMap, Vector2 index)
         {
-            return _mediator.Send(gameMap, index);
+            return _mediator.Send(PowerupType.Speed, gameMap, index);
         }
 
         public DestructableWall CreateWall(GameMap gameMap, Vector2 index)

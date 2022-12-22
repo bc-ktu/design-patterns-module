@@ -12,6 +12,7 @@ using Utils.Math;
 using client_graphics.Map;
 using client_graphics.GameLogic;
 using client_graphics.GameObjects.Animates;
+using Utils.Enum;
 
 namespace client_graphics.AbstractFactory
 {
