@@ -21,6 +21,7 @@ using Utils.GUIElements;
 using Utils.Helpers;
 using Utils.Math;
 using Utils.Observer;
+using java.util;
 
 namespace client_graphics
 {
@@ -60,6 +61,8 @@ namespace client_graphics
 
         EnemyType enemies;
         Enemy enemy;
+
+        public int playersCount = 0;
 
         public GameView()
         {
@@ -121,7 +124,7 @@ namespace client_graphics
             gui = GameInitializer.CreateGUI(GameSettings.GUIPosition, GameSettings.GUISize, GameSettings.GUIFontColor, GameSettings.GUIFontSize);
             gameMap = GameInitializer.CreateMap(levelFactory, MapSize, Vector2.FromSize(ClientSize), GameSeed, GameSettings.GroundSpritesheetIndex);
             subject = new Subject();
-            if (players.Count == 2)
+            if (playersCount == 2)
                 position = new Vector2(MapSize.X - 2, MapSize.Y - 2) * gameMap.TileSize;
             else
                 position = new Vector2(1, 1) * gameMap.TileSize;
@@ -145,7 +148,7 @@ namespace client_graphics
         }
 
         public void AddPlayer(string uuid, int x, int y)
-        {
+        {            
             Logger = new(uuid);
             Logger.Logger.Log(MessageType.Default, "Gameloop started!");
 

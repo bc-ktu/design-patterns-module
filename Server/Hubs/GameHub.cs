@@ -97,13 +97,18 @@ namespace Server.Hubs
                 await Clients.Others.SendAsync("UpdateStats", player.Key, health, damage);
             }
         }
+        public async Task GetPlayerCount()
+        {
+            await Clients.Client(Context.ConnectionId).SendAsync("PlayerCount", Storage.UserCount);
+            
+        }
 
         public override async Task OnConnectedAsync()
         {
             Storage.UserCount++;
             Storage.Players.Add(Context.ConnectionId, new Vector2(0, 0));
             /*if (Storage.UserCount == 2)
-                Storage.Players.Add(Context.ConnectionId, new Vector2(Storage.generator.GetMapSize().X - 1, Storage.generator.GetMapSize().X - 1));
+                Storage.Players.Add(Context.ConnectionId, new Vector2(Storage.generator.GetMapSize().X - 2, Storage.generator.GetMapSize().X - 2));
            */ 
             Console.WriteLine($"Player connected with ID {Context.ConnectionId}");
             await base.OnConnectedAsync();
