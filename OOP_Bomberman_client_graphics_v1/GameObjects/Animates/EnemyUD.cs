@@ -49,5 +49,15 @@ namespace client_graphics.GameObjects.Animates
         {
             Move(gameMap);
         }
+
+        public override Enemy GetChild(int i)
+        {
+            return null;
+        }
+
+        public override int ChildrenCount()
+        {
+            return 0;
+        }
     }
 }

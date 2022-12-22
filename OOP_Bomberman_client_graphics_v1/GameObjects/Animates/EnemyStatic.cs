@@ -44,5 +44,15 @@ namespace client_graphics.GameObjects.Animates
         {
             return;
         }
+
+        public override Enemy GetChild(int i)
+        {
+            return null;
+        }
+
+        public override int ChildrenCount()
+        {
+            return 0;
+        }
     }
 }

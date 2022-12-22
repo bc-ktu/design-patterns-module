@@ -10,17 +10,18 @@ using client_graphics.Map;
 using Utils.Math;
 using client_graphics.Decorator;
 using client_graphics.Composite;
+using client_graphics.Iterator;
 
 namespace client_graphics
 {
     internal static class Graphics
     {
-        public static void DrawMap(GameMap gameMap, Player player, Enemy enemy, EnemyType enemies, List<Player> otherPlayers, PaintEventArgs e)
+        public static void DrawMap(GameMap gameMap, Player player, EnemyType enemies, List<Player> otherPlayers, PaintEventArgs e)
         {
-            Vector2 playerIndex = player.WorldPosition / gameMap.TileSize;
-            Vector2 enemyIndex = enemy.WorldPosition / gameMap.TileSize;
             List<Vector2> playerIndexes = new List<Vector2>();
             List<IGraphicsDecorator> players = new List<IGraphicsDecorator>();
+            Vector2 check = new Vector2(0, 0);
+            EnemyIterator iterator = new EnemyIterator(enemies);
 
             string filepath;
             for (int i = 0; i < otherPlayers.Count; i++)
@@ -57,11 +58,18 @@ namespace client_graphics
                     foreach (GameObject go in gameMap[x, y].GameObjects)
                         go.Draw(e);
 
-                    if (playerIndex == index)
+                    if (player.GetPositionOnMap(gameMap) == index)
                         player.Draw(e);
 
-                    if (enemyIndex == index)
-                        enemy.Draw(e);
+                    for (iterator.First(); !iterator.IsDone(); iterator.Next())
+                    {
+                        if (!iterator.CurrentItem().Equals(check) && iterator.CurrentEnemy().GetPositionOnMap(gameMap) == index)
+                        {
+                            iterator.CurrentEnemy().Draw(e);
+                        }
+                    }
+                    /*if (enemyIndex == index)
+                        enemy.Draw(e);*/
 
                     for (int i = 0; i < playerIndexes.Count; i++) // other players are drawn incorrectly
                         if (playerIndexes[i] == index)

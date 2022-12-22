@@ -1,5 +1,6 @@
 ﻿using client_graphics.GameObjects;
 using client_graphics.GameObjects.Animates;
+using client_graphics.Iterator;
 using client_graphics.Map;
 using System;
 using System.Collections.Generic;
@@ -9,7 +10,7 @@ using System.Threading.Tasks;
 
 namespace client_graphics.Composite
 {
-    public class EnemyType : Enemy
+    public class EnemyType : Enemy, IAggregate
     {
         private List<Enemy> _enemies = new List<Enemy>();
 
@@ -43,6 +44,21 @@ namespace client_graphics.Composite
             {
                 item.Action(gameMap);
             }
+        }
+
+        public override Enemy GetChild(int i)
+        {
+            return _enemies[i];
+        }
+
+        public override int ChildrenCount()
+        {
+            return _enemies.Count;
+        }
+
+        IAbstractIterator IAggregate.CreateIterator()
+        {
+            return new EnemyIterator(this);
         }
     }
 }

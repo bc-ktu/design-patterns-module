@@ -1,11 +1,5 @@
 ﻿using client_graphics.Composite;
 using client_graphics.GameObjects.Animates;
-using client_graphics.Map;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Utils.Math;
 
 namespace client_graphics.Iterator
@@ -15,10 +9,12 @@ namespace client_graphics.Iterator
         Stack<Enemy> _stack = new Stack<Enemy>();
         Vector2 currentPosition;
         Enemy currentEnemy;
+        bool isLast = false;
+        EnemyType root;
 
         public EnemyIterator(EnemyType root)
         {
-            _stack.Push(root);
+            this.root = root;
         }
 
         public Vector2 CurrentItem()
@@ -33,19 +29,41 @@ namespace client_graphics.Iterator
 
         public Vector2 First()
         {
-            currentEnemy = _stack.Pop();
+            currentEnemy = root;
             currentPosition = currentEnemy.WorldPosition;
+            if (currentEnemy.ChildrenCount() > 0)
+            {
+                for (int i = currentEnemy.ChildrenCount() - 1; i >= 0; i--)
+                {
+                    _stack.Push(currentEnemy.GetChild(i));
+                }
+            }
             return currentPosition;
         }
 
         public bool IsDone()
         {
-            return _stack.Count == 0;
+            return _stack.Count == 0 && !isLast;
         }
 
         public Vector2 Next()
         {
-            throw new NotImplementedException();
+            if (isLast)
+            {
+                isLast = false;
+                return currentPosition;
+            }
+            currentEnemy = _stack.Pop();
+            if (_stack.Count == 0) isLast = true;
+            currentPosition = currentEnemy.LocalPosition;
+            if (currentEnemy.ChildrenCount() > 0)
+            {
+                for (int i = currentEnemy.ChildrenCount() - 1; i >= 0; i--)
+                {
+                    _stack.Push(currentEnemy.GetChild(i));
+                }
+            }
+            return currentPosition;
         }
     }
 }

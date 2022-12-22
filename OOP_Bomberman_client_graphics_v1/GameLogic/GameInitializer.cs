@@ -102,11 +102,11 @@ namespace client_graphics.GameLogic
             int x = mapSeed[mapSeed.Count - 30];
             int y = mapSeed[mapSeed.Count - 29];
             if (!gameMap[x, y].IsEmpty) gameMap[x, y].ClearList();
-            movingEnemies.Add(CreateEnemy(gameMap, new Vector2(x, y), levelFactory.GetFirstEnemyType(), spritesheetIndex));
+            movingEnemies.Add(CreateEnemy(gameMap, new Vector2(x, y) * gameMap.TileSize, levelFactory.GetFirstEnemyType(), spritesheetIndex));
             x = mapSeed[mapSeed.Count - 28];
             y = mapSeed[mapSeed.Count - 27];
             if (!gameMap[x, y].IsEmpty) gameMap[x, y].ClearList();
-            movingEnemies.Add(CreateEnemy(gameMap, new Vector2(x, y), levelFactory.GetSecondEnemyType(), spritesheetIndex));
+            movingEnemies.Add(CreateEnemy(gameMap, new Vector2(x, y) * gameMap.TileSize, levelFactory.GetSecondEnemyType(), spritesheetIndex));
 
             EnemyType staticEnemies = new EnemyType();
             for (int i = mapSeed.Count - 26; i < mapSeed.Count - 22; i += 2)
@@ -114,7 +114,7 @@ namespace client_graphics.GameLogic
                 x = mapSeed[i];
                 y = mapSeed[i + 1];
                 if (!gameMap[x, y].IsEmpty) gameMap[x, y].ClearList();
-                staticEnemies.Add(CreateEnemy(gameMap, new Vector2(x, y), new EnemyStatic(), spritesheetIndex));
+                staticEnemies.Add(CreateEnemy(gameMap, new Vector2(x, y) * gameMap.TileSize, new EnemyStatic(), spritesheetIndex));
             }
             enemies.Add(movingEnemies);
             enemies.Add(staticEnemies);

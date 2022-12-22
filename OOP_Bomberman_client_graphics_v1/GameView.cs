@@ -7,9 +7,11 @@ using client_graphics.GameObjects.Animates;
 using client_graphics.GameObjects.Explosives;
 using client_graphics.Helpers;
 using client_graphics.Interpreter;
+using client_graphics.Iterator;
 using client_graphics.Map;
 using client_graphics.SignalR;
 using client_graphics.State;
+using com.sun.tools.javac.comp;
 using Microsoft.AspNetCore.SignalR.Client;
 using System;
 using Utils.GUIElements;
@@ -52,7 +54,6 @@ namespace client_graphics
         Keys commandKey = Input.KeyInteract;
 
         EnemyType enemies;
-        Enemy enemy;
 
         public GameView()
         {
@@ -93,14 +94,15 @@ namespace client_graphics
                     break;
             }
             InitializeComponent();
+
+            Debug.Set(ConsoleTextBox);
+            Debug.Enable(true);
+
             Startup(GameSeed);
 
             Level1Button.Enabled = level1;
             Level2Button.Enabled = level2;
             Level3Button.Enabled = level3;
-
-            Debug.Set(ConsoleTextBox);
-            Debug.Enable(false);
         }
         private void Startup(List<int> gameSeed)
         {
@@ -122,11 +124,6 @@ namespace client_graphics
             player = GameInitializer.CreatePlayer(levelFactory, gameMap, position, GameSettings.PlayerSpritesheetIndex, subject);
             
             enemies = GameInitializer.CreateEnemies(gameSeed, gameMap, levelFactory, GameSettings.EnemySpritesheetIndex);
-            /*for (int i = 0; i < enemies.; i++)
-            {
-
-            }*/
-            enemy = GameInitializer.CreateEnemy(gameMap, new Vector2(MapSize.X - 2, MapSize.Y - 2) * gameMap.TileSize, levelFactory.GetFirstEnemyType(), GameSettings.EnemySpritesheetIndex);
 
             commandController = new CommandController();
 
@@ -170,7 +167,7 @@ namespace client_graphics
 
         private void OnPaint(object sender, PaintEventArgs e)
         {
-            Graphics.DrawMap(gameMap, player, enemy, enemies, players.Values.ToList(), e);
+            Graphics.DrawMap(gameMap, player, enemies, players.Values.ToList(), e);
             // Graphics.DrawGameObject(player, e);
 
             /*foreach (KeyValuePair<string, Player> p in players)
@@ -180,7 +177,6 @@ namespace client_graphics
             {
                 Graphics.DrawColliders(gameMap, collisions, DEFAULT_COLLIDERS_COLOR, COLLIDING_COLLIDERS_COLOR, COLLIDERS_WIDTH, e);
                 Graphics.DrawCollider(player, DEFAULT_COLLIDERS_COLOR, COLLIDERS_WIDTH, e);
-                Graphics.DrawCollider(enemy, DEFAULT_COLLIDERS_COLOR, COLLIDERS_WIDTH, e);
                 foreach (KeyValuePair<string, Player> p in players)
                     Graphics.DrawCollider(p.Value, DEFAULT_COLLIDERS_COLOR, COLLIDERS_WIDTH, e);
             }
@@ -199,7 +195,7 @@ namespace client_graphics
                 ConsoleTextBox.ReadOnly = !CursorOnTextBox();
                 if (ConsoleTextBox.Text.EndsWith("\n"))
                 {
-                    /*string command = ConsoleTextBox.Text.TrimEnd('\n');
+                    string command = ConsoleTextBox.Text.TrimEnd('\n');
                     Context context = new Context(command.Trim());
                     List<Expression> tree = new List<Expression>();
                     tree.Add(new MoveUpExpression());
@@ -220,7 +216,7 @@ namespace client_graphics
                             break;
                         }
                     }
-                    ConsoleTextBox.Clear();*/
+                    ConsoleTextBox.Clear();
                 }
             }
 
@@ -228,8 +224,14 @@ namespace client_graphics
             GameLogic.GameLogic.UpdateFires(gameMap, levelFactory);
 
             collisions = GamePhysics.GetCollisions(player, gameMap);
-            if (GamePhysics.IsColliding(player, enemy))
-                collisions.Add(enemy.GetPositionOnMap(gameMap), enemy);
+
+            EnemyIterator iterator = new EnemyIterator(enemies);
+            for (iterator.First(); !iterator.IsDone(); iterator.Next())
+            {
+                Enemy enemy = iterator.CurrentEnemy();
+                if (GamePhysics.IsColliding(player, enemy))
+                    collisions.Add(enemy.GetPositionOnMap(gameMap), enemy);
+            }
 
             if (currentCoordinates != player.WorldPosition)
                 Con.Connection.InvokeAsync("Teleport", player.LocalPosition.X, player.LocalPosition.Y, player.WorldPosition.X, player.WorldPosition.Y);
@@ -244,7 +246,6 @@ namespace client_graphics
             }
             GameLogic.GameLogic.UpdateGUI(player, gui);
 
-            enemy.Action(gameMap);
             enemies.Action(gameMap);
 
             if (repeats == 0) inputZero = true;
