@@ -245,7 +245,7 @@ namespace client_graphics
                 collisions.Add(enemy.GetPositionOnMap(gameMap), enemy);
 
             if (currentCoordinates != player.WorldPosition)
-                Con.Connection.InvokeAsync("Teleport", player.LocalPosition.X, player.LocalPosition.Y, player.WorldPosition.X, player.WorldPosition.Y);
+                Con.Connection.InvokeAsync("PlayerTeleport", player.LocalPosition.X, player.LocalPosition.Y, player.WorldPosition.X, player.WorldPosition.Y);
 
 
             string damageValue = player.Explosive.Fire.Damage.ToString();

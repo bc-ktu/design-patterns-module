@@ -83,7 +83,7 @@ namespace Server.Hubs
                 {
                     continue;
                 }
-                await Clients.Others.SendAsync("BombPlaced", fireDamage, positionX, positionY);
+                await Clients.Others.SendAsync("BombPlaced", Context.ConnectionId, fireDamage, positionX, positionY);
             }
         }
         public async Task ChangeStats(int health, int damage)
