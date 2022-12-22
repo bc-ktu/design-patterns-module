@@ -9,6 +9,7 @@ using client_graphics.Helpers;
 using client_graphics.Interpreter;
 using client_graphics.Manager;
 using client_graphics.Map;
+using client_graphics.Mediator;
 using client_graphics.SignalR;
 using client_graphics.State;
 using Microsoft.AspNetCore.SignalR.Client;
@@ -74,22 +75,22 @@ namespace client_graphics
             switch (GameSeed[0])
             {
                 case 1:
-                    levelFactory = new Level1Factory();
+                    levelFactory = new Level1Factory(new PicupMediator());
                     MapSize = new Vector2(10, 10);
                     level1 = false;
                     break;
                 case 2:
-                    levelFactory = new Level2Factory();
+                    levelFactory = new Level2Factory(new PicupMediator());
                     MapSize = new Vector2(14, 14);
                     level2 = false;
                     break;
                 case 3:
-                    levelFactory = new Level3Factory();
+                    levelFactory = new Level3Factory(new PicupMediator());
                     MapSize = new Vector2(24, 24);
                     level3 = false;
                     break;
                 default:
-                    levelFactory = new Level2Factory();
+                    levelFactory = new Level2Factory(new PicupMediator());
                     MapSize = new Vector2(14, 14);
                     level2 = false;
                     break;
@@ -267,7 +268,7 @@ namespace client_graphics
 
         private void Level1Button_MouseClick(object sender, MouseEventArgs e)
         {
-            levelFactory = new Level1Factory();
+            levelFactory = new Level1Factory(new PicupMediator());
             GameSeed.Clear();
             Con.Connection.InvokeAsync("MapSeed", 10, 10, 1);
             MapSize = new Vector2(10, 10);
@@ -282,7 +283,7 @@ namespace client_graphics
 
         private void Level2Button_MouseClick(object sender, MouseEventArgs e)
         {
-            levelFactory = new Level2Factory();
+            levelFactory = new Level2Factory(new PicupMediator());
             GameSeed.Clear();
             Con.Connection.InvokeAsync("MapSeed", 14, 14, 2);
             MapSize = new Vector2(14, 14);
@@ -297,7 +298,7 @@ namespace client_graphics
 
         private void Level3Button_MouseClick(object sender, MouseEventArgs e)
         {
-            levelFactory = new Level3Factory();
+            levelFactory = new Level3Factory(new PicupMediator());
             GameSeed.Clear();
             Con.Connection.InvokeAsync("MapSeed", 24, 24, 3);
             MapSize = new Vector2(24, 24);

@@ -12,14 +12,17 @@ using Utils.Math;
 using client_graphics.Map;
 using Utils.Helpers;
 using client_graphics.GameLogic;
+using client_graphics.Mediator;
 
 namespace client_graphics.AbstractFactory
 {
     public class Level3Factory : ILevelFactory
     {
-        public Level3Factory()
-        {
+        private readonly IMediator _mediator;
 
+        public Level3Factory(IMediator mediator)
+        {
+            _mediator = mediator;
         }
 
         public Bitmap GetSpecialTileImage()
@@ -49,19 +52,7 @@ namespace client_graphics.AbstractFactory
 
         public Powerup CreatePowerup(GameMap gameMap, Vector2 index)
         {
-            string filepath = Pather.Create(Pather.FolderAssets, Pather.FolderTextures, Pather.FolderSprites, Pather.FolderPowerups, Pather.RangePowerupImage);
-            Bitmap rangeImage = new Bitmap(filepath);
-            filepath = Pather.Create(Pather.FolderAssets, Pather.FolderTextures, Pather.FolderSprites, Pather.FolderPowerups, Pather.DamagePowerupImage);
-            Bitmap image = new Bitmap(filepath);
-            var prm = gameMap.CreateScaledGameObjectParameters(index.X, index.Y, image, GameSettings.PowerupColliderScale);
-
-            Random rnd = new Random();
-            double chance = rnd.NextDouble();
-
-            if (chance <= GameSettings.Level3RangePowerupChance)
-                return new RangePowerup(prm.Item1, prm.Item2, prm.Item3, rangeImage);
-
-            return new DamagePowerup(prm.Item1, prm.Item2, prm.Item3, prm.Item4);
+            return _mediator.Send(gameMap, index);
         }
 
         public DestructableWall CreateWall(GameMap gameMap, Vector2 index)
