@@ -21,7 +21,7 @@ namespace client_graphics
 {
     public partial class GameView : Form
     {
-        private readonly bool DRAW_COLLIDERS = true;
+        private readonly bool DRAW_COLLIDERS = false;
         private readonly Color DEFAULT_COLLIDERS_COLOR = Color.LimeGreen;
         private readonly Color COLLIDING_COLLIDERS_COLOR = Color.Red;
         private readonly float COLLIDERS_WIDTH = 2;
@@ -121,12 +121,12 @@ namespace client_graphics
 
             player = GameInitializer.CreatePlayer(levelFactory, gameMap, position, GameSettings.PlayerSpritesheetIndex, subject);
             
-            enemies = GameInitializer.CreateEnemies(gameSeed, gameMap, levelFactory);
+            enemies = GameInitializer.CreateEnemies(gameSeed, gameMap, levelFactory, GameSettings.EnemySpritesheetIndex);
             /*for (int i = 0; i < enemies.; i++)
             {
 
             }*/
-            enemy = GameInitializer.CreateEnemy(gameMap, new Vector2(MapSize.X - 2, MapSize.Y - 2) * gameMap.TileSize, levelFactory.GetEnemyType());
+            enemy = GameInitializer.CreateEnemy(gameMap, new Vector2(MapSize.X - 2, MapSize.Y - 2) * gameMap.TileSize, levelFactory.GetFirstEnemyType(), GameSettings.EnemySpritesheetIndex);
 
             commandController = new CommandController();
 
@@ -170,7 +170,7 @@ namespace client_graphics
 
         private void OnPaint(object sender, PaintEventArgs e)
         {
-            Graphics.DrawMap(gameMap, player, enemy, players.Values.ToList(), e);
+            Graphics.DrawMap(gameMap, player, enemy, enemies, players.Values.ToList(), e);
             // Graphics.DrawGameObject(player, e);
 
             /*foreach (KeyValuePair<string, Player> p in players)
@@ -243,7 +243,9 @@ namespace client_graphics
                 Con.Connection.InvokeAsync("ChangeStats", player.Health, player.Explosive.Fire.Damage);
             }
             GameLogic.GameLogic.UpdateGUI(player, gui);
+
             enemy.Action(gameMap);
+            enemies.Action(gameMap);
 
             if (repeats == 0) inputZero = true;
             else if (repeats > 0)

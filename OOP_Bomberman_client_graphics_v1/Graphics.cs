@@ -9,12 +9,13 @@ using Utils.Helpers;
 using client_graphics.Map;
 using Utils.Math;
 using client_graphics.Decorator;
+using client_graphics.Composite;
 
 namespace client_graphics
 {
     internal static class Graphics
     {
-        public static void DrawMap(GameMap gameMap, Player player, Enemy enemy, List<Player> otherPlayers, PaintEventArgs e)
+        public static void DrawMap(GameMap gameMap, Player player, Enemy enemy, EnemyType enemies, List<Player> otherPlayers, PaintEventArgs e)
         {
             Vector2 playerIndex = player.WorldPosition / gameMap.TileSize;
             Vector2 enemyIndex = enemy.WorldPosition / gameMap.TileSize;

@@ -66,9 +66,14 @@ namespace client_graphics.AbstractFactory
             return new StoneWall(prm.Item1, prm.Item2, prm.Item3, prm.Item4);
         }
 
-        public Enemy GetEnemyType()
+        public Enemy GetFirstEnemyType()
         {
             return new EnemyDi();
+        }
+
+        public Enemy GetSecondEnemyType()
+        {
+            return new EnemyLR();
         }
     }
 }

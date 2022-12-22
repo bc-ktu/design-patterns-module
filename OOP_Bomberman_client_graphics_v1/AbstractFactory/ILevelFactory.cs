@@ -22,7 +22,8 @@ namespace client_graphics.AbstractFactory
         public DestructableWall CreateWall(GameMap gameMap, Vector2 index);
         public MapBuilder CreateBuilder(Vector2 mapSize, Vector2 viewSize, List<int> mapSeed, Bitmap mapTileImage, Bitmap crateImage, Bitmap outerWallImage, Bitmap specTileImage, ILevelFactory levelFactory);
         public Bitmap GetSpecialTileImage();
-        public Enemy GetEnemyType();
+        public Enemy GetFirstEnemyType();
+        public Enemy GetSecondEnemyType();
         public Powerup CreateRangePowerup(GameMap gameMap, Vector2 index)
         {
             string filepath = Pather.Create(Pather.FolderAssets, Pather.FolderTextures, Pather.FolderSprites, Pather.FolderPowerups, Pather.RangePowerupImage);

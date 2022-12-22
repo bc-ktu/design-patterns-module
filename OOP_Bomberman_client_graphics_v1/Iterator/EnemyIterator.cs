@@ -1,4 +1,5 @@
 ﻿using client_graphics.Composite;
+using client_graphics.GameObjects.Animates;
 using client_graphics.Map;
 using System;
 using System.Collections.Generic;
@@ -11,22 +12,35 @@ namespace client_graphics.Iterator
 {
     internal class EnemyIterator : IAbstractIterator
     {
-        int xIndex = 1;
-        int yIndex = 1;
+        Stack<Enemy> _stack = new Stack<Enemy>();
+        Vector2 currentPosition;
+        Enemy currentEnemy;
+
+        public EnemyIterator(EnemyType root)
+        {
+            _stack.Push(root);
+        }
 
         public Vector2 CurrentItem()
         {
-            throw new NotImplementedException();
+            return currentPosition;
+        }
+
+        public Enemy CurrentEnemy()
+        {
+            return currentEnemy;
         }
 
         public Vector2 First()
         {
-            throw new NotImplementedException();
+            currentEnemy = _stack.Pop();
+            currentPosition = currentEnemy.WorldPosition;
+            return currentPosition;
         }
 
         public bool IsDone()
         {
-            throw new NotImplementedException();
+            return _stack.Count == 0;
         }
 
         public Vector2 Next()

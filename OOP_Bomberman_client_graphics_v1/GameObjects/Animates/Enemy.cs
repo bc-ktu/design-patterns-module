@@ -92,5 +92,6 @@ namespace client_graphics.GameObjects.Animates
         public abstract void Add(Enemy e);
         public abstract void Remove(Enemy e);
         public abstract void Action(GameMap gameMap);
+        //public abstract Enemy GetChild(int i);
     }
 }

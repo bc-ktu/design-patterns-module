@@ -95,38 +95,38 @@ namespace client_graphics.GameLogic
             return new Player(position, gameMap.TileSize, collider, characterImage, explosive, subject);
         }
 
-        public static EnemyType CreateEnemies(List<int> mapSeed, GameMap gameMap, ILevelFactory levelFactory)
+        public static EnemyType CreateEnemies(List<int> mapSeed, GameMap gameMap, ILevelFactory levelFactory, Vector2 spritesheetIndex)
         {
             EnemyType enemies = new EnemyType();
             EnemyType movingEnemies = new EnemyType();
-            for (int i = mapSeed.Count - 30; i < mapSeed.Count - 26; i += 2)
-            {
-                int x = mapSeed[i];
-                int y = mapSeed[i + 1];
-                if (!gameMap[x, y].IsEmpty) gameMap[x, y].ClearList();
-                movingEnemies.Add(CreateEnemy(gameMap, new Vector2(x, y), levelFactory.GetEnemyType()));
-            }
+            int x = mapSeed[mapSeed.Count - 30];
+            int y = mapSeed[mapSeed.Count - 29];
+            if (!gameMap[x, y].IsEmpty) gameMap[x, y].ClearList();
+            movingEnemies.Add(CreateEnemy(gameMap, new Vector2(x, y), levelFactory.GetFirstEnemyType(), spritesheetIndex));
+            x = mapSeed[mapSeed.Count - 28];
+            y = mapSeed[mapSeed.Count - 27];
+            if (!gameMap[x, y].IsEmpty) gameMap[x, y].ClearList();
+            movingEnemies.Add(CreateEnemy(gameMap, new Vector2(x, y), levelFactory.GetSecondEnemyType(), spritesheetIndex));
+
             EnemyType staticEnemies = new EnemyType();
             for (int i = mapSeed.Count - 26; i < mapSeed.Count - 22; i += 2)
             {
-                int x = mapSeed[i];
-                int y = mapSeed[i + 1];
-                Enemy type = levelFactory.GetEnemyType();
+                x = mapSeed[i];
+                y = mapSeed[i + 1];
                 if (!gameMap[x, y].IsEmpty) gameMap[x, y].ClearList();
-                staticEnemies.Add(CreateEnemy(gameMap, new Vector2(x, y), new EnemyStatic()));
+                staticEnemies.Add(CreateEnemy(gameMap, new Vector2(x, y), new EnemyStatic(), spritesheetIndex));
             }
             enemies.Add(movingEnemies);
             enemies.Add(staticEnemies);
             return enemies;
         }
 
-        public static Enemy CreateEnemy(GameMap gameMap, Vector2 position, Enemy type)
+        public static Enemy CreateEnemy(GameMap gameMap, Vector2 position, Enemy type, Vector2 spritesheetIndex)
         {
             string filepath = Pather.Create(Pather.FolderAssets, Pather.FolderTextures, Pather.FolderSpritesheets, Pather.CharacterSpritesheet);
             Bitmap charactersSpritesheet = new Bitmap(filepath);
             Bitmap[,] characterImages = Spritesheet.ExtractAll(charactersSpritesheet, new Vector2(32, 32));
-            // Bad practice, I know
-            Bitmap characterImage = characterImages[11, 0];
+            Bitmap characterImage = characterImages[spritesheetIndex.X, spritesheetIndex.Y];
 
             double colliderSize = GameSettings.PlayerColliderScale;
             int tlx = (int)(position.X + (1 - colliderSize) * gameMap.TileSize.X);

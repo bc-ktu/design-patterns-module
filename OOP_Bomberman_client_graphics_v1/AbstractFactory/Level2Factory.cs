@@ -65,9 +65,14 @@ namespace client_graphics.AbstractFactory
             return new WoodenWall(prm.Item1, prm.Item2, prm.Item3, prm.Item4);
         }
 
-        public Enemy GetEnemyType()
+        public Enemy GetFirstEnemyType()
         {
             return new EnemyUD();
+        }
+
+        public Enemy GetSecondEnemyType()
+        {
+            return new EnemyDi();
         }
     }
 }
