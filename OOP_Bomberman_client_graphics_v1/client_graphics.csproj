@@ -20,7 +20,6 @@
 
   <ItemGroup>
     <Folder Include="Assets\Icons\" />
-    <Folder Include="Composite\" />
   </ItemGroup>
 
   <ItemGroup>
@@ -95,6 +94,9 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
     <None Update="Assets\Textures\Spritesheets\PortalTile.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Assets\Textures\Spritesheets\PortalTileExit.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
     <None Update="Assets\Textures\Spritesheets\TX_Player.png">

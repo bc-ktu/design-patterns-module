@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Utils.Math;
 using client_graphics.Template;
+using client_graphics.Map;
 using Utils.Helpers;
 
 namespace client_graphics.GameObjects.Animates
@@ -14,25 +15,26 @@ namespace client_graphics.GameObjects.Animates
         public EnemyLR()
         {
             Facing = Direction.Left;
-            movingType = new MoveDi();
+            movingType = new MoveLR();
         }
 
         public EnemyLR(Vector2 position, Vector2 size, Vector4 collider, Bitmap image, int speed) : base(position, size, collider, image, speed)
         {
             Facing = Direction.Left;
             movingType = new MoveLR();
+            Initialize(speed);
         }
 
-        public EnemyLR(Enemy p) : base(p)
+        public EnemyLR(Enemy e) : base(e)
         {
         }
 
-        public override void Add(Enemy d)
+        public override void Add(Enemy e)
         {
             return;
         }
 
-        public override void Remove(Enemy d)
+        public override void Remove(Enemy e)
         {
             return;
         }
@@ -42,9 +44,9 @@ namespace client_graphics.GameObjects.Animates
             return new EnemyLR(this);
         }
 
-        public override void Action()
+        public override void Action(GameMap gameMap)
         {
-            throw new NotImplementedException();
+            Move(gameMap);
         }
     }
 }

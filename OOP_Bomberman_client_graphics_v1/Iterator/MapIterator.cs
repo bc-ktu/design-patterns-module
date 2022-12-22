@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using client_graphics.Map;
+using Utils.Math;
 
 namespace client_graphics.Iterator
 {
@@ -18,10 +19,10 @@ namespace client_graphics.Iterator
 
         public abstract bool IsDone();
 
-        public abstract Tuple<int, int> CurrentItem();
+        public abstract Vector2 CurrentItem();
 
-        public abstract Tuple<int, int> First();
+        public abstract Vector2 First();
 
-        public abstract Tuple<int, int> Next();
+        public abstract Vector2 Next();
     }
 }

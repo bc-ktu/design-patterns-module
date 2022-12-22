@@ -50,10 +50,10 @@ namespace client_graphics.Builder
             List<Vector2> rangePowerups = GetRangePowerupSpawnPoints();
             int index = 0;
             MapIterator iterator = new InnerMapIterator(gameMap);
-            for (Tuple<int, int> t = iterator.First(); !iterator.IsDone(); t = iterator.Next())
+            for (Vector2 t = iterator.First(); !iterator.IsDone(); t = iterator.Next())
             {
-                int x = t.Item1;
-                int y = t.Item2;
+                int x = t.X;
+                int y = t.Y;
                 gameMap.SetTile(x, y, mapTileImage);
 
                     if (x == 1 && y == 1 || x == 1 && y == 2 || x == 2 && y == 1 ||
@@ -89,11 +89,11 @@ namespace client_graphics.Builder
         public void AddOuterRing()
         {
             MapIterator iterator = new OuterRingIterator(gameMap);
-            for (Tuple<int, int> tile = iterator.First(); !iterator.IsDone(); tile = iterator.Next())
+            for (Vector2 tile = iterator.First(); !iterator.IsDone(); tile = iterator.Next())
             {
-                gameMap.SetTile(tile.Item1, tile.Item2, mapTileImage);
-                var prm = gameMap.CreateScaledGameObjectParameters(tile.Item1, tile.Item2, outerWallImage);
-                gameMap._tiles[tile.Item1, tile.Item2].GameObjects.Add(new IndestructableWall(prm.Item1, prm.Item2, prm.Item3, prm.Item4));
+                gameMap.SetTile(tile.X, tile.Y, mapTileImage);
+                var prm = gameMap.CreateScaledGameObjectParameters(tile.X, tile.Y, outerWallImage);
+                gameMap._tiles[tile.X, tile.Y].GameObjects.Add(new IndestructableWall(prm.Item1, prm.Item2, prm.Item3, prm.Item4));
             }
         }
 

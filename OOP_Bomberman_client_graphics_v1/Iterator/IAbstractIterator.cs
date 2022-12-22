@@ -4,14 +4,15 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using client_graphics.Map;
+using Utils.Math;
 
 namespace client_graphics.Iterator
 {
     internal interface IAbstractIterator
     {
-        Tuple<int, int> First();
-        Tuple<int, int> Next();
+        Vector2 First();
+        Vector2 Next();
         bool IsDone();
-        Tuple<int, int> CurrentItem();
+        Vector2 CurrentItem();
     }
 }

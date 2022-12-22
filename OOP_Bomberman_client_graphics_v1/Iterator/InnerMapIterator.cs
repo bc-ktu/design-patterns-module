@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using client_graphics.Map;
+using Utils.Math;
 
 namespace client_graphics.Iterator
 {
@@ -14,14 +15,14 @@ namespace client_graphics.Iterator
 
         public InnerMapIterator(GameMap map) : base(map) { }
 
-        public override Tuple<int, int> CurrentItem()
+        public override Vector2 CurrentItem()
         {
-            return new Tuple<int, int>(xIndex, yIndex);
+            return new Vector2(xIndex, yIndex);
         }
 
-        public override Tuple<int, int> First()
+        public override Vector2 First()
         {
-            return new Tuple<int, int>(1, 1);
+            return new Vector2(1, 1);
         }
 
         public override bool IsDone()
@@ -30,7 +31,7 @@ namespace client_graphics.Iterator
             return false;
         }
 
-        public override Tuple<int, int> Next()
+        public override Vector2 Next()
         {
             bool done = false;
             if (xIndex < gameMap.Size.X - 2) { xIndex++; done = true; }
@@ -40,7 +41,7 @@ namespace client_graphics.Iterator
                 xIndex = 1;
             }
             if (IsDone()) return null;
-            return new Tuple<int, int>(xIndex, yIndex);
+            return new Vector2(xIndex, yIndex);
         }
     }
 }

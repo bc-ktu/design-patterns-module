@@ -23,18 +23,19 @@ namespace client_graphics.GameObjects.Animates
         {
             Facing = Direction.Up;
             movingType = new MoveUD();
+            Initialize(speed);
         }
 
-        public EnemyUD(EnemyUD p) : base(p)
+        public EnemyUD(EnemyUD e) : base(e)
         {
         }
 
-        public override void Add(Enemy d)
+        public override void Add(Enemy e)
         {
             return;
         }
 
-        public override void Remove(Enemy d)
+        public override void Remove(Enemy e)
         {
             return;
         }
@@ -44,9 +45,9 @@ namespace client_graphics.GameObjects.Animates
             return new EnemyUD(this);
         }
 
-        public override void Action()
+        public override void Action(GameMap gameMap)
         {
-            throw new NotImplementedException();
+            Move(gameMap);
         }
     }
 }

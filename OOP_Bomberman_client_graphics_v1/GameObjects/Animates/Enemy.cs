@@ -27,12 +27,12 @@ namespace client_graphics.GameObjects.Animates
 
         public Enemy() { }
 
-        public Enemy(Enemy p) : base(p)
+        public Enemy(Enemy e) : base(e)
         {
-            _isInIFrames = p._isInIFrames;
-            _movementSpeed = p._movementSpeed;
-            Health = p.Health;
-            MovementSpeed = p.MovementSpeed;
+            _isInIFrames = e._isInIFrames;
+            _movementSpeed = e._movementSpeed;
+            Health = e.Health;
+            MovementSpeed = e.MovementSpeed;
         }
 
         public Enemy(Vector2 position, Vector2 size, Vector4 collider, Bitmap image, int speed)
@@ -74,7 +74,7 @@ namespace client_graphics.GameObjects.Animates
             Collider = new Vector4(tlx, tly, brx, bry);
         }
 
-        public void Move(GameMap gameMap)
+        protected void Move(GameMap gameMap)
         {
             movingType.Move(Facing, this, gameMap);
         }
@@ -89,8 +89,8 @@ namespace client_graphics.GameObjects.Animates
             return _movementSpeed;
         }
 
-        public abstract void Add(Enemy d);
-        public abstract void Remove(Enemy d);
-        public abstract void Action();
+        public abstract void Add(Enemy e);
+        public abstract void Remove(Enemy e);
+        public abstract void Action(GameMap gameMap);
     }
 }

@@ -1,5 +1,6 @@
 using client_graphics.AbstractFactory;
 using client_graphics.Command;
+using client_graphics.Composite;
 using client_graphics.GameLogic;
 using client_graphics.GameObjects;
 using client_graphics.GameObjects.Animates;
@@ -49,6 +50,8 @@ namespace client_graphics
 
         int repeats = 0;
         Keys commandKey = Input.KeyInteract;
+
+        EnemyType enemies;
         Enemy enemy;
 
         public GameView()
@@ -117,7 +120,13 @@ namespace client_graphics
                 position = new Vector2(1, 1) * gameMap.TileSize;
 
             player = GameInitializer.CreatePlayer(levelFactory, gameMap, position, GameSettings.PlayerSpritesheetIndex, subject);
-            enemy = GameInitializer.CreateEnemy(gameMap, new Vector2(MapSize.X - 2, MapSize.Y - 2) * gameMap.TileSize, GameSettings.EnemySpritesheetIndex);
+            
+            enemies = GameInitializer.CreateEnemies(gameSeed, gameMap, levelFactory);
+            /*for (int i = 0; i < enemies.; i++)
+            {
+
+            }*/
+            enemy = GameInitializer.CreateEnemy(gameMap, new Vector2(MapSize.X - 2, MapSize.Y - 2) * gameMap.TileSize, levelFactory.GetEnemyType());
 
             commandController = new CommandController();
 
@@ -187,10 +196,10 @@ namespace client_graphics
             Debug.Enable(ConsoleCheck.Checked);
             if (Debug.Enabled)
             {
-                /*ConsoleTextBox.ReadOnly = !CursorOnTextBox();
+                ConsoleTextBox.ReadOnly = !CursorOnTextBox();
                 if (ConsoleTextBox.Text.EndsWith("\n"))
                 {
-                    string command = ConsoleTextBox.Text.TrimEnd('\n');
+                    /*string command = ConsoleTextBox.Text.TrimEnd('\n');
                     Context context = new Context(command.Trim());
                     List<Expression> tree = new List<Expression>();
                     tree.Add(new MoveUpExpression());
@@ -211,8 +220,8 @@ namespace client_graphics
                             break;
                         }
                     }
-                    ConsoleTextBox.Clear();
-                }*/
+                    ConsoleTextBox.Clear();*/
+                }
             }
 
             GameLogic.GameLogic.UpdateExplosives(player, gameMap);
@@ -234,7 +243,7 @@ namespace client_graphics
                 Con.Connection.InvokeAsync("ChangeStats", player.Health, player.Explosive.Fire.Damage);
             }
             GameLogic.GameLogic.UpdateGUI(player, gui);
-            enemy.Move(gameMap);
+            enemy.Action(gameMap);
 
             if (repeats == 0) inputZero = true;
             else if (repeats > 0)

@@ -13,6 +13,7 @@ using Utils.Helpers;
 using client_graphics.Map;
 using Utils.Math;
 using Utils.Observer;
+using client_graphics.Composite;
 
 namespace client_graphics.GameLogic
 {
@@ -94,12 +95,38 @@ namespace client_graphics.GameLogic
             return new Player(position, gameMap.TileSize, collider, characterImage, explosive, subject);
         }
 
-        public static EnemyUD CreateEnemy(GameMap gameMap, Vector2 position, Vector2 spritesheetIndex)
+        public static EnemyType CreateEnemies(List<int> mapSeed, GameMap gameMap, ILevelFactory levelFactory)
+        {
+            EnemyType enemies = new EnemyType();
+            EnemyType movingEnemies = new EnemyType();
+            for (int i = mapSeed.Count - 30; i < mapSeed.Count - 26; i += 2)
+            {
+                int x = mapSeed[i];
+                int y = mapSeed[i + 1];
+                if (!gameMap[x, y].IsEmpty) gameMap[x, y].ClearList();
+                movingEnemies.Add(CreateEnemy(gameMap, new Vector2(x, y), levelFactory.GetEnemyType()));
+            }
+            EnemyType staticEnemies = new EnemyType();
+            for (int i = mapSeed.Count - 26; i < mapSeed.Count - 22; i += 2)
+            {
+                int x = mapSeed[i];
+                int y = mapSeed[i + 1];
+                Enemy type = levelFactory.GetEnemyType();
+                if (!gameMap[x, y].IsEmpty) gameMap[x, y].ClearList();
+                staticEnemies.Add(CreateEnemy(gameMap, new Vector2(x, y), new EnemyStatic()));
+            }
+            enemies.Add(movingEnemies);
+            enemies.Add(staticEnemies);
+            return enemies;
+        }
+
+        public static Enemy CreateEnemy(GameMap gameMap, Vector2 position, Enemy type)
         {
             string filepath = Pather.Create(Pather.FolderAssets, Pather.FolderTextures, Pather.FolderSpritesheets, Pather.CharacterSpritesheet);
             Bitmap charactersSpritesheet = new Bitmap(filepath);
             Bitmap[,] characterImages = Spritesheet.ExtractAll(charactersSpritesheet, new Vector2(32, 32));
-            Bitmap characterImage = characterImages[spritesheetIndex.X, spritesheetIndex.Y];
+            // Bad practice, I know
+            Bitmap characterImage = characterImages[11, 0];
 
             double colliderSize = GameSettings.PlayerColliderScale;
             int tlx = (int)(position.X + (1 - colliderSize) * gameMap.TileSize.X);
@@ -108,7 +135,13 @@ namespace client_graphics.GameLogic
             int bry = (int)(position.Y + colliderSize * gameMap.TileSize.Y);
             Vector4 collider = new Vector4(tlx, tly, brx, bry);
 
-            return new EnemyUD(position, gameMap.TileSize, collider, characterImage, GameSettings.InitialPlayerSpeed);
+            if (type is EnemyUD)
+                return new EnemyUD(position, gameMap.TileSize, collider, characterImage, GameSettings.InitialPlayerSpeed);
+            else if (type is EnemyLR)
+                return new EnemyLR(position, gameMap.TileSize, collider, characterImage, GameSettings.InitialPlayerSpeed);
+            else if (type is EnemyDi)
+                return new EnemyDi(position, gameMap.TileSize, collider, characterImage, GameSettings.InitialPlayerSpeed);
+            else return new EnemyStatic(position, GameSettings.InitialPlayerSpeed, gameMap.TileSize, collider, characterImage);
         }
     }
 }

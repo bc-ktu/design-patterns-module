@@ -7,6 +7,7 @@ using client_graphics.AbstractFactory;
 using client_graphics.Factory;
 using client_graphics.GameObjects;
 using client_graphics.Map;
+using Utils.Helpers;
 using Utils.Math;
 
 namespace client_graphics.Builder
@@ -33,7 +34,8 @@ namespace client_graphics.Builder
                 rxx++;
                 if (rxx >= mapSize.X) rxx -= 2;
             }
-            PortalTile pt2 = new PortalTile(rxx * gameMap.TileSize.X, ryy * gameMap.TileSize.Y, gameMap.TileSize.X, gameMap.TileSize.Y, specTileImage);
+            string path = Pather.Create(Pather.FolderAssets, Pather.FolderTextures, Pather.FolderSpritesheets, Pather.PortalTileExitImage);
+            PortalTile pt2 = new PortalTile(rxx * gameMap.TileSize.X, ryy * gameMap.TileSize.Y, gameMap.TileSize.X, gameMap.TileSize.Y, new Bitmap(path));
             pt1.ExitTile = pt2;
             gameMap._tiles[rx, ry] = pt1;
             gameMap._tiles[rxx, ryy] = pt2;

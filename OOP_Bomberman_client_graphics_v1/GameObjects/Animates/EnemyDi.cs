@@ -17,24 +17,25 @@ namespace client_graphics.GameObjects.Animates
         public EnemyDi()
         {
             Facing = Direction.UpRight;
-            movingType = new MoveLR();
+            movingType = new MoveDi();
         }
         public EnemyDi(Vector2 position, Vector2 size, Vector4 collider, Bitmap image, int speed) : base(position, size, collider, image, speed)
         {
             Facing = Direction.UpRight;
             movingType = new MoveDi();
+            Initialize(speed);
         }
 
-        public EnemyDi(Enemy p) : base(p)
+        public EnemyDi(Enemy e) : base(e)
         {
         }
 
-        public override void Add(Enemy d)
+        public override void Add(Enemy e)
         {
             return;
         }
 
-        public override void Remove(Enemy d)
+        public override void Remove(Enemy e)
         {
             return;
         }
@@ -44,9 +45,9 @@ namespace client_graphics.GameObjects.Animates
             return new EnemyDi(this);
         }
 
-        public override void Action()
+        public override void Action(GameMap gameMap)
         {
-            throw new NotImplementedException();
+            Move(gameMap);
         }
     }
 }

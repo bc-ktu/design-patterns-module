@@ -11,6 +11,7 @@ using Utils.Math;
 using Utils.Helpers;
 using client_graphics.Map;
 using client_graphics.GameLogic;
+using client_graphics.GameObjects.Animates;
 
 namespace client_graphics.AbstractFactory
 {
@@ -61,6 +62,11 @@ namespace client_graphics.AbstractFactory
 
             var prm = gameMap.CreateScaledGameObjectParameters(index.X, index.Y, image);
             return new PaperWall(prm.Item1, prm.Item2, prm.Item3, prm.Item4);
+        }
+
+        public Enemy GetEnemyType()
+        {
+            return new EnemyLR();
         }
     }
 }

@@ -28,6 +28,7 @@ namespace Server
             {
                 values.Add(random.Next(0, 10));
             }
+            //enemies
             for (int i = 0; i < 5; i++)
             {
                 int rx = random.Next(3, mapSize.X - 3);
@@ -35,6 +36,15 @@ namespace Server
                 values.Add(rx);
                 values.Add(ry);
             }
+            //range powerups
+            for (int i = 0; i < 5; i++)
+            {
+                int rx = random.Next(3, mapSize.X - 3);
+                int ry = random.Next(3, mapSize.Y - 3);
+                values.Add(rx);
+                values.Add(ry);
+            }
+            //spec tiles
             for (int i = 0; i < 5; i++)
             {
                 int rx = random.Next(1, mapSize.X - 1);
