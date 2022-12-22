@@ -1,7 +1,6 @@
 using client_graphics.AbstractFactory;
 using client_graphics.Chain_of_responsibility;
 using client_graphics.Command;
-using client_graphics.Command;
 using client_graphics.Composite;
 using client_graphics.GameLogic;
 using client_graphics.GameObjects;
@@ -13,18 +12,13 @@ using client_graphics.Manager;
 using client_graphics.Iterator;
 using client_graphics.Map;
 using client_graphics.Mediator;
-using client_graphics.Map;
 using client_graphics.SignalR;
 using client_graphics.State;
-using com.sun.tools.javac.comp;
 using Microsoft.AspNetCore.SignalR.Client;
-using System;
 using Utils.GUIElements;
 using Utils.Helpers;
 using Utils.Math;
 using Utils.Observer;
-using java.util;
-using java.rmi.server;
 
 namespace client_graphics
 {
@@ -107,7 +101,7 @@ namespace client_graphics
             InitializeComponent();
 
             Debug.Set(ConsoleTextBox);
-            Debug.Enable(true);
+            Debug.Enable(false);
 
             Startup(GameSeed);
 
