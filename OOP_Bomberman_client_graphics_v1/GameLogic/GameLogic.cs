@@ -17,13 +17,17 @@ namespace client_graphics.GameLogic
             {
                 if (gameObjects[i] is Fire)
                 {
-                    Fire fire = gameObjects[i] as Fire;
+                    Fire fire = (Fire)gameObjects[i];
                     player.TakeDamage(fire.Damage);
                 }
                 if (gameObjects[i] is Powerup)
                 {
-                    Powerup powerup = gameObjects[i] as Powerup;
+                    Powerup powerup = (Powerup)gameObjects[i];
                     powerup.Affect(player, gameMap);
+                }
+                if (gameObjects[i] is Enemy)
+                {
+                    player.TakeDamage(1);
                 }
             }
 
@@ -35,7 +39,7 @@ namespace client_graphics.GameLogic
         {
             for (int i = 0; i < gameMap.ExplosivesLookupTable.Count; i++)
             {
-                Explosive explosive = gameMap.ExplosivesLookupTable.GameObjects[i] as Explosive;
+                Explosive explosive = (Explosive)gameMap.ExplosivesLookupTable.GameObjects[i];
                 explosive.UpdateState(gameMap, player);
             }
         }
@@ -44,7 +48,7 @@ namespace client_graphics.GameLogic
         {
             for (int i = 0; i < gameMap.FireLookupTable.Count; i++)
             {
-                Fire fire = gameMap.FireLookupTable.GameObjects[i] as Fire;
+                Fire fire = (Fire)gameMap.FireLookupTable.GameObjects[i];
                 fire.UpdateState(gameMap, levelFactory);
             }
         }

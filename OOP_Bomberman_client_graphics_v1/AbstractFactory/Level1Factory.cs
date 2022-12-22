@@ -12,6 +12,7 @@ using Utils.Helpers;
 using client_graphics.Map;
 using client_graphics.GameLogic;
 using client_graphics.Mediator;
+using client_graphics.GameObjects.Animates;
 
 namespace client_graphics.AbstractFactory
 {
@@ -36,7 +37,7 @@ namespace client_graphics.AbstractFactory
         }
 
         public Explosive CreateExplosive(GameMap gameMap, Vector2 index)
-        {   
+        {
             string filepath = Pather.Create(Pather.FolderAssets, Pather.FolderTextures, Pather.FolderGUI, Pather.GuiDamageIcon);
             Bitmap fireImage = new Bitmap(filepath);
             filepath = Pather.Create(Pather.FolderAssets, Pather.FolderTextures, Pather.FolderSprites, Pather.FolderExplosives, Pather.ExplosiveImage);
@@ -60,6 +61,16 @@ namespace client_graphics.AbstractFactory
 
             var prm = gameMap.CreateScaledGameObjectParameters(index.X, index.Y, image);
             return new PaperWall(prm.Item1, prm.Item2, prm.Item3, prm.Item4);
+        }
+
+        public Enemy GetFirstEnemyType()
+        {
+            return new EnemyLR();
+        }
+
+        public Enemy GetSecondEnemyType()
+        {
+            return new EnemyUD();
         }
     }
 }

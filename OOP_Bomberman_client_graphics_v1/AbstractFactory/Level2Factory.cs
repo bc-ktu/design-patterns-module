@@ -12,6 +12,7 @@ using client_graphics.Map;
 using Utils.Helpers;
 using client_graphics.GameLogic;
 using client_graphics.Mediator;
+using client_graphics.GameObjects.Animates;
 
 namespace client_graphics.AbstractFactory
 {
@@ -63,5 +64,14 @@ namespace client_graphics.AbstractFactory
             return new WoodenWall(prm.Item1, prm.Item2, prm.Item3, prm.Item4);
         }
 
+        public Enemy GetFirstEnemyType()
+        {
+            return new EnemyUD();
+        }
+
+        public Enemy GetSecondEnemyType()
+        {
+            return new EnemyDi();
+        }
     }
 }

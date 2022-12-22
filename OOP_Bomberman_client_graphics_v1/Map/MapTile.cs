@@ -41,5 +41,10 @@ namespace client_graphics.Map
         {
             e.Graphics.DrawImage(Image, ToRectangle());
         }
+
+        public void ClearList()
+        {
+            GameObjects.Clear();
+        }
     }
 }
