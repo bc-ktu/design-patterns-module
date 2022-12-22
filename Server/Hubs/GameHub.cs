@@ -48,9 +48,11 @@ namespace Server.Hubs
         public async Task Teleport(int localX, int localY, int worldX, int worldY)
         {
             Vector2 temp;
+            Console.WriteLine("out tel");
 
             if (Storage.Players.TryGetValue(Context.ConnectionId, out temp))
             {
+                Console.WriteLine("tel");
                 temp.X = worldX;
                 temp.Y = worldY;
                 Storage.Players[Context.ConnectionId] = temp;
@@ -83,7 +85,7 @@ namespace Server.Hubs
                 {
                     continue;
                 }
-                await Clients.Others.SendAsync("BombPlaced", fireDamage, positionX, positionY);
+                await Clients.Others.SendAsync("BombPlaced", Context.ConnectionId, fireDamage, positionX, positionY);
             }
         }
         public async Task ChangeStats(int health, int damage)
@@ -97,13 +99,23 @@ namespace Server.Hubs
                 await Clients.Others.SendAsync("UpdateStats", player.Key, health, damage);
             }
         }
+        public async Task GetPlayerCount()
+        {
+            await Clients.Client(Context.ConnectionId).SendAsync("PlayerCount", Storage.UserCount);
+
+        }
+        public async Task PlayerDied()
+        {
+            await Clients.All.SendAsync("Death", Context.ConnectionId);
+
+        }
 
         public override async Task OnConnectedAsync()
         {
             Storage.UserCount++;
             Storage.Players.Add(Context.ConnectionId, new Vector2(0, 0));
             /*if (Storage.UserCount == 2)
-                Storage.Players.Add(Context.ConnectionId, new Vector2(Storage.generator.GetMapSize().X - 1, Storage.generator.GetMapSize().X - 1));
+                Storage.Players.Add(Context.ConnectionId, new Vector2(Storage.generator.GetMapSize().X - 2, Storage.generator.GetMapSize().X - 2));
            */ 
             Console.WriteLine($"Player connected with ID {Context.ConnectionId}");
             await base.OnConnectedAsync();

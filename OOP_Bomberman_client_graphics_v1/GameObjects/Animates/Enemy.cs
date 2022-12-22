@@ -5,6 +5,7 @@ using client_graphics.GameObjects.Explosives;
 using client_graphics.AbstractFactory;
 using Utils.Observer;
 using client_graphics.Map;
+using client_graphics.Strategy;
 using client_graphics.Template;
 using Utils.Decorator;
 using client_graphics.GameLogic;

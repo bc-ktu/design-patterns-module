@@ -1,4 +1,6 @@
 using client_graphics.AbstractFactory;
+using client_graphics.Chain_of_responsibility;
+using client_graphics.Command;
 using client_graphics.Command;
 using client_graphics.Composite;
 using client_graphics.GameLogic;
@@ -7,7 +9,10 @@ using client_graphics.GameObjects.Animates;
 using client_graphics.GameObjects.Explosives;
 using client_graphics.Helpers;
 using client_graphics.Interpreter;
+using client_graphics.Manager;
 using client_graphics.Iterator;
+using client_graphics.Map;
+using client_graphics.Mediator;
 using client_graphics.Map;
 using client_graphics.SignalR;
 using client_graphics.State;
@@ -18,6 +23,8 @@ using Utils.GUIElements;
 using Utils.Helpers;
 using Utils.Math;
 using Utils.Observer;
+using java.util;
+using java.rmi.server;
 
 namespace client_graphics
 {
@@ -41,6 +48,8 @@ namespace client_graphics
 
         private GameState gameState;
 
+        public LoggerManager Logger { get; set; }
+
         public List<int> Maps { get; set; }
         public SignalRConnection Con { get; set; }
         private Dictionary<string, Player> players = new Dictionary<string, Player>();
@@ -54,6 +63,8 @@ namespace client_graphics
         Keys commandKey = Input.KeyInteract;
 
         EnemyType enemies;
+
+        public int playersCount = 0;
 
         public GameView()
         {
@@ -73,22 +84,22 @@ namespace client_graphics
             switch (GameSeed[0])
             {
                 case 1:
-                    levelFactory = new Level1Factory();
+                    levelFactory = new Level1Factory(new PicupMediator());
                     MapSize = new Vector2(10, 10);
                     level1 = false;
                     break;
                 case 2:
-                    levelFactory = new Level2Factory();
+                    levelFactory = new Level2Factory(new PicupMediator());
                     MapSize = new Vector2(14, 14);
                     level2 = false;
                     break;
                 case 3:
-                    levelFactory = new Level3Factory();
+                    levelFactory = new Level3Factory(new PicupMediator());
                     MapSize = new Vector2(24, 24);
                     level3 = false;
                     break;
                 default:
-                    levelFactory = new Level2Factory();
+                    levelFactory = new Level2Factory(new PicupMediator());
                     MapSize = new Vector2(14, 14);
                     level2 = false;
                     break;
@@ -116,7 +127,7 @@ namespace client_graphics
             gui = GameInitializer.CreateGUI(GameSettings.GUIPosition, GameSettings.GUISize, GameSettings.GUIFontColor, GameSettings.GUIFontSize);
             gameMap = GameInitializer.CreateMap(levelFactory, MapSize, Vector2.FromSize(ClientSize), GameSeed, GameSettings.GroundSpritesheetIndex);
             subject = new Subject();
-            if (players.Count == 2)
+            if (playersCount == 2)
                 position = new Vector2(MapSize.X - 2, MapSize.Y - 2) * gameMap.TileSize;
             else
                 position = new Vector2(1, 1) * gameMap.TileSize;
@@ -135,7 +146,10 @@ namespace client_graphics
         }
 
         public void AddPlayer(string uuid, int x, int y)
-        {
+        {            
+            Logger = new(uuid);
+            Logger.Logger.Log(MessageType.Default, "Gameloop started!");
+
             Vector2 index = new Vector2(x, y) / gameMap.TileSize;
             Explosive explosive = levelFactory.CreateExplosive(gameMap, index);
             players.Add(uuid, new Player(new Vector2(x, y), gameMap.TileSize, collider, characterImage, explosive, subject));
@@ -149,12 +163,14 @@ namespace client_graphics
 
         public void UpdatePosition(string uuid, int X, int Y, int speedMod, int speed)
         {
+            
             Player p;
             if (!players.TryGetValue(uuid, out p))
                 return;
             p.SpeedModifier = speedMod;
             p.SetMoveSpeed(speed);
             p.Move(new Vector2(X, Y));
+            Logger.Logger.Log(MessageType.Default, $"UPDATE_POSITION Player:{uuid} moved cords {p.LocalPosition}");
         }
 
         public void TeleportPlayer(string uuid, int localX, int localY)
@@ -163,6 +179,7 @@ namespace client_graphics
             if (!players.TryGetValue(uuid, out p))
                 return;
             p.Teleport(new Vector2(localX, localY));
+            Logger.Logger.Log(MessageType.Default, $"TELEPORT: Player:{uuid} moved cords {p.LocalPosition}");
         }
 
         private void OnPaint(object sender, PaintEventArgs e)
@@ -233,14 +250,20 @@ namespace client_graphics
                     collisions.Add(enemy.GetPositionOnMap(gameMap), enemy);
             }
 
-            if (currentCoordinates != player.WorldPosition)
-                Con.Connection.InvokeAsync("Teleport", player.LocalPosition.X, player.LocalPosition.Y, player.WorldPosition.X, player.WorldPosition.Y);
-
 
             string damageValue = player.Explosive.Fire.Damage.ToString();
             string healthValue = player.Health.ToString();
             GameLogic.GameLogic.ApplyEffects(player, gameMap, collisions.GameObjects);
-            if(player.Health.ToString() != healthValue || player.Explosive.Fire.Damage.ToString() != damageValue)
+
+            if (currentCoordinates != player.WorldPosition)
+            {
+                Con.Connection.InvokeAsync("Teleport", player.LocalPosition.X, player.LocalPosition.Y, player.WorldPosition.X, player.WorldPosition.Y);
+            }
+            if(player.Health == 0)
+            {
+                Con.Connection.InvokeAsync("PlayerDied");
+            }    
+            if (player.Health.ToString() != healthValue || player.Explosive.Fire.Damage.ToString() != damageValue)
             {
                 Con.Connection.InvokeAsync("ChangeStats", player.Health, player.Explosive.Fire.Damage);
             }
@@ -273,7 +296,7 @@ namespace client_graphics
 
         private void Level1Button_MouseClick(object sender, MouseEventArgs e)
         {
-            levelFactory = new Level1Factory();
+            levelFactory = new Level1Factory(new PicupMediator());
             GameSeed.Clear();
             Con.Connection.InvokeAsync("MapSeed", 10, 10, 1);
             MapSize = new Vector2(10, 10);
@@ -288,7 +311,7 @@ namespace client_graphics
 
         private void Level2Button_MouseClick(object sender, MouseEventArgs e)
         {
-            levelFactory = new Level2Factory();
+            levelFactory = new Level2Factory(new PicupMediator());
             GameSeed.Clear();
             Con.Connection.InvokeAsync("MapSeed", 14, 14, 2);
             MapSize = new Vector2(14, 14);
@@ -303,7 +326,7 @@ namespace client_graphics
 
         private void Level3Button_MouseClick(object sender, MouseEventArgs e)
         {
-            levelFactory = new Level3Factory();
+            levelFactory = new Level3Factory(new PicupMediator());
             GameSeed.Clear();
             Con.Connection.InvokeAsync("MapSeed", 24, 24, 3);
             MapSize = new Vector2(24, 24);
@@ -381,8 +404,9 @@ namespace client_graphics
             return false;
         }
         // TODO: get other p
-        public void BombPlaced(int fireDamage, int x, int y)
+        public void BombPlaced(string uuid, int fireDamage, int x, int y)
         {
+            Logger.Logger.Log(MessageType.Default, $"BOMB PLACED Player:{uuid} placed bomb with {fireDamage} damage at {x};{y}");
             Vector2 position = new Vector2(x, y);
             Vector2 index = position / gameMap.TileSize;
             Explosive explosive = (Explosive)this.player.Explosive.Clone();
@@ -395,9 +419,16 @@ namespace client_graphics
         }
         public void UpdateOtherPlayerStats(string uuid, int health, int damage)
         {
+            Logger.Logger.Log(MessageType.Default, $"Player:{uuid} Health Changed from {players[uuid].Health} to {health}");
             players[uuid].Health = health;
             players[uuid].Explosive.Fire.Damage = damage;
         }
-
+        public void PlayerDied(string uuid)
+        {
+           /* Player p;
+            if (!players.TryGetValue(uuid, out p))
+                return;*/
+            gameState.UpdateGameState();
+        }
     }
 }

@@ -11,15 +11,18 @@ using Utils.Math;
 using Utils.Helpers;
 using client_graphics.Map;
 using client_graphics.GameLogic;
+using client_graphics.Mediator;
 using client_graphics.GameObjects.Animates;
 
 namespace client_graphics.AbstractFactory
 {
     public class Level1Factory : ILevelFactory
     {
-        public Level1Factory() 
-        {
+        private readonly IMediator _mediator;
 
+        public Level1Factory(IMediator mediator) 
+        {
+            _mediator = mediator;
         }
 
         public Bitmap GetSpecialTileImage()
@@ -48,11 +51,7 @@ namespace client_graphics.AbstractFactory
 
         public Powerup CreatePowerup(GameMap gameMap, Vector2 index)
         {
-            string filepath = Pather.Create(Pather.FolderAssets, Pather.FolderTextures, Pather.FolderSprites, Pather.FolderPowerups, Pather.SpeedPowerupImage);
-            Bitmap image = new Bitmap(filepath);
-            var prm = gameMap.CreateScaledGameObjectParameters(index.X, index.Y, image, GameSettings.PowerupColliderScale);
-
-            return new SpeedPowerup(prm.Item1, prm.Item2, prm.Item3, prm.Item4);
+            return _mediator.Send(gameMap, index);
         }
 
         public DestructableWall CreateWall(GameMap gameMap, Vector2 index)
