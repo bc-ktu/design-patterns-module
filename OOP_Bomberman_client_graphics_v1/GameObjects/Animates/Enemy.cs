@@ -7,6 +7,7 @@ using Utils.Observer;
 using client_graphics.Map;
 using client_graphics.Template;
 using Utils.Decorator;
+using client_graphics.GameLogic;
 
 namespace client_graphics.GameObjects.Animates
 {
