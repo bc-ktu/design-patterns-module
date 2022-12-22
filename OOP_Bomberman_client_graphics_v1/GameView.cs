@@ -151,7 +151,7 @@ namespace client_graphics
         public void AddPlayer(string uuid, int x, int y)
         {            
             Logger = new(uuid);
-            Logger.Logger.Log(MessageType.Default, "Gameloop started!");
+            Logger.Logger.Log(MessageType.Network, $"Player:{uuid} connected to game succesfuly");
 
             Vector2 index = new Vector2(x, y) / gameMap.TileSize;
             Explosive explosive = levelFactory.CreateExplosive(gameMap, index);
@@ -165,23 +165,26 @@ namespace client_graphics
         }
 
         public void UpdatePosition(string uuid, int X, int Y, int speedMod, int speed)
-        {
-            
+        { 
             Player p;
             if (!players.TryGetValue(uuid, out p))
                 return;
+            Logger = new(uuid);
+            Logger.Logger.Log(MessageType.Default, $"UPDATE_POSITION Player:{uuid} moved cords {p.LocalPosition}");
             p.SpeedModifier = speedMod;
             p.SetMoveSpeed(speed);
             p.Move(new Vector2(X, Y));
-            Logger.Logger.Log(MessageType.Default, $"UPDATE_POSITION Player:{uuid} moved cords {p.LocalPosition}");
+            
         }
 
         public void TeleportPlayer(string uuid, int localX, int localY)
         {
+            Logger = new(uuid);
             Player p;
             if (!players.TryGetValue(uuid, out p))
                 return;
             p.Teleport(new Vector2(localX, localY));
+            Logger = new(uuid);
             Logger.Logger.Log(MessageType.Default, $"TELEPORT: Player:{uuid} moved cords {p.LocalPosition}");
         }
 
@@ -405,6 +408,7 @@ namespace client_graphics
         // TODO: get other p
         public void BombPlaced(string uuid, int fireDamage, int x, int y)
         {
+            Logger = new(uuid);
             Logger.Logger.Log(MessageType.Default, $"BOMB PLACED Player:{uuid} placed bomb with {fireDamage} damage at {x};{y}");
             Vector2 position = new Vector2(x, y);
             Vector2 index = position / gameMap.TileSize;
@@ -418,6 +422,7 @@ namespace client_graphics
         }
         public void UpdateOtherPlayerStats(string uuid, int health, int damage)
         {
+            Logger = new(uuid);
             Logger.Logger.Log(MessageType.Default, $"Player:{uuid} Health Changed from {players[uuid].Health} to {health}");
             players[uuid].Health = health;
             players[uuid].Explosive.Fire.Damage = damage;

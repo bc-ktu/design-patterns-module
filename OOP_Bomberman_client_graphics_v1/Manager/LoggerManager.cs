@@ -20,10 +20,10 @@ namespace client_graphics.Manager
 
             var logPath = Path.Combine(LogFolder, $"{id}{DateTime.Now:D}_log.txt");
             var logger = new StreamWriter(logPath, true);
-            Logger = new DefaultLogger(logger);
+            Logger = new NetworkLogger(logger);
             Logger.SetNext(new WarningLogger(logger))
                   .SetNext(new ErrorLogger(logger))
-                  .SetNext(new NetworkLogger(logger));
+                  .SetNext(new DefaultLogger(logger));
         }
     }
 }
