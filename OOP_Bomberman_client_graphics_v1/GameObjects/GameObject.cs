@@ -1,5 +1,7 @@
-﻿using client_graphics.Map;
+﻿using client_graphics.GameObjects.Animates;
+using client_graphics.Map;
 using java.lang;
+using javax.swing;
 using System;
 using System.Collections.Generic;
 using System.Data.SqlTypes;
@@ -100,6 +102,5 @@ namespace client_graphics.GameObjects
         {
             return new Rectangle(LocalPosition.X, LocalPosition.Y, Size.X, Size.Y);
         }
-
     }
 }

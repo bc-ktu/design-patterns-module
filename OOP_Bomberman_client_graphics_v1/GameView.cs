@@ -397,7 +397,6 @@ namespace client_graphics
             if (cursor.X >= topLeftX && cursor.X <= bottomRightX && cursor.Y >= topLeftY && cursor.Y <= bottomRightY && Debug.Enabled) return true;
             return false;
         }
-        // TODO: get other p
         public void BombPlaced(string uuid, int fireDamage, int x, int y)
         {
             Logger.Logger.Log(MessageType.Default, $"BOMB PLACED Player:{uuid} placed bomb with {fireDamage} damage at {x};{y}");

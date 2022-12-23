@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using client_graphics.GameObjects.Animates;
 using client_graphics.Map;
+using client_graphics.Visitor;
 using Utils.Math;
 
 namespace client_graphics.Factory
@@ -16,9 +17,9 @@ namespace client_graphics.Factory
 
         }
 
-        public override void AffectPlayer(Player player)
+        public override void Accept(IVisitor visitor)
         {
-            return;
+            visitor.Visit(this);
         }
     }
 }
