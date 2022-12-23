@@ -16,7 +16,7 @@ namespace client_graphics.Chain_of_responsibility
             else
             {
                 _streamWriter.WriteLine(message);
-                _streamWriter.Flush();
+                _streamWriter.Close();
             }
         }
     }

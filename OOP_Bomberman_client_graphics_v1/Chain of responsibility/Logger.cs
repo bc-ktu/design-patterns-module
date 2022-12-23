@@ -6,7 +6,6 @@ namespace client_graphics.Chain_of_responsibility
     public enum MessageType
     {
         Default,
-        File,
         Warning,
         Network,
         Error
