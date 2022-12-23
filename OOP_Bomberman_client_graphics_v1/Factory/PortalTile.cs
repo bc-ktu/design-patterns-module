@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using client_graphics.GameObjects.Animates;
 using client_graphics.Map;
+using client_graphics.Visitor;
 using Utils.Math;
 
 namespace client_graphics.Factory
@@ -23,12 +24,9 @@ namespace client_graphics.Factory
             ExitTile = new EmptyTile();
         }
 
-        public override void AffectPlayer(Player player)
+        public override void Accept(IVisitor visitor)
         {
-            if (ExitTile is EmptyTile)
-                return;
-
-            player.Teleport(ExitTile.LocalPosition);
+            visitor.Visit(this);
         }
     }
 }

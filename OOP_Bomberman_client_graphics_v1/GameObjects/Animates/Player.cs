@@ -9,10 +9,12 @@ using client_graphics.GameLogic;
 using client_graphics.GameLogic;
 using client_graphics.Chain_of_responsibility;
 using client_graphics.Manager;
+using client_graphics.Visitor;
+using client_graphics.Factory;
 
 namespace client_graphics.GameObjects.Animates
 {
-    public class Player : TriggerGameObject, IGraphicsDecorator
+    public class Player : TriggerGameObject, IGraphicsDecorator, IVisitor
     {
         public IGraphicsDecorator wrappee { get; private set; }
 
@@ -211,5 +213,32 @@ namespace client_graphics.GameObjects.Animates
             return new Player(this);
         }
 
+        public void Visit(EmptyTile tile)
+        {
+            return;
+        }
+
+        public void Visit(IceTile tile)
+        {
+            this.SpeedModifier = tile.speed;
+        }
+
+        public void Visit(MudTile tile)
+        {
+            this.SpeedModifier = tile.speed;
+        }
+
+        public void Visit(PortalTile tile)
+        {
+            if (tile.ExitTile is EmptyTile)
+                return;
+
+            this.Teleport(tile.ExitTile.LocalPosition);
+        }
+
+        public void Visit(RegularTile tile)
+        {
+            this.SpeedModifier = 0;
+        }
     }
 }

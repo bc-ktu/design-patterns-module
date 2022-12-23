@@ -2,6 +2,7 @@
 using client_graphics.GameObjects;
 using client_graphics.GameObjects.Animates;
 using Utils.Math;
+using client_graphics.Visitor;
 
 namespace client_graphics.Map
 {
@@ -30,8 +31,6 @@ namespace client_graphics.Map
             GameObjects = new List<GameObject>();
         }
 
-        public abstract void AffectPlayer(Player player);
-
         public Rectangle ToRectangle()
         {
             return new Rectangle(LocalPosition.X, LocalPosition.Y, Size.X, Size.Y);
@@ -46,5 +45,6 @@ namespace client_graphics.Map
         {
             GameObjects.Clear();
         }
+        public abstract void Accept(IVisitor visitor);
     }
 }

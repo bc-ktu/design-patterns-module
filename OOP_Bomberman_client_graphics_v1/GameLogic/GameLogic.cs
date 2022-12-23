@@ -7,6 +7,7 @@ using Utils.GUIElements;
 using client_graphics.Map;
 using Utils.Math;
 using client_graphics.SignalR;
+using client_graphics.Visitor;
 
 namespace client_graphics.GameLogic
 {
@@ -33,7 +34,7 @@ namespace client_graphics.GameLogic
             }
 
             Vector2 characterIndex = player.WorldPosition / gameMap.TileSize;
-            gameMap[characterIndex].AffectPlayer(player);
+            gameMap[characterIndex].Accept(player);
         }
 
         public static void UpdateExplosives(Player player, GameMap gameMap)
