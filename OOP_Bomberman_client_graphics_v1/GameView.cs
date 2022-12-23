@@ -138,7 +138,6 @@ namespace client_graphics
 
             collider = player.Collider;
             characterImage = player.Image;
-            Debug.LogLine(gameMap.PowerupLookupTable.Positions);
         }
 
         public void AddPlayer(string uuid, int x, int y)
@@ -150,9 +149,9 @@ namespace client_graphics
             Explosive explosive = levelFactory.CreateExplosive(gameMap, index);
             players.Add(uuid, new Player(new Vector2(x, y), gameMap.TileSize, collider, characterImage, explosive, subject));
 
-            /*Level1Button.Enabled = false;
+            Level1Button.Enabled = false;
             Level2Button.Enabled = false;
-            Level3Button.Enabled = false;*/
+            Level3Button.Enabled = false;
 
             gameState.UpdateGameState();
             gameState.ChangePanel();
