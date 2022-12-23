@@ -35,6 +35,9 @@
             this.Level2Button = new System.Windows.Forms.Button();
             this.Level3Button = new System.Windows.Forms.Button();
             this.ConsoleCheck = new System.Windows.Forms.CheckBox();
+            this.panel1 = new System.Windows.Forms.Panel();
+            this.WaitingLabel = new System.Windows.Forms.Label();
+            this.panel1.SuspendLayout();
             this.SuspendLayout();
             // 
             // GameTimer
@@ -101,11 +104,33 @@
             this.ConsoleCheck.Text = "Console";
             this.ConsoleCheck.UseVisualStyleBackColor = false;
             // 
+            // panel1
+            // 
+            this.panel1.BackColor = System.Drawing.SystemColors.ControlDark;
+            this.panel1.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.panel1.Controls.Add(this.WaitingLabel);
+            this.panel1.Location = new System.Drawing.Point(259, 301);
+            this.panel1.Name = "panel1";
+            this.panel1.Size = new System.Drawing.Size(452, 196);
+            this.panel1.TabIndex = 5;
+            // 
+            // WaitingLabel
+            // 
+            this.WaitingLabel.AutoSize = true;
+            this.WaitingLabel.Font = new System.Drawing.Font("Rockwell", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
+            this.WaitingLabel.Location = new System.Drawing.Point(48, 63);
+            this.WaitingLabel.Name = "WaitingLabel";
+            this.WaitingLabel.Size = new System.Drawing.Size(373, 66);
+            this.WaitingLabel.TabIndex = 0;
+            this.WaitingLabel.Text = "Waiting for second player\r\n\r\nWhile waiting, you can change the level";
+            this.WaitingLabel.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            // 
             // GameView
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 20F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(1010, 1055);
+            this.Controls.Add(this.panel1);
             this.Controls.Add(this.ConsoleCheck);
             this.Controls.Add(this.Level3Button);
             this.Controls.Add(this.Level2Button);
@@ -117,6 +142,8 @@
             this.Load += new System.EventHandler(this.GameView_Load);
             this.KeyDown += new System.Windows.Forms.KeyEventHandler(this.OnKeyDown);
             this.KeyUp += new System.Windows.Forms.KeyEventHandler(this.OnKeyUp);
+            this.panel1.ResumeLayout(false);
+            this.panel1.PerformLayout();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -130,5 +157,7 @@
         private Button Level2Button;
         private Button Level3Button;
         private CheckBox ConsoleCheck;
+        private Panel panel1;
+        private Label WaitingLabel;
     }
 }

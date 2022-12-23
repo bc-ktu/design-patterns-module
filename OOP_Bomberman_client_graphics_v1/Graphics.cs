@@ -1,22 +1,27 @@
-﻿using com.sun.org.apache.xml.@internal.resolver.helpers;
+﻿using client_graphics.Helpers;
+using com.sun.org.apache.xml.@internal.resolver.helpers;
 using Utils.Decorator;
-using Utils.GameLogic;
-using Utils.GameObjects;
-using Utils.GameObjects.Animates;
+using client_graphics.GameLogic;
+using client_graphics.GameObjects;
+using client_graphics.GameObjects.Animates;
 using Utils.GUIElements;
 using Utils.Helpers;
-using Utils.Map;
+using client_graphics.Map;
 using Utils.Math;
+using client_graphics.Decorator;
+using client_graphics.Composite;
+using client_graphics.Iterator;
 
 namespace client_graphics
 {
     internal static class Graphics
     {
-        public static void DrawMap(GameMap gameMap, Player player, List<Player> otherPlayers, PaintEventArgs e)
+        public static void DrawMap(GameMap gameMap, Player player, EnemyType enemies, List<Player> otherPlayers, PaintEventArgs e)
         {
-            Vector2 playerIndex = player.WorldPosition / gameMap.TileSize;
             List<Vector2> playerIndexes = new List<Vector2>();
             List<IGraphicsDecorator> players = new List<IGraphicsDecorator>();
+            Vector2 check = new Vector2(0, 0);
+            EnemyIterator iterator = new EnemyIterator(enemies);
 
             string filepath;
             for (int i = 0; i < otherPlayers.Count; i++)
@@ -53,8 +58,18 @@ namespace client_graphics
                     foreach (GameObject go in gameMap[x, y].GameObjects)
                         go.Draw(e);
 
-                    if (playerIndex == index)
+                    if (player.GetPositionOnMap(gameMap) == index)
                         player.Draw(e);
+
+                    for (iterator.First(); !iterator.IsDone(); iterator.Next())
+                    {
+                        if (!iterator.CurrentItem().Equals(check) && iterator.CurrentEnemy().GetPositionOnMap(gameMap) == index)
+                        {
+                            iterator.CurrentEnemy().Draw(e);
+                        }
+                    }
+                    /*if (enemyIndex == index)
+                        enemy.Draw(e);*/
 
                     for (int i = 0; i < playerIndexes.Count; i++) // other players are drawn incorrectly
                         if (playerIndexes[i] == index)
@@ -133,11 +148,5 @@ namespace client_graphics
             Rectangle rect = new Rectangle(xGO, yGO, widthGO, heightGO);
             e.Graphics.DrawRectangle(pen, rect);
         }
-
-        public static void DrawGameObject(GameObject go, PaintEventArgs e)
-        {
-            go.Draw(e);
-        }
-
     }
 }
