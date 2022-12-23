@@ -17,5 +17,10 @@ namespace client_graphics.State
         {
             this.gameState.TransitionTo(new WaitingGameState());
         }
+
+        public override void PanelHandle(GameView gameView)
+        {
+            gameView.ChangePanel();
+        }
     }
 }

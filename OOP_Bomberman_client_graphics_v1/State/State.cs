@@ -14,7 +14,7 @@ namespace client_graphics.State
             gameState = game;
         }
         public abstract void MoveHandle(GameView gameView, bool consoleParam, Keys key);
-        //add announcement handle
         public abstract void UpdateState();
+        public abstract void PanelHandle(GameView gameView);
     }
 }

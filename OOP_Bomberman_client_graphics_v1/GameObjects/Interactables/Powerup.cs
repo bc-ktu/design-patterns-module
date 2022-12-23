@@ -1,5 +1,7 @@
 ﻿using client_graphics.GameObjects.Animates;
 using client_graphics.Map;
+using client_graphics.SignalR;
+using Microsoft.AspNetCore.SignalR.Client;
 using Utils.Math;
 
 namespace client_graphics.GameObjects.Interactables
@@ -29,7 +31,7 @@ namespace client_graphics.GameObjects.Interactables
             : base(x, y, width, height, cx, cy, cWidth, cHeight, image)
         { }
         
-        public void Affect(Player character, GameMap gameMap)
+        public void Affect(Player character, GameMap gameMap, SignalRConnection connection)
         {
             character.ChangeSpeed(SpeedModifier);
             character.ChangeExplosivesCapacity(CapacityModifier);
@@ -39,6 +41,8 @@ namespace client_graphics.GameObjects.Interactables
             Vector2 index = WorldPosition / gameMap.TileSize;
             gameMap[index].GameObjects.Remove(this);
             gameMap.PowerupLookupTable.Remove(index, this);
+
+            //connection.Connection.InvokeAsync("ChangePowerups", index);
         }
 
     }

@@ -29,6 +29,11 @@ namespace client_graphics.State
             this.state.MoveHandle(gameView, consoleCommand, key);
         }
 
+        public void ChangePanel()
+        {
+            this.state.PanelHandle(gameView);
+        }
+
         public void UpdateGameState()
         {
             state.UpdateState();

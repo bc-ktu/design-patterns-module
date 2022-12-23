@@ -19,6 +19,7 @@ using Utils.GUIElements;
 using Utils.Helpers;
 using Utils.Math;
 using Utils.Observer;
+using System;
 
 namespace client_graphics
 {
@@ -137,6 +138,7 @@ namespace client_graphics
 
             collider = player.Collider;
             characterImage = player.Image;
+            Debug.LogLine(gameMap.PowerupLookupTable.Positions);
         }
 
         public void AddPlayer(string uuid, int x, int y)
@@ -148,11 +150,12 @@ namespace client_graphics
             Explosive explosive = levelFactory.CreateExplosive(gameMap, index);
             players.Add(uuid, new Player(new Vector2(x, y), gameMap.TileSize, collider, characterImage, explosive, subject));
 
-            Level1Button.Enabled = false;
+            /*Level1Button.Enabled = false;
             Level2Button.Enabled = false;
-            Level3Button.Enabled = false;
+            Level3Button.Enabled = false;*/
 
             gameState.UpdateGameState();
+            gameState.ChangePanel();
         }
 
         public void UpdatePosition(string uuid, int X, int Y, int speedMod, int speed)
@@ -203,7 +206,7 @@ namespace client_graphics
             Debug.Enable(ConsoleCheck.Checked);
             if (Debug.Enabled)
             {
-                ConsoleTextBox.ReadOnly = !CursorOnTextBox();
+                /*ConsoleTextBox.ReadOnly = !CursorOnTextBox();
                 if (ConsoleTextBox.Text.EndsWith("\n"))
                 {
                     string command = ConsoleTextBox.Text.TrimEnd('\n');
@@ -228,7 +231,7 @@ namespace client_graphics
                         }
                     }
                     ConsoleTextBox.Clear();
-                }
+                }*/
             }
 
             GameLogic.GameLogic.UpdateExplosives(player, gameMap);
@@ -247,7 +250,16 @@ namespace client_graphics
 
             string damageValue = player.Explosive.Fire.Damage.ToString();
             string healthValue = player.Health.ToString();
-            GameLogic.GameLogic.ApplyEffects(player, gameMap, collisions.GameObjects);
+            GameLogic.GameLogic.ApplyEffects(player, gameMap, collisions.GameObjects, Con);
+
+            Vector2 index = player.WorldPosition / gameMap.TileSize;
+            //Debug.LogLine(index);
+            if(gameMap.PowerupLookupTable.Positions.Contains(index)) Debug.LogLine(gameMap.PowerupLookupTable.Positions.Contains(index));
+            //Debug.LogLine();
+            if (gameMap.PowerupLookupTable.Positions.Contains(index) && gameMap.PowerupLookupTable.Get(index).Count == 0)
+            {
+                Con.Connection.InvokeAsync("ChangePowerups", index.X, index.Y);
+            }
 
             if (currentCoordinates != player.WorldPosition)
             {
@@ -411,6 +423,10 @@ namespace client_graphics
             gameMap[index].GameObjects.Add(explosive);
             gameMap.ExplosivesLookupTable.Add(index, explosive);
         }
+        public void UpdatePowerups(int x, int y)
+        {
+            gameMap.PowerupLookupTable.Clear(new Vector2(x,y));
+        }
         public void UpdateOtherPlayerStats(string uuid, int health, int damage)
         {
             Logger.Logger.Log(MessageType.Default, $"Player:{uuid} Health Changed from {players[uuid].Health} to {health}");
@@ -423,6 +439,17 @@ namespace client_graphics
             if (!players.TryGetValue(uuid, out p))
                 return;*/
             gameState.UpdateGameState();
+            gameState.ChangePanel();
+        }
+        public void HideWaitingPanel()
+        {
+            panel1.Visible = false;
+        }
+        public void ChangePanel()
+        {
+            WaitingLabel.Text = "Game over";
+            WaitingLabel.TextAlign = ContentAlignment.MiddleCenter;
+            panel1.Visible = true;
         }
     }
 }

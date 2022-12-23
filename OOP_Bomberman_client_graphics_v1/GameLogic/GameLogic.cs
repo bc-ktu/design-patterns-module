@@ -6,12 +6,13 @@ using client_graphics.GameObjects.Interactables;
 using Utils.GUIElements;
 using client_graphics.Map;
 using Utils.Math;
+using client_graphics.SignalR;
 
 namespace client_graphics.GameLogic
 {
     public static class GameLogic
     {
-        public static void ApplyEffects(Player player, GameMap gameMap, GameObject[] gameObjects)
+        public static void ApplyEffects(Player player, GameMap gameMap, GameObject[] gameObjects, SignalRConnection connection)
         {
             for (int i = 0; i < gameObjects.Length; i++)
             {
@@ -23,7 +24,7 @@ namespace client_graphics.GameLogic
                 if (gameObjects[i] is Powerup)
                 {
                     Powerup powerup = (Powerup)gameObjects[i];
-                    powerup.Affect(player, gameMap);
+                    powerup.Affect(player, gameMap, connection);
                 }
                 if (gameObjects[i] is Enemy)
                 {

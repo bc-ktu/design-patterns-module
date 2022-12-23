@@ -21,5 +21,10 @@ namespace client_graphics.State
         {
             this.gameState.TransitionTo(new FinishedGameState());
         }
+
+        public override void PanelHandle(GameView gameView)
+        {
+            gameView.HideWaitingPanel();
+        }
     }
 }

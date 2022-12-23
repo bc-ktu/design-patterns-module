@@ -8,6 +8,11 @@ namespace client_graphics.State
 {
     internal class WaitingGameState : State
     {
+        public override void PanelHandle(GameView gameView)
+        {
+            
+        }
+
         public override void MoveHandle(GameView gameView, bool consoleParam, Keys key)
         {
             //throw new NotImplementedException();

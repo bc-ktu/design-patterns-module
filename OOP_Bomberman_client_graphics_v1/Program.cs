@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.SignalR.Client;
 
 using client_graphics.SignalR;
+using Utils.Math;
 
 namespace client_graphics
 {
@@ -76,6 +77,10 @@ namespace client_graphics
             Con.Connection.On<string, int, int>("UpdateStats", (uuid, health, damage) =>
             {
                 game.UpdateOtherPlayerStats(uuid, health, damage);
+            });
+            Con.Connection.On<string, int, int>("UpdatePowerups", (uuid, x, y) =>
+            {
+                game.UpdatePowerups(x, y);
             });
             Con.Connection.On<string>("Death", (uuid) =>
             {

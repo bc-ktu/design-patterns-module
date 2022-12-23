@@ -99,6 +99,18 @@ namespace Server.Hubs
                 await Clients.Others.SendAsync("UpdateStats", player.Key, health, damage);
             }
         }
+        public async Task ChangePowerups(int x, int y)
+        {
+            Console.WriteLine("Hey");
+            foreach (var player in Storage.Players)
+            {
+                if (player.Key == Context.ConnectionId)
+                {
+                    continue;
+                }
+                await Clients.Others.SendAsync("UpdatePowerups", player.Key, x, y);
+            }
+        }
         public async Task GetPlayerCount()
         {
             await Clients.Client(Context.ConnectionId).SendAsync("PlayerCount", Storage.UserCount);
